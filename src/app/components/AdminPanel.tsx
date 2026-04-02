@@ -70,7 +70,7 @@ export function AdminPanel() {
   const [selType,  setSelType]  = useState<"streaming" | "youtube" | null>(null);
   const [selTrimestre, setTrimestre]   = useState("1");
   const [selAnio,      setAnio]        = useState(String(new Date().getFullYear()));
-  const [totalRegalias, setTotalReg]   = useState("");
+  const [upResult,  setUpResult]  = useState<Reporte | null>(null);
   const [upState,  setUpState]  = useState<UploadState>("idle");
   const [upFile,   setUpFile]   = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
@@ -107,7 +107,7 @@ export function AdminPanel() {
   const resetUp = () => {
     setSelSello(null); setSelType(null);
     setUpState("idle"); setUpFile(null); setProgress(0);
-    setUpError(null); setStep(1); setTotalReg("");
+    setUpError(null); setStep(1); setUpResult(null);
   };
 
   const doUpload = async (file: File) => {
@@ -129,11 +129,10 @@ export function AdminPanel() {
       fd.append("tipo",          selType);
       fd.append("trimestre",     selTrimestre);
       fd.append("anio",          selAnio);
-      fd.append("total_regalias", totalRegalias || "0");
-
-      await reportesApi.upload(fd);
+      const result = await reportesApi.upload(fd);
       clearInterval(iv);
       setProgress(100);
+      setUpResult(result);
       setUpState("success");
       refreshData();
     } catch (err: unknown) {
@@ -439,8 +438,8 @@ export function AdminPanel() {
                   })}
                 </div>
 
-                {/* Quarter / Year / Total */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px" }}>
+                {/* Quarter / Year */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "20px" }}>
                   <div>
                     <label style={{ fontSize: "10px", color: t3, letterSpacing: ".08em", textTransform: "uppercase", display: "block", marginBottom: "5px" }}>
                       {lang === "es" ? "Trimestre" : "Quarter"}
@@ -454,12 +453,6 @@ export function AdminPanel() {
                       {lang === "es" ? "Año" : "Year"}
                     </label>
                     <input type="number" value={selAnio} onChange={e => setAnio(e.target.value)} min="2000" max="2099" style={inputStyle} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "10px", color: t3, letterSpacing: ".08em", textTransform: "uppercase", display: "block", marginBottom: "5px" }}>
-                      {lang === "es" ? "Total regalías ($)" : "Total royalties ($)"}
-                    </label>
-                    <input type="number" value={totalRegalias} onChange={e => setTotalReg(e.target.value)} placeholder="0.00" step="0.01" style={inputStyle} />
                   </div>
                 </div>
 
@@ -537,9 +530,19 @@ export function AdminPanel() {
                   <div style={{ background: "rgba(212,175,55,0.06)", border: `1.5px solid ${bdA}`, borderRadius: "14px", padding: "40px", textAlign: "center" }}>
                     <div style={{ fontSize: "48px", marginBottom: "12px" }}>✅</div>
                     <div style={{ fontSize: "21px", fontWeight: 800, marginBottom: "6px", color: t1 }}>{tx.successTitle}</div>
-                    <div style={{ fontSize: "13px", color: t2, fontWeight: 300, lineHeight: 1.65, maxWidth: "340px", margin: "0 auto 22px" }}>
+                    <div style={{ fontSize: "13px", color: t2, fontWeight: 300, lineHeight: 1.65, maxWidth: "340px", margin: "0 auto 14px" }}>
                       {upFile?.name} {tx.successSub1} <strong style={{ color: t1 }}>{selSello?.nombre}</strong>. {tx.successSub2}
                     </div>
+                    {upResult && (
+                      <div style={{ display: "inline-block", background: "rgba(212,175,55,0.08)", border: `1px solid ${bdA}`, borderRadius: "10px", padding: "10px 22px", marginBottom: "22px" }}>
+                        <div style={{ fontSize: "10px", color: t3, letterSpacing: ".08em", textTransform: "uppercase", marginBottom: "3px" }}>
+                          {lang === "es" ? "Total regalías calculado" : "Calculated royalties"}
+                        </div>
+                        <div style={{ fontSize: "22px", fontWeight: 800, color: accent, fontFamily: "monospace" }}>
+                          {fmtCurrency(upResult.total_regalias)}
+                        </div>
+                      </div>
+                    )}
                     <div style={{ display: "flex", gap: "9px", justifyContent: "center", flexWrap: "wrap" }}>
                       <button onClick={resetUp} style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 24px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer" }}>{tx.subirMas}</button>
                       <button onClick={() => navTo("sellos")} style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 500, padding: "10px 20px", background: "transparent", color: t2, border: `1px solid ${bd}`, borderRadius: "8px", cursor: "pointer" }}>{tx.verSellos}</button>
