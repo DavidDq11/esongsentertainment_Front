@@ -1,0 +1,169 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* Custom animations for eSongs Landing */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 26s linear infinite;
+}
+
+/* ── Responsive Design ─────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Panel sidebar hidden on mobile */
+  .panel-sidebar-hide-mobile { display: none !important; }
+
+  /* Reduced panel main padding */
+  .panel-main-padding { padding: 14px 16px !important; }
+
+  /* 3-col grids become 1-col */
+  .rsp-grid-3 { grid-template-columns: 1fr !important; }
+
+  /* 2-col grids become 1-col */
+  .rsp-grid-2 { grid-template-columns: 1fr !important; }
+
+  /* Show mobile-only elements */
+  .rsp-show-mobile { display: flex !important; }
+
+  /* Welcome card flex wrap */
+  .rsp-wrap { flex-wrap: wrap !important; gap: 12px !important; }
+
+  /* Reduce font size on mobile headers */
+  .rsp-h-mobile { font-size: 18px !important; }
+
+  /* Hide date/amount columns on mobile to avoid overflow */
+  .hide-on-mobile { display: none !important; }
+
+  /* Contact form 2-col → 1-col */
+  .rsp-form-grid { grid-template-columns: 1fr !important; }
+
+  /* Portal charts row → stack vertically */
+  .rsp-charts-row { grid-template-columns: 1fr !important; }
+
+  /* Portal CTA banner → stack */
+  .rsp-cta-wrap { flex-wrap: wrap !important; gap: 12px !important; }
+
+  /* File card wrap on mobile */
+  .rsp-file-card { flex-wrap: wrap !important; }
+}
+
+@media (min-width: 768px) {
+  /* Hide mobile-only elements on desktop */
+  .rsp-show-mobile { display: none !important; }
+}
+
+/* ── Smooth scroll ───────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+/* ── Scroll animations ───────────────────────────────────────────────── */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Slide from left */
+[data-animate="left"] {
+  transform: translateX(-48px) translateY(0);
+}
+[data-animate="left"].is-visible {
+  transform: translateX(0);
+}
+
+/* Slide from right */
+[data-animate="right"] {
+  transform: translateX(48px) translateY(0);
+}
+[data-animate="right"].is-visible {
+  transform: translateX(0);
+}
+
+/* Zoom in */
+[data-animate="zoom"] {
+  transform: scale(0.88) translateY(0);
+}
+[data-animate="zoom"].is-visible {
+  transform: scale(1);
+}
+
+/* Fade only */
+[data-animate="fade"] {
+  transform: none;
+}
+[data-animate="fade"].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+[data-animate][data-delay="1"] { transition-delay: 0.08s; }
+[data-animate][data-delay="2"] { transition-delay: 0.17s; }
+[data-animate][data-delay="3"] { transition-delay: 0.26s; }
+[data-animate][data-delay="4"] { transition-delay: 0.35s; }
+[data-animate][data-delay="5"] { transition-delay: 0.44s; }
+[data-animate][data-delay="6"] { transition-delay: 0.53s; }
+
+/* ── Hero service card hover glow ────────────────────────────────────── */
+.hero-svc-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.hero-svc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.15);
+}
+
+/* ── Gold shimmer on section titles ──────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.gold-shimmer {
+  background: linear-gradient(90deg, #d4af37 0%, #f5c842 40%, #d4af37 60%, #f5c842 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* ── Prevent horizontal overflow on panels ───────────────────────────── */
+.panel-outer {
+  overflow-x: hidden;
+}
+
+@media (max-width: 767px) {
+  /* Steps indicator scrolls horizontally instead of overflowing */
+  .rsp-steps {
+    overflow-x: auto !important;
+    padding-bottom: 6px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .rsp-steps > * { flex-shrink: 0 !important; }
+
+  /* Upload drop zone — reduce padding on mobile */
+  .rsp-upload-zone { padding: 28px 18px !important; }
+
+  /* Report rows — allow text truncation */
+  .rsp-report-name {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 180px !important;
+  }
+
+  /* Sellos header button full width on mobile */
+  .rsp-sellos-header { flex-direction: column !important; align-items: flex-start !important; }
+  .rsp-sellos-header button { width: 100% !important; margin-top: 10px !important; }
+}
