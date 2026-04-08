@@ -69,6 +69,8 @@ export const sellosApi = {
   }) => request<Sello>("POST", "/api/sellos", data),
   update: (id: string, data: Partial<Sello & { password?: string }>) =>
     request<Sello>("PUT", `/api/sellos/${id}`, data),
+  toggleEstado: (id: string, estado: "activo" | "inactivo") =>
+    request<Sello>("PATCH", `/api/sellos/${id}/estado`, { estado }),
   remove: (id: string) => request<{ ok: boolean }>("DELETE", `/api/sellos/${id}`),
 };
 
@@ -132,4 +134,19 @@ export interface DashboardData {
 
 export const portalApi = {
   dashboard: () => request<DashboardData>("GET", "/api/portal/dashboard"),
+};
+
+// ── Storage ──────────────────────────────────────────────────────────────────
+
+export interface StorageInfo {
+  used_bytes: number;
+  limit_bytes: number;
+  used_gb: string;
+  limit_gb: number;
+  pct: number;
+  total_files: number;
+}
+
+export const storageApi = {
+  usage: () => request<StorageInfo>("GET", "/api/reportes/storage"),
 };

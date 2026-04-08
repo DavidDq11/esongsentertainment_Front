@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
-import { sellosApi, reportesApi, type Sello, type Reporte } from "../services/api";
+import { sellosApi, reportesApi, storageApi, type Sello, type Reporte, type StorageInfo } from "../services/api";
 import { T } from "../i18n";
 
 type AdminView  = "inicio" | "subir" | "sellos" | "reportes";
@@ -63,6 +63,13 @@ export function AdminPanel() {
   const [sellos,      setSellos]   = useState<Sello[]>([]);
   const [allReports,  setReports]  = useState<Reporte[]>([]);
   const [loadingData, setLoading]  = useState(true);
+  const [storage,     setStorage]  = useState<StorageInfo | null>(null);
+
+  // Edit sello modal state
+  const [editSello,   setEditSello]   = useState<Sello | null>(null);
+  const [editForm,    setEditForm]    = useState({ nombre: "", representante: "", email: "", pais: "", telefono: "", iniciales: "", password: "" });
+  const [editLoading, setEditLoading] = useState(false);
+  const [editErr,     setEditErr]     = useState<string | null>(null);
 
   // Upload wizard state
   const [step,     setStep]    = useState<UploadStep>(1);
@@ -90,15 +97,15 @@ export function AdminPanel() {
   const [newSelloLoading, setNewSelloLoading] = useState(false);
 
   useEffect(() => {
-    Promise.all([sellosApi.list(), reportesApi.list()])
-      .then(([s, r]) => { setSellos(s); setReports(r); })
+    Promise.all([sellosApi.list(), reportesApi.list(), storageApi.usage()])
+      .then(([s, r, st]) => { setSellos(s); setReports(r); setStorage(st); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
   const refreshData = () => {
-    Promise.all([sellosApi.list(), reportesApi.list()])
-      .then(([s, r]) => { setSellos(s); setReports(r); })
+    Promise.all([sellosApi.list(), reportesApi.list(), storageApi.usage()])
+      .then(([s, r, st]) => { setSellos(s); setReports(r); setStorage(st); })
       .catch(console.error);
   };
 
@@ -166,7 +173,67 @@ export function AdminPanel() {
     try {
       await reportesApi.remove(id);
       setReports(r => r.filter(x => x.id !== id));
+      storageApi.usage().then(setStorage).catch(() => {});
     } catch { /* ignore */ }
+  };
+
+  const handleToggleEstado = async (s: Sello) => {
+    const nuevoEstado = s.estado === "activo" ? "inactivo" : "activo";
+    const msg = lang === "es"
+      ? `¿${nuevoEstado === "inactivo" ? "Desactivar" : "Activar"} "${s.nombre}"?`
+      : `${nuevoEstado === "inactivo" ? "Deactivate" : "Activate"} "${s.nombre}"?`;
+    if (!window.confirm(msg)) return;
+    try {
+      const updated = await sellosApi.toggleEstado(s.id, nuevoEstado);
+      setSellos(prev => prev.map(x => x.id === updated.id ? { ...x, estado: updated.estado } : x));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Error");
+    }
+  };
+
+  const handleHardDelete = async (s: Sello) => {
+    const msg = lang === "es"
+      ? `⚠️ ELIMINAR "${s.nombre}" permanentemente?\n\nSe borrarán TODOS sus reportes y archivos de almacenamiento.\nEsta acción NO se puede deshacer.`
+      : `⚠️ Permanently DELETE "${s.nombre}"?\n\nALL reports and storage files will be erased.\nThis action CANNOT be undone.`;
+    if (!window.confirm(msg)) return;
+    try {
+      await sellosApi.remove(s.id);
+      setSellos(prev => prev.filter(x => x.id !== s.id));
+      refreshData();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Error");
+    }
+  };
+
+  const handleOpenEdit = (s: Sello) => {
+    setEditSello(s);
+    setEditForm({
+      nombre: s.nombre,
+      representante: s.representante ?? "",
+      email: s.email,
+      pais: s.pais ?? "",
+      telefono: s.telefono ?? "",
+      iniciales: s.iniciales ?? "",
+      password: "",
+    });
+    setEditErr(null);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editSello) return;
+    setEditLoading(true);
+    setEditErr(null);
+    try {
+      const payload: Record<string, string> = { ...editForm, estado: editSello.estado };
+      if (!payload.password) delete payload.password;
+      await sellosApi.update(editSello.id, payload);
+      setEditSello(null);
+      refreshData();
+    } catch (err) {
+      setEditErr(err instanceof Error ? err.message : "Error");
+    } finally {
+      setEditLoading(false);
+    }
   };
 
   const handleDownloadReport = async (id: string) => {
@@ -247,6 +314,25 @@ export function AdminPanel() {
         })}
 
         <div style={{ marginTop: "auto", paddingTop: "13px", borderTop: `1px solid ${bd}` }}>
+          {storage && (
+            <div style={{ background: ggl, border: `1px solid ${storage.pct >= 90 ? "rgba(239,68,68,0.3)" : storage.pct >= 75 ? "rgba(245,158,11,0.3)" : bdA}`, borderRadius: "8px", padding: "10px 12px", marginBottom: "9px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
+                <div style={{ fontSize: "10px", fontWeight: 600, color: storage.pct >= 90 ? "#ef4444" : storage.pct >= 75 ? amber : accent }}>
+                  {lang === "es" ? "Almacenamiento" : "Storage"}
+                </div>
+                <div style={{ fontFamily: "monospace", fontSize: "9px", color: storage.pct >= 90 ? "#ef4444" : storage.pct >= 75 ? amber : t3 }}>
+                  {storage.used_gb} / 8 GB
+                </div>
+              </div>
+              <div style={{ height: "3px", borderRadius: "2px", background: elev, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${storage.pct}%`, borderRadius: "2px", background: storage.pct >= 90 ? "#ef4444" : storage.pct >= 75 ? amber : accent, transition: "width .3s" }} />
+              </div>
+              <div style={{ fontSize: "9px", color: t3, marginTop: "4px" }}>
+                {storage.total_files} {lang === "es" ? "archivos" : "files"} · {storage.pct}%
+                {storage.pct >= 90 && <span style={{ color: "#ef4444", fontWeight: 600 }}> · {lang === "es" ? "¡Límite próximo!" : "Limit near!"}</span>}
+              </div>
+            </div>
+          )}
           <div style={{ background: ggl, border: `1px solid ${bdA}`, borderRadius: "8px", padding: "12px", marginBottom: "9px" }}>
             <div style={{ fontSize: "11px", fontWeight: 600, color: accent, marginBottom: "3px" }}>{tx.tipTitle}</div>
             <div style={{ fontSize: "10.5px", color: t2, lineHeight: 1.5, fontWeight: 300 }}>{tx.tipBody}</div>
@@ -347,6 +433,23 @@ export function AdminPanel() {
             <EyeBrow text={tx.subir} />
             <div style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-.035em", marginBottom: "3px", color: t1 }}>{tx.subirTitle}</div>
             <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.subirSub}</div>
+
+            {storage && storage.pct >= 100 && (
+              <div style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: "12px", padding: "28px", textAlign: "center", marginBottom: "22px" }}>
+                <div style={{ fontSize: "36px", marginBottom: "10px" }}>🚫</div>
+                <div style={{ fontSize: "16px", fontWeight: 700, color: t1, marginBottom: "8px" }}>
+                  {lang === "es" ? "Almacenamiento lleno (8 GB)" : "Storage Full (8 GB)"}
+                </div>
+                <div style={{ fontSize: "12px", color: t2, lineHeight: 1.6 }}>
+                  {lang === "es"
+                    ? "Se ha alcanzado el límite de almacenamiento gratuito de Cloudflare R2. Elimina reportes antiguos en la sección Reportes antes de subir nuevos archivos."
+                    : "The Cloudflare R2 free storage limit has been reached. Delete old reports in the Reports section before uploading new files."}
+                </div>
+                <button onClick={() => navTo("reportes")} style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 600, padding: "10px 24px", background: "#ef4444", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", marginTop: "16px" }}>
+                  {lang === "es" ? "Ir a Reportes" : "Go to Reports"}
+                </button>
+              </div>
+            )}
 
             {/* Steps */}
             <div className="rsp-steps" style={{ display: "flex", alignItems: "center", marginBottom: "26px" }}>
@@ -635,14 +738,23 @@ export function AdminPanel() {
                           <div style={{ fontSize: "9px", color: t3, fontWeight: 300 }}>{tx.total2025}</div>
                         </div>
                       </div>
-                      <div style={{ display: "flex", gap: "6px" }}>
+                      <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
                         <button onClick={() => { setSelSello(s); navTo("subir"); }}
-                          style={{ flex: 1, fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "8px 9px", borderRadius: "6px", cursor: "pointer", border: "none", background: accent, color: "#020a04", display: "flex", alignItems: "center", justifyContent: "center", gap: "5px" }}>
-                          {tx.subirArchivos}
+                          style={{ flex: 1, fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 8px", borderRadius: "6px", cursor: "pointer", border: "none", background: accent, color: "#020a04", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", minWidth: "60px" }}>
+                          📤 {tx.subirArchivos}
                         </button>
-                        <Link to="/portal" style={{ flex: 1, fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "8px 9px", borderRadius: "6px", cursor: "pointer", background: elev, color: t2, border: `1px solid ${bd}`, textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          {tx.verPortal}
-                        </Link>
+                        <button onClick={() => handleOpenEdit(s)}
+                          style={{ fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: elev, color: t2, border: `1px solid ${bd}` }}>
+                          ✏️
+                        </button>
+                        <button onClick={() => handleToggleEstado(s)}
+                          style={{ fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: s.estado === "activo" ? "rgba(245,158,11,0.1)" : "rgba(212,175,55,0.1)", color: s.estado === "activo" ? amber : accent, border: `1px solid ${s.estado === "activo" ? "rgba(245,158,11,0.25)" : bdA}` }}>
+                          {s.estado === "activo" ? "⏸" : "▶"}
+                        </button>
+                        <button onClick={() => handleHardDelete(s)}
+                          style={{ fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: "rgba(239,68,68,0.08)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>
+                          🗑
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -736,6 +848,63 @@ export function AdminPanel() {
         )}
 
       </main>
+
+      {/* EDIT SELLO MODAL */}
+      {editSello && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) setEditSello(null); }}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.72)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ background: "#161616", border: `1px solid ${bdA}`, borderRadius: "16px", padding: "28px", width: "100%", maxWidth: "540px", boxShadow: "0 24px 80px rgba(0,0,0,0.7)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <div>
+                <div style={{ fontSize: "16px", fontWeight: 800, color: t1 }}>
+                  {lang === "es" ? "Editar Sello" : "Edit Label"}
+                </div>
+                <div style={{ fontSize: "11px", color: t3, marginTop: "2px" }}>{editSello.nombre}</div>
+              </div>
+              <button onClick={() => setEditSello(null)}
+                style={{ background: "transparent", border: "none", color: t3, fontSize: "20px", cursor: "pointer", lineHeight: 1 }}>✕</button>
+            </div>
+
+            {editErr && (
+              <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "6px", padding: "8px 12px", color: "#fca5a5", fontSize: "11px", marginBottom: "14px" }}>{editErr}</div>
+            )}
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
+              {[
+                { label: lang === "es" ? "Nombre" : "Name",             key: "nombre",        type: "text" },
+                { label: lang === "es" ? "Representante" : "Representative", key: "representante", type: "text" },
+                { label: "Email",                                        key: "email",         type: "email" },
+                { label: lang === "es" ? "País" : "Country",            key: "pais",          type: "text" },
+                { label: lang === "es" ? "Teléfono" : "Phone",          key: "telefono",      type: "text" },
+                { label: lang === "es" ? "Iniciales" : "Initials",      key: "iniciales",     type: "text" },
+                { label: lang === "es" ? "Nueva Contraseña (opcional)" : "New Password (optional)", key: "password", type: "password" },
+              ].map(f => (
+                <div key={f.key} style={f.key === "password" ? { gridColumn: "1 / -1" } : {}}>
+                  <label style={{ fontSize: "9px", color: t3, letterSpacing: ".08em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>{f.label}</label>
+                  <input
+                    type={f.type}
+                    value={(editForm as Record<string, string>)[f.key]}
+                    onChange={e => setEditForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                    style={{ fontFamily: "inherit", fontSize: "12px", background: "#0a0a0a", border: `1px solid ${bd}`, color: t1, borderRadius: "7px", padding: "8px 12px", outline: "none", width: "100%", boxSizing: "border-box" as const }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+              <button onClick={() => setEditSello(null)}
+                style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 500, padding: "10px 20px", background: "transparent", color: t2, border: `1px solid ${bd}`, borderRadius: "8px", cursor: "pointer" }}>
+                {lang === "es" ? "Cancelar" : "Cancel"}
+              </button>
+              <button onClick={handleSaveEdit} disabled={editLoading}
+                style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 600, padding: "10px 24px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: editLoading ? "not-allowed" : "pointer", opacity: editLoading ? 0.7 : 1 }}>
+                {editLoading ? "…" : (lang === "es" ? "Guardar cambios" : "Save changes")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
