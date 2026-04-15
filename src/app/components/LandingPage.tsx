@@ -71,7 +71,6 @@ export function LandingPage() {
   const { lang } = useLang();
   const lp = LP[lang];
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [contactSent, setContactSent] = useState(false);
   const [expandedSvc, setExpandedSvc] = useState<number | null>(null);
 
   // ── Scroll animations ──────────────────────────────────────────────────
@@ -226,7 +225,7 @@ export function LandingPage() {
   ];
 
   const artItems = [lp.svcArt1, lp.svcArt2, lp.svcArt3, lp.svcArt4, lp.svcArt5, lp.svcArt6];
-  const pubItems = [lp.svcPub1, lp.svcPub2, lp.svcPub3, lp.svcPub4, lp.svcPub5, lp.svcPub6];
+  const pubItems = [lp.svcPub1, lp.svcPub2, lp.svcPub3, lp.svcPub4, lp.svcPub5];
 
   const faqs = [
     { q: lp.faq1q, a: lp.faq1a }, { q: lp.faq2q, a: lp.faq2a },
@@ -241,15 +240,8 @@ export function LandingPage() {
   const ctaBenefits = [lp.ctaBen1, lp.ctaBen2, lp.ctaBen3, lp.ctaBen4, lp.ctaBen5, lp.ctaBen6];
   const ctaExtras = [lp.ctaExtra1, lp.ctaExtra2, lp.ctaExtra3, lp.ctaExtra4, lp.ctaExtra5, lp.ctaExtra6];
 
-  const inputStyle: React.CSSProperties = {
-    backgroundColor: CARD, border: `1px solid ${BD}`,
-    color: T1, fontSize: "1rem", padding: "10px 14px",
-    width: "100%", borderRadius: "8px", outline: "none",
-  };
-  const onFocusIn  = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => { (e.currentTarget as HTMLElement).style.borderColor = G1; };
-  const onFocusOut = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => { (e.currentTarget as HTMLElement).style.borderColor = BD; };
 
-  const cardStyle: React.CSSProperties = { backgroundColor: CARD, border: `1px solid ${BD}`, borderRadius: "12px" };
+  const cardStyle: React.CSSProperties = { backgroundColor: CARD, border: `1px solid ${rg(0.15)}`, borderRadius: "12px" };
 
   const goldBtn = (label: string, href: string) => (
     <a href={href} className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-black transition-all duration-300"
@@ -433,7 +425,7 @@ export function LandingPage() {
       </section>
 
       {/* ══════════════════ NUESTROS CLIENTES ══════════════════ */}
-      <section id="clientes" style={{ borderTop: `1px solid ${BD}`, backgroundColor: BG2 }} className="py-14 md:py-24">
+      <section id="clientes" style={{ borderTop: `1px solid ${BD}` }} className="py-14 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div data-animate className="mb-12">
             {eyebrowCenter(lang === "es" ? "A quiénes servimos" : "Who we serve")}
@@ -442,13 +434,13 @@ export function LandingPage() {
             </h2>
             <p style={{ color: T2, fontSize: "1rem", textAlign: "center", marginTop: "8px", maxWidth: "560px", margin: "8px auto 0" }}>
               {lang === "es"
-                ? "Trabajamos con artistas, sellos independientes y editores musicales para maximizar su presencia y sus ingresos en la industria musical."
-                : "We work with artists, independent labels, and music publishers to maximize their presence and income in the music industry."}
+                ? "Trabajamos con Artistas, Sellos Independientes y Editores Musicales para maximizar su presencia y sus ingresos en la industria musical."
+                : "We work with Artists, Independent Labels, and Music Publishers to maximize their presence and income in the music industry."}
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-px rounded-2xl overflow-hidden" style={{ backgroundColor: BD, border: `1px solid ${BD}` }}>
             {/* Para Artistas */}
-            <div data-animate="left" data-delay="1" className="rounded-2xl p-6 md:p-8" style={{ backgroundColor: CARD, border: `1px solid ${rg(0.15)}` }}>
+            <div data-animate="left" data-delay="1" className="group relative p-6 md:p-8" style={{ backgroundColor: CARD }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
                 style={{ background: `linear-gradient(135deg, ${rg(0.15)}, ${rg(0.05)})`, border: `1px solid ${rg(0.2)}` }}>
                 <Music size={22} style={{ color: G1 }} />
@@ -462,14 +454,17 @@ export function LandingPage() {
                   </li>
                 ))}
               </ul>
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100"
+                style={{ background: `linear-gradient(90deg, ${G1}, ${G2})` }} />
             </div>
             {/* Para Editores */}
-            <div data-animate="right" data-delay="2" className="rounded-2xl p-6 md:p-8" style={{ backgroundColor: CARD, border: `1px solid ${rg(0.12)}` }}>
+            <div data-animate="right" data-delay="2" className="group relative p-6 md:p-8" style={{ backgroundColor: CARD }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
                 style={{ background: `linear-gradient(135deg, ${rg(0.15)}, ${rg(0.05)})`, border: `1px solid ${rg(0.2)}` }}>
                 <TrendingUp size={22} style={{ color: G2 }} />
               </div>
               <h3 style={{ color: T1, fontSize: "1.25rem", fontWeight: 700, lineHeight: 1.3, marginBottom: "10px" }}>{lp.svcPubTitle}</h3>
+              <p style={{ color: T3, fontSize: "0.95rem", lineHeight: 1.7, fontWeight: 300, marginBottom: "20px" }}>{lp.svcPubDesc}</p>
               <ul className="space-y-2.5 mt-6">
                 {pubItems.map((item) => (
                   <li key={item} className="flex items-start gap-3" style={{ fontSize: "0.95rem", color: T2, lineHeight: 1.55 }}>
@@ -477,6 +472,8 @@ export function LandingPage() {
                   </li>
                 ))}
               </ul>
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100"
+                style={{ background: `linear-gradient(90deg, ${G1}, ${G2})` }} />
             </div>
           </div>
         </div>
@@ -493,10 +490,10 @@ export function LandingPage() {
           <div className="grid md:grid-cols-2 gap-2.5">
             {faqs.map((faq, index) => (
               <div key={index} data-animate data-delay={String((index % 4) + 1)} className="rounded-xl overflow-hidden cursor-pointer transition-all duration-200"
-                style={{ backgroundColor: CARD, border: openFaq === index ? `1px solid ${rg(0.35)}` : `1px solid ${BD}` }}
+                style={{ backgroundColor: CARD, border: openFaq === index ? `1px solid ${rg(0.35)}` : `1px solid ${rg(0.15)}` }}
                 onClick={() => setOpenFaq(openFaq === index ? null : index)}
                 onMouseEnter={(e) => { if (openFaq !== index) (e.currentTarget as HTMLElement).style.borderColor = rg(0.2); }}
-                onMouseLeave={(e) => { if (openFaq !== index) (e.currentTarget as HTMLElement).style.borderColor = BD; }}>
+                onMouseLeave={(e) => { if (openFaq !== index) (e.currentTarget as HTMLElement).style.borderColor = rg(0.15); }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", padding: "20px 22px" }}>
                   <div style={{ fontSize: "0.95rem", fontWeight: 500, lineHeight: 1.4, color: T1 }}>{faq.q}</div>
                   <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: `1px solid ${openFaq === index ? G1 : "rgba(255,255,255,0.15)"}`, backgroundColor: openFaq === index ? G1 : "transparent", color: openFaq === index ? "#000" : T2, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s", transform: openFaq === index ? "rotate(45deg)" : "rotate(0deg)" }}>
@@ -515,7 +512,7 @@ export function LandingPage() {
       </section>
 
       {/* ══════════════════ CONTACT — Beneficios ══════════════════ */}
-      <section style={{ borderBottom: `1px solid ${BD}`, backgroundColor: BG2 }} className="py-14 md:py-24">
+      <section style={{ borderBottom: `1px solid ${BD}` }} className="py-14 md:py-24">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
             <div data-animate="left">
@@ -530,7 +527,7 @@ export function LandingPage() {
                 ))}
               </ul>
             </div>
-            <div className="rounded-2xl p-5 md:p-8" style={{ backgroundColor: CARD, border: `1px solid ${rg(0.15)}` }}>
+            <div className="rounded-2xl p-5 md:p-8" style={{ backgroundColor: CARD, border: `1px solid ${rg(0.3)}` }}>
               <h3 style={{ color: T1, fontSize: "1.1rem", fontWeight: 700, marginBottom: "20px" }}>{lp.ctaExtraTitle}</h3>
               <ul className="space-y-3">
                 {ctaExtras.map((item) => (
@@ -558,74 +555,33 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ══════════════════ CONTACT — Formulario ══════════════════ */}
+      {/* ══════════════════ CONTACT — Info ══════════════════ */}
       <section id="contacto" className="py-14 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
-            <div>
-              {eyebrow(lp.ctaEyebrow)}
-              <h2 style={sectionH2}>{lp.ctaH2}</h2>
-              <p style={{ fontSize: "1rem", color: T2, lineHeight: 1.75, fontWeight: 300, marginBottom: "24px" }}>{lp.ctaSub}</p>
-              <div className="space-y-2.5">
-                {[
-                  { icon: "✉️", label: "Email", value: "shirley@esongsentertainment.com" },
-                  { icon: "✉️", label: "Email", value: "rosemary@esongsentertainment.com" },
-                  { icon: "🌎", label: lang === "es" ? "Ubicación" : "Location", value: "United States of America" },
-                  { icon: "🌐", label: "Website", value: "esongsentertainment.com" },
-                ].map((item, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", borderRadius: "8px", padding: "14px", ...cardStyle, transition: "border-color 0.2s" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = rg(0.25); }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = BD; }}>
-                    <div style={{ width: "40px", height: "40px", borderRadius: "8px", backgroundColor: rg(0.08), border: `1px solid ${rg(0.2)}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ fontSize: "1.1rem" }}>{item.icon}</span>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", color: T3, marginBottom: "2px" }}>{item.label}</div>
-                      <div style={{ fontSize: "0.95rem", fontWeight: 500, color: T1, wordBreak: "break-all" }}>{item.value}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {contactSent ? (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "16px", padding: "48px", backgroundColor: CARD, border: `1px solid ${rg(0.2)}`, textAlign: "center" }}>
-                <div>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>✅</div>
-                  <p style={{ color: G1, fontWeight: 600, fontSize: "1.05rem" }}>{lp.ctaSent}</p>
-                </div>
-              </div>
-            ) : (
-              <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); setContactSent(true); }}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <div>
-                    <label style={{ fontSize: "0.75rem", letterSpacing: "0.11em", textTransform: "uppercase", color: T3, display: "block", marginBottom: "5px" }}>{lp.ctaName}</label>
-                    <input type="text" placeholder={lp.ctaName} style={inputStyle} onFocus={onFocusIn} onBlur={onFocusOut} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: "0.75rem", letterSpacing: "0.11em", textTransform: "uppercase", color: T3, display: "block", marginBottom: "5px" }}>{lp.ctaEmail}</label>
-                    <input type="email" placeholder={lp.ctaEmail} style={inputStyle} onFocus={onFocusIn} onBlur={onFocusOut} />
-                  </div>
+        <div className="max-w-2xl mx-auto px-4 md:px-6">
+          <div data-animate className="mb-10">
+            {eyebrow(lp.ctaEyebrow)}
+            <h2 style={sectionH2}>{lp.ctaH2}</h2>
+            <p style={{ fontSize: "1rem", color: T2, lineHeight: 1.75, fontWeight: 300, marginBottom: "24px" }}>{lp.ctaSub}</p>
+          </div>
+          <div className="space-y-2.5">
+            {[
+              { icon: "✉️", label: "Email", value: "shirley@esongsentertainment.com" },
+              { icon: "✉️", label: "Email", value: "rosemary@esongsentertainment.com" },
+              { icon: "🌎", label: lang === "es" ? "Ubicación" : "Location", value: "United States of America" },
+              { icon: "🌐", label: "Website", value: "esongsentertainment.com" },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", borderRadius: "8px", padding: "14px", ...cardStyle, transition: "border-color 0.2s" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = rg(0.25); }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = rg(0.15); }}>
+                <div style={{ width: "40px", height: "40px", borderRadius: "8px", backgroundColor: rg(0.08), border: `1px solid ${rg(0.2)}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <span style={{ fontSize: "1.1rem" }}>{item.icon}</span>
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.75rem", letterSpacing: "0.11em", textTransform: "uppercase", color: T3, display: "block", marginBottom: "5px" }}>
-                    {lang === "es" ? "Mensaje" : "Message"}
-                  </label>
-                  <textarea placeholder={lp.ctaMsg} style={{ ...inputStyle, height: "110px", resize: "none" }}
-                    onFocus={onFocusIn as unknown as React.FocusEventHandler<HTMLTextAreaElement>}
-                    onBlur={onFocusOut as unknown as React.FocusEventHandler<HTMLTextAreaElement>} />
+                  <div style={{ fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", color: T3, marginBottom: "2px" }}>{item.label}</div>
+                  <div style={{ fontSize: "0.95rem", fontWeight: 500, color: T1, wordBreak: "break-all" }}>{item.value}</div>
                 </div>
-                <button type="submit" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-black transition-all duration-300"
-                  style={{ background: `linear-gradient(135deg, ${G1}, ${G2})`, boxShadow: `0 6px 25px ${rg(0.3)}`, fontSize: "1rem", fontWeight: 700, border: "none", cursor: "pointer" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 30px ${rg(0.45)}`; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = `0 6px 25px ${rg(0.3)}`; }}>
-                  {lp.ctaBtn}
-                </button>
-                <p style={{ fontSize: "0.875rem", color: T3, marginTop: "8px" }}>
-                  {lp.ctaOr} <span style={{ color: T2 }}>shirley@esongsentertainment.com</span>
-                </p>
-              </form>
-            )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
