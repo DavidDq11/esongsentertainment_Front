@@ -453,7 +453,6 @@ export function LandingPage() {
                 style={{ background: `linear-gradient(135deg, ${rg(0.15)}, ${rg(0.05)})`, border: `1px solid ${rg(0.2)}` }}>
                 <Music size={22} style={{ color: G1 }} />
               </div>
-              {eyebrow(lp.svcArtEyebrow)}
               <h3 style={{ color: T1, fontSize: "1.25rem", fontWeight: 700, lineHeight: 1.3, marginBottom: "10px" }}>{lp.svcArtTitle}</h3>
               <p style={{ color: T3, fontSize: "0.95rem", lineHeight: 1.7, fontWeight: 300, marginBottom: "20px" }}>{lp.svcArtDesc}</p>
               <ul className="space-y-2.5">
@@ -470,7 +469,6 @@ export function LandingPage() {
                 style={{ background: `linear-gradient(135deg, ${rg(0.15)}, ${rg(0.05)})`, border: `1px solid ${rg(0.2)}` }}>
                 <TrendingUp size={22} style={{ color: G2 }} />
               </div>
-              {eyebrow(lp.svcPubEyebrow)}
               <h3 style={{ color: T1, fontSize: "1.25rem", fontWeight: 700, lineHeight: 1.3, marginBottom: "10px" }}>{lp.svcPubTitle}</h3>
               <ul className="space-y-2.5 mt-6">
                 {pubItems.map((item) => (
