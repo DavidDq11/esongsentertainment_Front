@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eSongs Entertainment — Portal de Regalías</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Instrument+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050608;--deep:#07080d;--card:#0c0e16;--elev:#121520;--elev2:#181c28;
+  --green:#00E887;--gd:#00b86b;--ggl:rgba(0,232,135,.09);--gbr:rgba(0,232,135,.20);
+  --cyan:#00F5D4;--amber:#F5A623;--red:#FF6060;
+  --t1:#EDF0FF;--t2:#7C83A0;--t3:#3A4060;--t4:#20263C;
+  --bd:rgba(255,255,255,.055);--bdg:rgba(0,232,135,.18);
+  --fd:'Syne',sans-serif;--fb:'Instrument Sans',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--t1);font-family:var(--fb);min-height:100vh;overflow-x:hidden;}
+
+/* BUTTONS */
+.btn-g{font-family:var(--fb);font-size:13.5px;font-weight:600;padding:11px 24px;background:var(--green);color:#020a04;border:none;border-radius:8px;cursor:pointer;transition:all .2s;box-shadow:0 0 22px rgba(0,232,135,.25);}
+.btn-g:hover{background:#1fffa0;box-shadow:0 0 40px rgba(0,232,135,.45);transform:translateY(-1px);}
+.btn-g:disabled{background:var(--elev);color:var(--t3);box-shadow:none;transform:none;cursor:not-allowed;}
+.btn-ghost{font-family:var(--fb);font-size:13px;font-weight:500;padding:10px 20px;background:transparent;color:var(--t2);border:1px solid var(--bd);border-radius:8px;cursor:pointer;transition:all .18s;}
+.btn-ghost:hover{border-color:var(--bdg);color:var(--t1);}
+
+/* TOP NAV */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:999;height:56px;background:rgba(5,6,8,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 24px;gap:14px;}
+.tn-logo{display:flex;align-items:center;gap:9px;cursor:pointer;text-decoration:none;}
+.tn-brand{font-family:var(--fd);font-size:15px;font-weight:800;letter-spacing:-.03em;color:var(--t1);}
+.tn-brand span{color:var(--green);}
+.tn-sep{width:1px;height:20px;background:var(--bd);}
+.tn-r{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.tn-tabs{display:flex;gap:2px;}
+.tn-tab{font-family:var(--fm);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid transparent;background:none;color:var(--t3);cursor:pointer;transition:all .18s;}
+.tn-tab:hover{color:var(--t2);background:var(--elev);}
+.tn-tab.on{color:var(--green);background:var(--ggl);border-color:var(--bdg);}
+.lang-sw{display:flex;background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:2px;gap:2px;}
+.lbtn{font-family:var(--fm);font-size:9px;letter-spacing:.07em;padding:4px 9px;border-radius:4px;border:none;background:none;color:var(--t3);cursor:pointer;transition:all .18s;}
+.lbtn.on{background:var(--green);color:#000;font-weight:700;}
+
+/* PAGE SYSTEM */
+.pg{display:none;padding-top:56px;}
+.pg.on{display:block;}
+
+/* ══════════════════════
+   LANDING
+══════════════════════ */
+.ln-nav{display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:66px;border-bottom:1px solid var(--bd);}
+.ln-links{display:flex;gap:2px;list-style:none;}
+.ln-links a{font-size:13px;font-weight:500;color:var(--t2);text-decoration:none;padding:7px 13px;border-radius:6px;transition:all .18s;cursor:pointer;}
+.ln-links a:hover,.ln-links a.on{color:var(--green);}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 122px);position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 55% 70% at 5% 60%,rgba(0,232,135,.06),transparent 65%),radial-gradient(ellipse 50% 50% at 85% 30%,rgba(30,142,250,.05),transparent 60%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,232,135,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,135,.028) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 60% 80% at 10% 50%,black,transparent);}
+.hero-l{display:flex;flex-direction:column;justify-content:center;padding:72px 52px 72px 64px;position:relative;z-index:2;}
+.h-ey{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:20px;display:flex;align-items:center;gap:9px;}
+.h-ey::before{content:'';width:22px;height:1px;background:var(--green);}
+h1{font-family:var(--fd);font-size:clamp(40px,5.5vw,72px);font-weight:800;line-height:.94;letter-spacing:-.045em;margin-bottom:24px;}
+h1 .gr{background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.h-desc{font-size:15px;line-height:1.76;color:var(--t2);font-weight:300;max-width:420px;margin-bottom:34px;}
+.h-ctas{display:flex;gap:11px;align-items:center;margin-bottom:46px;flex-wrap:wrap;}
+.h-stats{display:flex;gap:28px;}
+.hs{display:flex;flex-direction:column;}
+.hs-n{font-family:var(--fd);font-size:24px;font-weight:800;letter-spacing:-.04em;}
+.hs-n span{color:var(--green);}
+.hs-l{font-family:var(--fm);font-size:8px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+.hero-r{display:flex;align-items:center;justify-content:center;padding:52px 64px 52px 36px;position:relative;z-index:2;}
+.hero-cards{width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px;}
+.hc{background:var(--card);border:1px solid rgba(0,232,135,.1);border-radius:14px;padding:18px 22px;position:relative;overflow:hidden;animation:flt 6s ease-in-out infinite;}
+.hc:nth-child(2){animation-delay:-2s;margin-left:16px;}
+.hc:nth-child(3){animation-delay:-4s;}
+.hc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:.35;}
+@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.hc-lbl{font-family:var(--fm);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;}
+.hc-val{font-family:var(--fd);font-size:26px;font-weight:800;letter-spacing:-.04em;}
+.hc-val .cur{font-size:13px;color:var(--green);margin-right:2px;}
+.hc-tag{font-family:var(--fm);font-size:9px;color:var(--green);background:rgba(0,232,135,.08);border:1px solid rgba(0,232,135,.18);display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:11px;margin-top:6px;}
+.minibars{display:flex;align-items:flex-end;gap:4px;height:30px;margin-top:10px;}
+.mb{flex:1;border-radius:2px 2px 0 0;background:rgba(0,232,135,.14);}
+.mb.hi{background:var(--green);box-shadow:0 0 7px rgba(0,232,135,.4);}
+.pp-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;}
+.pp{font-family:var(--fm);font-size:8px;padding:3px 7px;border-radius:3px;background:var(--elev);color:var(--t3);border:1px solid var(--bd);}
+
+/* Platform strip */
+.strip{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:18px 0;overflow:hidden;}
+.strip-lbl{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--t4);text-align:center;margin-bottom:13px;}
+.st-track{display:flex;animation:slide 26s linear infinite;width:max-content;}
+@keyframes slide{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.sp{font-family:var(--fd);font-size:11.5px;font-weight:700;color:var(--t4);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;padding:0 24px;display:flex;align-items:center;}
+.sp::after{content:'·';margin-left:24px;font-size:16px;}
+
+/* Sections */
+.sec{padding:86px 64px;}
+.sec-ey{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:11px;display:flex;align-items:center;gap:8px;}
+.sec-ey::before{content:'';width:14px;height:1px;background:var(--green);}
+.sec-h2{font-family:var(--fd);font-size:clamp(24px,3.2vw,42px);font-weight:800;letter-spacing:-.035em;line-height:1.02;margin-bottom:12px;}
+.sec-body{font-size:14.5px;line-height:1.76;color:var(--t2);font-weight:300;max-width:600px;margin-bottom:48px;}
+
+/* How steps */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--bd);border:1px solid var(--bd);border-radius:16px;overflow:hidden;}
+.how-s{background:var(--card);padding:32px 26px;position:relative;transition:background .2s;cursor:default;}
+.how-s:hover{background:var(--elev);}
+.how-n{font-family:var(--fm);font-size:9px;letter-spacing:.14em;color:var(--t3);margin-bottom:16px;}
+.how-ic{font-size:24px;display:block;margin-bottom:12px;}
+.how-t{font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.02em;margin-bottom:7px;}
+.how-d{font-size:12px;color:var(--t2);line-height:1.65;font-weight:300;}
+.how-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.how-s:hover .how-bar{transform:scaleX(1);}
+
+/* Services bento */
+.svc-bento{display:grid;grid-template-columns:repeat(12,1fr);gap:11px;}
+.sv{background:var(--card);border:1px solid rgba(255,255,255,.045);border-radius:14px;padding:26px;transition:all .25s;position:relative;overflow:hidden;}
+.sv:hover{border-color:var(--bdg);transform:translateY(-3px);box-shadow:0 20px 52px rgba(0,0,0,.4);}
+.sv.c5{grid-column:span 5;}.sv.c4{grid-column:span 4;}.sv.c3{grid-column:span 3;}.sv.c7{grid-column:span 7;}
+.sv-ic{width:44px;height:44px;border-radius:10px;background:rgba(0,232,135,.08);border:1px solid rgba(0,232,135,.2);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;}
+.sv-t{font-family:var(--fd);font-size:16px;font-weight:700;letter-spacing:-.025em;margin-bottom:10px;}
+.sv-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.sv-list li{font-size:12px;color:var(--t2);line-height:1.55;font-weight:300;display:flex;align-items:flex-start;gap:6px;}
+.sv-list li::before{content:'→';color:var(--green);font-size:10px;margin-top:2px;flex-shrink:0;}
+
+/* About */
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:center;}
+.about-big{font-family:var(--fd);font-size:78px;font-weight:800;letter-spacing:-.06em;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.about-txt{font-size:14px;line-height:1.78;color:var(--t2);font-weight:300;margin-bottom:16px;}
+.a-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:22px;}
+.a-pill{font-family:var(--fm);font-size:9px;letter-spacing:.07em;padding:5px 12px;border-radius:16px;border:1px solid var(--bdg);color:var(--green);background:rgba(0,232,135,.05);}
+.about-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ac{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px;transition:border-color .2s;}
+.ac:hover{border-color:var(--bdg);}
+.ac-n{font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-.04em;color:var(--green);}
+.ac-l{font-size:11px;color:var(--t2);font-weight:300;margin-top:2px;}
+
+/* FAQ */
+.faq-sec{padding:86px 64px;background:var(--deep);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:1020px;}
+.faq-item{background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .2s;}
+.faq-item:hover{border-color:var(--bdg);}
+.faq-item.open{border-color:rgba(0,232,135,.25);}
+.faq-q{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.faq-qt{font-size:13px;font-weight:500;line-height:1.4;}
+.faq-arr{width:22px;height:22px;border-radius:5px;background:var(--elev);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:var(--green);transition:transform .2s;}
+.faq-item.open .faq-arr{transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.faq-item.open .faq-a{max-height:260px;}
+.faq-ai{padding:0 20px 16px;font-size:12px;color:var(--t2);line-height:1.72;font-weight:300;border-top:1px solid var(--bd);padding-top:12px;}
+
+/* Contact */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:start;}
+.ci{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px 16px;margin-bottom:9px;transition:border-color .2s;}
+.ci:hover{border-color:var(--bdg);}
+.ci-ic{width:36px;height:36px;border-radius:8px;background:rgba(0,232,135,.08);border:1px solid var(--bdg);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ci-lbl{font-family:var(--fm);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:2px;}
+.ci-val{font-size:12.5px;font-weight:500;}
+.form-a{display:flex;flex-direction:column;gap:11px;}
+.f-row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg label{font-family:var(--fm);font-size:8px;letter-spacing:.11em;text-transform:uppercase;color:var(--t3);}
+.fg input,.fg textarea,.fg select{background:var(--card);border:1px solid var(--bd);border-radius:7px;color:var(--t1);font-family:var(--fb);font-size:12px;padding:9px 12px;transition:border-color .18s;resize:none;}
+.fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:var(--green);}
+.fg textarea{height:84px;}
+
+/* CTA banner */
+.cta-wrap{padding:64px;}
+.cta-inner{background:linear-gradient(135deg,rgba(0,232,135,.06),rgba(0,245,212,.03));border:1px solid var(--bdg);border-radius:20px;padding:58px 64px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
+.cta-inner::before{content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(0,232,135,.1),transparent 70%);}
+.cta-t{font-family:var(--fd);font-size:clamp(22px,3vw,36px);font-weight:800;letter-spacing:-.035em;max-width:420px;line-height:1.08;}
+.cta-sub{font-size:12.5px;color:var(--t2);font-weight:300;margin-top:7px;}
+.cta-r{display:flex;flex-direction:column;gap:7px;align-items:flex-end;position:relative;z-index:1;}
+
+/* Footer */
+footer{background:var(--deep);border-top:1px solid var(--bd);padding:52px 64px 32px;}
+.ft-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;padding-bottom:40px;border-bottom:1px solid var(--bd);margin-bottom:26px;}
+.ft-brand p{font-size:12px;color:var(--t3);line-height:1.7;font-weight:300;max-width:240px;margin-top:12px;}
+.ft-ct{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--t4);margin-bottom:14px;}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.ft-links a{font-size:12px;color:var(--t3);text-decoration:none;transition:color .15s;font-weight:300;cursor:pointer;}
+.ft-links a:hover{color:var(--green);}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;}
+.ft-copy{font-family:var(--fm);font-size:8.5px;color:var(--t4);letter-spacing:.06em;}
+
+/* ══════════════════════
+   ADMIN PANEL
+══════════════════════ */
+.adm-shell{display:flex;min-height:calc(100vh - 56px);}
+.sidebar{width:220px;min-width:220px;background:var(--deep);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:20px 11px 16px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sb-sec{font-family:var(--fm);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);padding:0 9px;margin:14px 0 5px;}
+.sb-sec:first-child{margin-top:0;}
+.sb-i{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;transition:all .15s;border:1px solid transparent;margin-bottom:2px;}
+.sb-i:hover{background:var(--elev);}
+.sb-i.on{background:var(--ggl);border-color:var(--bdg);color:var(--green);}
+.sb-ic{width:28px;height:28px;border-radius:6px;background:var(--elev);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.sb-i.on .sb-ic{background:rgba(0,232,135,.12);}
+.sb-lbl{font-size:12.5px;font-weight:500;color:inherit;line-height:1.2;}
+.sb-dl{font-size:10px;color:var(--t3);font-weight:300;margin-top:1px;}
+.sb-i.on .sb-dl{color:rgba(0,232,135,.45);}
+.sb-bx{margin-left:auto;font-family:var(--fm);font-size:9px;font-weight:700;background:var(--amber);color:#1a0a00;padding:2px 6px;border-radius:6px;flex-shrink:0;}
+.sb-bx.ok{background:var(--green);color:#010e06;}
+.sb-foot{margin-top:auto;padding-top:13px;border-top:1px solid var(--bd);}
+.help-b{background:var(--ggl);border:1px solid var(--bdg);border-radius:8px;padding:12px;margin-bottom:9px;}
+.help-bt{font-size:11px;font-weight:600;color:var(--green);margin-bottom:3px;}
+.help-bd{font-size:10.5px;color:var(--t2);line-height:1.5;font-weight:300;}
+.u-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:var(--elev);}
+.u-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:9px;font-weight:800;color:#fff;flex-shrink:0;}
+.u-nm{font-size:11px;font-weight:600;}
+.u-rl{font-family:var(--fm);font-size:8.5px;color:var(--t3);letter-spacing:.04em;}
+
+/* Admin main */
+.adm-main{flex:1;overflow-y:auto;padding:28px 34px;}
+.pg-ey{font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.pg-ey::before{content:'';width:13px;height:1px;background:var(--green);}
+.pg-t{font-family:var(--fd);font-size:22px;font-weight:800;letter-spacing:-.035em;margin-bottom:3px;}
+.pg-st{font-size:12px;color:var(--t2);font-weight:300;line-height:1.55;margin-bottom:22px;}
+.av{display:none;}.av.on{display:block;}
+
+/* Welcome */
+.wlc{background:linear-gradient(135deg,rgba(0,232,135,.07),rgba(0,245,212,.03));border:1px solid var(--bdg);border-radius:14px;padding:26px 30px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
+.wlc::before{content:'';position:absolute;right:-44px;top:-44px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(0,232,135,.1),transparent 70%);}
+.wlc-t{font-family:var(--fd);font-size:19px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px;}
+.wlc-s{font-size:12.5px;color:var(--t2);font-weight:300;line-height:1.6;max-width:380px;}
+.wlc-n{font-family:var(--fd);font-size:32px;font-weight:800;letter-spacing:-.05em;color:var(--green);line-height:1;text-align:right;position:relative;z-index:1;}
+.wlc-nl{font-size:10px;color:var(--t2);font-weight:300;}
+
+/* Quick actions */
+.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:22px;}
+.qa-c{background:var(--card);border:1.5px solid var(--bd);border-radius:13px;padding:20px;cursor:pointer;transition:all .22s;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;}
+.qa-c:hover{border-color:var(--bdg);transform:translateY(-3px);box-shadow:0 16px 44px rgba(0,0,0,.45);}
+.qa-c::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.qa-c:hover::after{transform:scaleX(1);}
+.qa-ic{width:42px;height:42px;border-radius:10px;background:var(--ggl);border:1px solid var(--bdg);display:flex;align-items:center;justify-content:center;font-size:19px;}
+.qa-t{font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.022em;}
+.qa-d{font-size:11.5px;color:var(--t2);line-height:1.6;font-weight:300;}
+.qa-arr{margin-top:auto;font-size:17px;color:var(--green);align-self:flex-end;transition:transform .2s;}
+.qa-c:hover .qa-arr{transform:translateX(4px);}
+
+/* Pending */
+.pend-t{font-family:var(--fd);font-size:13.5px;font-weight:700;letter-spacing:-.02em;margin-bottom:9px;display:flex;align-items:center;gap:7px;}
+.pend-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 7px var(--amber);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.6;transform:scale(.8);}}
+.pend-c{background:var(--card);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:13px 16px;display:flex;align-items:center;gap:13px;margin-bottom:7px;cursor:pointer;transition:all .18s;}
+.pend-c:hover{border-color:rgba(245,166,35,.42);background:var(--elev);}
+.pc-ic{font-size:19px;flex-shrink:0;}
+.pc-t{font-size:12.5px;font-weight:600;margin-bottom:2px;}
+.pc-s{font-size:11px;color:var(--t2);font-weight:300;}
+.pc-act{font-size:11px;font-weight:600;color:var(--amber);background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);padding:5px 12px;border-radius:5px;flex-shrink:0;white-space:nowrap;margin-left:auto;}
+
+/* Upload steps */
+.steps-row{display:flex;align-items:center;gap:0;margin-bottom:26px;}
+.si{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:8px;border:1px solid var(--bd);background:var(--card);transition:all .2s;flex:1;}
+.si.on{border-color:var(--bdg);background:var(--ggl);}
+.si.done{border-color:rgba(0,232,135,.14);opacity:.65;}
+.sc{width:16px;height:1px;background:var(--bd);flex-shrink:0;}
+.sn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:10px;font-weight:500;flex-shrink:0;background:var(--elev);color:var(--t3);border:1px solid var(--bd);}
+.si.on .sn{background:var(--green);color:#010e06;border-color:var(--green);font-weight:700;}
+.si.done .sn{background:rgba(0,232,135,.14);color:var(--green);border-color:var(--bdg);}
+.sl{font-size:11.5px;font-weight:600;}
+.sd{font-size:9.5px;color:var(--t3);font-weight:300;margin-top:1px;}
+.si.on .sd{color:rgba(0,232,135,.5);}
+
+/* Sello selector */
+.sel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.sel-c{background:var(--card);border:2px solid var(--bd);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;}
+.sel-c:hover{border-color:var(--bdg);transform:translateY(-2px);}
+.sel-c.picked{border-color:var(--green);background:var(--ggl);}
+.sel-av{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:16px;font-weight:800;color:#fff;}
+.sel-nm{font-size:13px;font-weight:700;}
+.sel-em{font-size:9.5px;color:var(--t3);font-weight:300;}
+.sel-chk{width:19px;height:19px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all .2s;}
+.sel-c.picked .sel-chk{border-color:var(--green);background:var(--green);color:#010e06;}
+
+/* Type selector */
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.type-c{background:var(--card);border:2px solid var(--bd);border-radius:12px;padding:18px 20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:13px;}
+.type-c:hover{border-color:var(--bdg);}
+.type-c.picked{border-color:var(--green);background:var(--ggl);}
+.type-ic{font-size:26px;flex-shrink:0;}
+.type-lbl{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:-.02em;margin-bottom:2px;}
+.type-d{font-size:11px;color:var(--t2);font-weight:300;}
+.type-r{margin-left:auto;width:19px;height:19px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .2s;}
+.type-c.picked .type-r{border-color:var(--green);background:var(--green);color:#010e06;}
+
+/* Dropzone */
+.dzone{border:2.5px dashed rgba(0,232,135,.28);border-radius:16px;padding:50px 32px;text-align:center;cursor:pointer;background:rgba(0,232,135,.013);transition:all .25s;margin-bottom:13px;}
+.dzone:hover,.dzone.over{border-color:var(--green);background:rgba(0,232,135,.044);}
+.dz-ic{font-size:46px;margin-bottom:12px;display:block;line-height:1;}
+.dz-main{font-family:var(--fd);font-size:19px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px;}
+.dz-hint{font-size:12.5px;color:var(--t2);font-weight:300;line-height:1.6;max-width:360px;margin:0 auto 16px;}
+.dz-fmt{font-family:var(--fm);font-size:8.5px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-top:12px;}
+
+/* Queue */
+.q-wrap{margin-bottom:18px;}
+.q-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.q-t{font-family:var(--fd);font-size:13.5px;font-weight:700;}
+.q-cnt{font-family:var(--fm);font-size:9px;color:var(--t2);background:var(--elev);border:1px solid var(--bd);padding:3px 9px;border-radius:9px;}
+.qi{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:11px 14px;margin-bottom:6px;}
+.qi-ic{font-size:20px;flex-shrink:0;}
+.qi-info{flex:1;min-width:0;}
+.qi-n{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qi-m{font-size:10px;color:var(--t3);margin-top:2px;font-weight:300;}
+.qi-p{width:120px;flex-shrink:0;}
+.q-bar{height:3px;border-radius:2px;background:var(--elev2);overflow:hidden;margin-bottom:3px;}
+.q-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--cyan));}
+.q-pct{font-family:var(--fm);font-size:9px;color:var(--green);text-align:right;display:block;}
+
+/* Success */
+.suc-box{background:rgba(0,232,135,.06);border:1.5px solid var(--bdg);border-radius:14px;padding:40px;text-align:center;display:none;}
+.suc-box.show{display:block;}
+.suc-ic{font-size:48px;margin-bottom:12px;display:block;}
+.suc-t{font-family:var(--fd);font-size:21px;font-weight:800;letter-spacing:-.035em;margin-bottom:6px;}
+.suc-s{font-size:13px;color:var(--t2);font-weight:300;line-height:1.65;max-width:340px;margin:0 auto 22px;}
+
+.nav-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:7px;}
+
+/* Sellos grid */
+.sellos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.smc{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden;transition:all .22s;}
+.smc:hover{border-color:var(--bdg);transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,0,0,.4);}
+.smc-hd{padding:18px 18px 12px;display:flex;align-items:flex-start;gap:11px;}
+.smc-av{width:42px;height:42px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:14px;font-weight:800;color:#fff;}
+.smc-nm{font-family:var(--fd);font-size:14.5px;font-weight:700;letter-spacing:-.02em;margin-bottom:2px;}
+.smc-em{font-size:10.5px;color:var(--t3);font-weight:300;}
+.smc-st{margin-left:auto;font-family:var(--fm);font-size:8px;padding:3px 8px;border-radius:8px;flex-shrink:0;}
+.st-on{background:rgba(0,245,212,.08);color:var(--cyan);border:1px solid rgba(0,245,212,.2);}
+.st-pd{background:rgba(245,166,35,.08);color:var(--amber);border:1px solid rgba(245,166,35,.2);}
+.smc-bd{padding:0 18px 15px;border-top:1px solid var(--bd);}
+.smc-stats{display:flex;gap:16px;padding-top:11px;margin-bottom:12px;}
+.smc-sn{font-family:var(--fd);font-size:17px;font-weight:800;letter-spacing:-.04em;}
+.smc-sn.g{color:var(--green);}
+.smc-sl{font-size:9px;color:var(--t3);font-weight:300;}
+.smc-acts{display:flex;gap:6px;}
+.smc-btn{flex:1;font-family:var(--fb);font-size:11px;font-weight:600;padding:8px 9px;border-radius:6px;cursor:pointer;transition:all .18s;border:none;display:flex;align-items:center;justify-content:center;gap:5px;}
+.btn-up{background:var(--green);color:#020a04;}
+.btn-up:hover{background:#1fffa0;}
+.btn-vw{background:var(--elev2);color:var(--t2);border:1px solid var(--bd)!important;}
+.btn-vw:hover{border-color:var(--bdg)!important;color:var(--t1);}
+.add-smc{background:var(--card);border:2px dashed var(--bd);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:26px;cursor:pointer;transition:all .22s;min-height:180px;}
+.add-smc:hover{border-color:var(--bdg);background:var(--ggl);}
+
+/* Reports */
+.filter-bar{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.f-chip{font-family:var(--fm);font-size:9px;letter-spacing:.07em;padding:6px 13px;border-radius:16px;border:1px solid var(--bd);color:var(--t3);cursor:pointer;transition:all .18s;background:none;}
+.f-chip:hover{border-color:var(--bdg);color:var(--green);}
+.f-chip.on{border-color:var(--green);color:var(--green);background:var(--ggl);}
+.f-in{font-family:var(--fb);font-size:12px;background:var(--card);border:1px solid var(--bd);color:var(--t1);border-radius:7px;padding:7px 12px;transition:border-color .18s;width:185px;}
+.f-in:focus{outline:none;border-color:var(--bdg);}
+.f-in::placeholder{color:var(--t3);}
+.rpt-row{background:var(--card);border:1px solid var(--bd);border-radius:10px;display:flex;align-items:center;gap:13px;padding:13px 17px;margin-bottom:6px;transition:all .18s;}
+.rpt-row:hover{border-color:rgba(0,232,135,.14);background:var(--elev);}
+.rr-ic{font-size:22px;flex-shrink:0;}
+.rr-info{flex:1;min-width:0;}
+.rr-nm{font-size:12.5px;font-weight:500;margin-bottom:3px;}
+.rr-meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.tag{font-family:var(--fm);font-size:8px;padding:2px 7px;border-radius:4px;letter-spacing:.05em;}
+.tag-s{background:rgba(0,232,135,.1);color:var(--green);border:1px solid rgba(0,232,135,.2);}
+.tag-y{background:rgba(255,96,96,.08);color:#ff8888;border:1px solid rgba(255,96,96,.18);}
+.rr-per{font-size:10.5px;color:var(--t2);}
+.rr-amt{font-family:var(--fm);font-size:12.5px;color:var(--t1);white-space:nowrap;}
+.rr-dt{font-size:10px;color:var(--t3);}
+.rr-acts{display:flex;gap:5px;flex-shrink:0;}
+.sm-btn{font-family:var(--fm);font-size:9px;padding:5px 10px;background:transparent;border:1px solid var(--bd);color:var(--t2);border-radius:5px;cursor:pointer;transition:all .18s;}
+.sm-btn:hover{border-color:var(--bdg);color:var(--green);background:var(--ggl);}
+.sm-btn.del:hover{border-color:rgba(255,96,96,.3);color:var(--red);background:rgba(255,96,96,.06);}
+
+/* ══════════════════════
+   SELLO PORTAL
+══════════════════════ */
+.sp-shell{display:flex;min-height:calc(100vh - 56px);}
+.sp-main{flex:1;overflow-y:auto;padding:26px 32px;}
+.ph-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
+.ph-t{font-family:var(--fd);font-size:21px;font-weight:800;letter-spacing:-.035em;}
+.ph-s{font-size:11.5px;color:var(--t2);margin-top:3px;font-weight:300;}
+
+/* Bento */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-bottom:16px;}
+.bc{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px;transition:all .22s;}
+.bc:hover{border-color:rgba(0,232,135,.2);transform:translateY(-2px);box-shadow:0 16px 44px rgba(0,0,0,.4);}
+.bc.c3{grid-column:span 3;}.bc.c4{grid-column:span 4;}.bc.c5{grid-column:span 5;}
+.bc.c6{grid-column:span 6;}.bc.c7{grid-column:span 7;}.bc.c8{grid-column:span 8;}.bc.c12{grid-column:span 12;}
+.bc-lbl{font-family:var(--fm);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:11px;display:flex;align-items:center;gap:5px;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);}
+.dot.cy{background:var(--cyan);box-shadow:0 0 5px var(--cyan);}
+.dot.am{background:var(--amber);}
+.bc-val{font-family:var(--fd);font-size:28px;font-weight:800;letter-spacing:-.045em;line-height:1;}
+.bc-val .cur{font-size:13px;color:var(--green);margin-right:2px;}
+.bc-ch{font-family:var(--fm);font-size:8px;display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:10px;margin-top:7px;}
+.bc-ch.up{color:var(--cyan);background:rgba(0,245,212,.07);border:1px solid rgba(0,245,212,.18);}
+.bc-ch.neu{color:var(--t2);background:var(--elev);border:1px solid var(--bd);}
+
+/* Bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:3px;height:80px;margin-top:12px;}
+.b-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end;}
+.b-bar{width:100%;border-radius:3px 3px 0 0;background:rgba(0,232,135,.14);cursor:pointer;transition:background .2s;}
+.b-bar:hover{background:rgba(0,232,135,.36);}
+.b-bar.hi{background:linear-gradient(180deg,var(--green),var(--gd));box-shadow:0 0 8px rgba(0,232,135,.35);}
+.b-lbl{font-family:var(--fm);font-size:7px;color:var(--t3);letter-spacing:.04em;}
+
+/* Donut */
+.donut-wrap{display:flex;gap:16px;align-items:center;}
+.donut{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.d-in{width:56px;height:56px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.d-pct{font-family:var(--fd);font-size:13px;font-weight:800;letter-spacing:-.04em;}
+.d-sub{font-family:var(--fm);font-size:6.5px;color:var(--t3);letter-spacing:.05em;}
+.leg{display:flex;flex-direction:column;gap:6px;}
+.leg-i{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2);}
+.leg-d{width:7px;height:4px;border-radius:2px;flex-shrink:0;}
+
+/* Tables */
+.dtable{width:100%;border-collapse:collapse;}
+.dtable th{font-family:var(--fm);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);text-align:left;padding:0 0 9px;border-bottom:1px solid var(--bd);}
+.dtable td{padding:9px 0;font-size:11.5px;border-bottom:1px solid rgba(255,255,255,.025);vertical-align:middle;}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:rgba(0,232,135,.02);}
+.dtable th:not(:first-child),.dtable td:not(:first-child){padding-left:12px;}
+.dl-btn{font-family:var(--fm);font-size:8.5px;padding:4px 9px;background:transparent;border:1px solid var(--bd);color:var(--t2);border-radius:4px;cursor:pointer;transition:all .18s;}
+.dl-btn:hover{border-color:var(--bdg);color:var(--green);background:var(--ggl);}
+.rank-bar-bg{width:90px;height:4px;border-radius:2px;background:var(--elev2);display:inline-block;margin-left:8px;vertical-align:middle;overflow:hidden;}
+.rank-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--cyan));}
+.s-head{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--t2);text-transform:uppercase;margin:16px 0 11px;display:flex;align-items:center;gap:8px;}
+.s-head::after{content:'';flex:1;height:1px;background:var(--bd);}
+
+/* Sello view tabs */
+.sv2{display:none;}.sv2.on{display:block;}
+
+/* Logo SVG shared */
+.logo-svg{width:28px;height:28px;flex-shrink:0;}
+
+/* ══════════════════════
+   RESPONSIVE — TABLET (≤1024px)
+══════════════════════ */
+@media(max-width:1024px){
+  /* Landing hero → stack */
+  .hero{grid-template-columns:1fr;min-height:auto;}
+  .hero-r{display:none;}
+  .hero-l{padding:52px 32px;}
+  h1{font-size:clamp(36px,6vw,56px);}
+
+  /* Landing sections */
+  .sec{padding:60px 32px;}
+  .faq-sec{padding:60px 32px;}
+  .cta-wrap{padding:32px;}
+  .cta-inner{padding:36px 32px;flex-direction:column;gap:22px;align-items:flex-start;}
+  .cta-r{align-items:flex-start;}
+  footer{padding:40px 32px 24px;}
+  .ft-top{grid-template-columns:1fr 1fr;gap:32px;}
+
+  /* How grid → 2 cols */
+  .how-grid{grid-template-columns:1fr 1fr;}
+
+  /* Services bento simplify */
+  .sv.c5,.sv.c4,.sv.c3,.sv.c7{grid-column:span 6;}
+
+  /* About */
+  .about-wrap{grid-template-columns:1fr;gap:36px;}
+  .about-big{font-size:56px;}
+
+  /* FAQ */
+  .faq-grid{grid-template-columns:1fr;}
+
+  /* Contact */
+  .contact-wrap{grid-template-columns:1fr;gap:40px;}
+
+  /* Admin & Sello sidebar — narrower */
+  .sidebar{width:180px;min-width:180px;}
+  .adm-main{padding:22px 22px;}
+  .sp-main{padding:22px 22px;}
+
+  /* Admin sellos grid */
+  .sellos-grid{grid-template-columns:1fr 1fr;}
+  .qa-grid{grid-template-columns:1fr 1fr;}
+  .sel-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* ══════════════════════
+   RESPONSIVE — MOBILE (≤768px)
+══════════════════════ */
+@media(max-width:768px){
+  /* Top nav — compact */
+  .topnav{padding:0 14px;gap:8px;}
+  .tn-brand{font-size:13px;}
+  .tn-tabs{display:none;}/* hide page tabs on mobile - use bottom nav instead */
+  .tn-sep{display:none;}
+
+  /* Mobile bottom nav */
+  body::after{
+    content:'';
+    display:block;
+    height:60px;
+  }
+  .mob-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;left:0;right:0;
+    z-index:998;
+    height:60px;
+    background:rgba(7,8,13,.97);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--bd);
+    align-items:stretch;
+  }
+  .mob-btn{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    cursor:pointer;
+    transition:all .18s;
+    border:none;
+    background:none;
+    color:var(--t3);
+    padding:0;
+  }
+  .mob-btn.on{color:var(--green);}
+  .mob-btn span:first-child{font-size:18px;line-height:1;}
+  .mob-btn span:last-child{font-family:var(--fm);font-size:8px;letter-spacing:.07em;}
+
+  /* Landing */
+  .ln-nav{padding:0 20px;height:54px;flex-wrap:wrap;}
+  .ln-links{display:none;}
+  .hero-l{padding:36px 20px 40px;}
+  h1{font-size:clamp(32px,8vw,46px);}
+  .h-desc{font-size:13.5px;}
+  .h-ctas{flex-direction:column;align-items:flex-start;}
+  .h-stats{gap:20px;}
+  .hs-n{font-size:20px;}
+
+  .sec{padding:48px 20px;}
+  .faq-sec{padding:48px 20px;}
+  .sec-h2{font-size:clamp(22px,5vw,32px);}
+
+  /* How grid → 1 col */
+  .how-grid{grid-template-columns:1fr;}
+
+  /* Services → 1 col */
+  .svc-bento{display:flex;flex-direction:column;}
+  .sv.c5,.sv.c4,.sv.c3,.sv.c7{grid-column:span 12;}
+
+  /* FAQ */
+  .faq-grid{grid-template-columns:1fr;}
+
+  /* About */
+  .about-wrap{grid-template-columns:1fr;gap:28px;}
+  .about-big{font-size:48px;}
+  .about-cards{grid-template-columns:1fr 1fr;}
+
+  /* Contact */
+  .contact-wrap{grid-template-columns:1fr;gap:28px;}
+  .f-row2{grid-template-columns:1fr;}
+
+  /* CTA */
+  .cta-wrap{padding:20px;}
+  .cta-inner{padding:28px 20px;border-radius:14px;}
+  .cta-r{width:100%;}
+  .cta-r .btn-g{width:100%;justify-content:center;}
+
+  /* Footer */
+  footer{padding:36px 20px 80px;}
+  .ft-top{grid-template-columns:1fr;gap:24px;}
+  .ft-bot{flex-direction:column;gap:8px;text-align:center;}
+
+  /* Strip */
+  .strip{padding:14px 0;}
+
+  /* ── ADMIN MOBILE ── */
+  .adm-shell{flex-direction:column;}
+  .sidebar{
+    width:100%;
+    min-width:unset;
+    height:auto;
+    position:static;
+    border-right:none;
+    border-bottom:1px solid var(--bd);
+    padding:12px 14px;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:6px;
+    align-items:center;
+  }
+  .sb-sec{display:none;}
+  .sb-i{flex:1;min-width:130px;max-width:200px;padding:7px 10px;}
+  .sb-dl{display:none;}
+  .sb-bx{font-size:8px;padding:2px 5px;}
+  .sb-foot{
+    width:100%;
+    margin-top:0;
+    padding-top:8px;
+    border-top:1px solid var(--bd);
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+  }
+  .help-b{display:none;}
+  .adm-main{padding:18px 16px;}
+  .sp-main{padding:18px 16px;}
+
+  /* Admin quick actions → 1 col */
+  .qa-grid{grid-template-columns:1fr;}
+  .sel-grid{grid-template-columns:1fr 1fr;}
+  .sellos-grid{grid-template-columns:1fr;}
+  .add-smc{min-height:100px;}
+
+  /* Upload steps — compact */
+  .steps-row{gap:4px;}
+  .si{padding:6px 8px;gap:5px;}
+  .sl{font-size:10.5px;}
+  .sd{display:none;}
+  .sc{width:6px;}
+  .type-grid{grid-template-columns:1fr;}
+
+  /* Welcome card */
+  .wlc{flex-direction:column;gap:14px;padding:20px;}
+  .wlc-n{text-align:left;}
+
+  /* Filter bar */
+  .filter-bar{flex-wrap:wrap;}
+  .f-in{width:100%;}
+
+  /* Report rows */
+  .rpt-row{flex-wrap:wrap;gap:8px;}
+  .rr-info{width:100%;}
+  .rr-acts{width:100%;justify-content:flex-end;}
+
+  /* ── SELLO MOBILE ── */
+  /* Metric cards → 1 col */
+  .sv-dashboard [style*="grid-template-columns:repeat(3,1fr)"],
+  [id="sv-dashboard"] > div[style*="repeat(3,1fr)"]{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+
+  /* Chart + donut → stack */
+  [id="sv-dashboard"] > div[style*="7fr 5fr"]{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+
+  /* Download file cards */
+  [id="sv-archivos"] [style*="display:flex;align-items:center;gap:16px"]{
+    flex-wrap:wrap;
+  }
+  [id="sv-archivos"] .btn-g{width:100%;}
+
+  /* Bento override */
+  .bento{display:flex!important;flex-wrap:wrap;}
+  .bc.c3,.bc.c4,.bc.c5,.bc.c6,.bc.c7,.bc.c8,.bc.c12{flex:1 1 100%!important;min-width:0;}
+}
+
+/* ══════════════════════
+   RESPONSIVE — SMALL (≤480px)
+══════════════════════ */
+@media(max-width:480px){
+  h1{font-size:32px;}
+  .h-stats{flex-wrap:wrap;gap:14px;}
+  .sel-grid{grid-template-columns:1fr;}
+  .smc-acts{flex-direction:column;}
+  .smc-acts .smc-btn{width:100%;}
+  .nav-btns{flex-direction:column-reverse;}
+  .nav-btns button{width:100%;justify-content:center;}
+  .dzone{padding:32px 16px;}
+  .dz-main{font-size:16px;}
+
+  /* Sello download cards — stack everything */
+  [id="sv-archivos"] > div[style*="display:flex"]{
+    flex-direction:column!important;
+    align-items:flex-start!important;
+  }
+  [id="sv-archivos"] [style*="text-align:right"]{
+    text-align:left!important;
+    padding-right:0!important;
+  }
+
+  /* Banner total — stack */
+  [id="sv-archivos"] > div:first-child{
+    flex-direction:column!important;
+    gap:16px!important;
+  }
+  [id="sv-archivos"] > div:first-child > div:last-child{
+    flex-direction:row!important;
+    gap:20px!important;
+    text-align:left!important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="mob-nav" id="mob-nav" style="display:none;">
+  <button class="mob-btn on" id="mbt-landing" onclick="showPg('landing')"><span>🌐</span><span>Inicio</span></button>
+  <button class="mob-btn" id="mbt-admin" onclick="showPg('admin')"><span>👑</span><span>Admin</span></button>
+  <button class="mob-btn" id="mbt-sello" onclick="showPg('sello')"><span>🎵</span><span>Portal</span></button>
+</div>
+
+<!-- TOP NAV (page switcher) -->
+<nav class="topnav">
+  <div class="tn-logo" onclick="showPg('landing')">
+    <svg class="logo-svg" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="50" fill="#00E887"/><path d="M20 50C20 32 34 18 52 18C70 18 80 30 80 46C80 50 78 52 75 52L28 52C28 62 38 72 52 72C60 72 67 68 71 62L79 68C73 76 63 82 52 82C34 82 20 68 20 50Z" fill="white"/><path d="M28 44L73 44C72 36 63 28 52 28C41 28 31 35 28 44Z" fill="#00E887"/><polygon points="76,50 88,44 88,56" fill="#888"/></svg>
+    <span class="tn-brand">e<span>Songs</span></span>
+  </div>
+  <div class="tn-sep"></div>
+  <div class="tn-r">
+    <div class="tn-tabs">
+      <button class="tn-tab on" id="tab-landing" onclick="showPg('landing')">🌐 Landing</button>
+      <button class="tn-tab" id="tab-admin" onclick="showPg('admin')">👑 Admin</button>
+      <button class="tn-tab" id="tab-sello" onclick="showPg('sello')">🎵 Portal Sello</button>
+    </div>
+    <div class="lang-sw">
+      <button class="lbtn on" onclick="setLang('es',this)">ES</button>
+      <button class="lbtn" onclick="setLang('en',this)">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     LANDING PAGE
+══════════════════════════════════════ -->
+<div class="pg on" id="pg-landing">
+
+  <!-- Inner nav -->
+  <nav class="ln-nav">
+    <ul class="ln-links">
+      <li><a class="on" data-es="Inicio" data-en="Home">Inicio</a></li>
+      <li><a data-es="Servicios" data-en="Services">Servicios</a></li>
+      <li><a data-es="Nosotros" data-en="About">Nosotros</a></li>
+      <li><a data-es="Preguntas" data-en="FAQ">Preguntas</a></li>
+      <li><a data-es="Contáctenos" data-en="Contact">Contáctenos</a></li>
+    </ul>
+    <div style="display:flex;gap:9px;align-items:center;">
+      <div class="lang-sw"><button class="lbtn on" onclick="setLang('es',this)">ES</button><button class="lbtn" onclick="setLang('en',this)">EN</button></div>
+      <button class="btn-ghost" style="font-size:12px;padding:8px 16px;" onclick="showPg('sello')" data-es="Login Portal" data-en="Login Portal">Login Portal</button>
+      <button class="btn-g" style="font-size:12px;padding:8px 16px;" data-es="Contáctenos" data-en="Contact Us">Contáctenos</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-l">
+      <div class="h-ey" data-es="Digital Service Provider · Music Industry" data-en="Digital Service Provider · Music Industry">Digital Service Provider · Music Industry</div>
+      <h1>Haga más<br>dinero con<br><span class="gr">su música</span></h1>
+      <p class="h-desc" data-es="Servicio de distribución digital personalizado VIP. Distribuimos su catálogo en las principales plataformas del mundo y maximizamos sus regalías con tecnología y experiencia de más de 25 años." data-en="VIP personalized digital distribution service. We distribute your catalog on the world's leading platforms and maximize your royalties with 25+ years of technology and expertise.">Servicio de distribución digital personalizado VIP. Distribuimos su catálogo en las principales plataformas del mundo y maximizamos sus regalías con tecnología y experiencia de más de 25 años.</p>
+      <div class="h-ctas">
+        <button class="btn-g" style="font-size:14px;padding:13px 28px;" data-es="Distribuye Ahora" data-en="Distribute Now">Distribuye Ahora</button>
+        <button class="btn-ghost" style="font-size:13px;padding:12px 20px;" onclick="showPg('sello')" data-es="📊 Ver Portal Demo" data-en="📊 View Demo Portal">📊 Ver Portal Demo</button>
+      </div>
+      <div class="h-stats">
+        <div class="hs"><div class="hs-n">25<span>+</span></div><div class="hs-l" data-es="años experiencia" data-en="years experience">años experiencia</div></div>
+        <div class="hs"><div class="hs-n">15<span>+</span></div><div class="hs-l" data-es="años operando" data-en="years operating">años operando</div></div>
+        <div class="hs"><div class="hs-n">100<span>%</span></div><div class="hs-l" data-es="sus derechos" data-en="your rights">sus derechos</div></div>
+      </div>
+    </div>
+    <div class="hero-r">
+      <div class="hero-cards">
+        <div class="hc">
+          <div class="hc-lbl" data-es="Regalías Streaming · Sep 2025" data-en="Streaming Royalties · Sep 2025">Regalías Streaming · Sep 2025</div>
+          <div class="hc-val"><span class="cur">$</span>722.18</div>
+          <div class="hc-tag">▲ 454,139 streams · Discos Relámpago</div>
+          <div class="minibars">
+            <div class="mb" style="height:42%"></div><div class="mb" style="height:60%"></div>
+            <div class="mb hi" style="height:82%"></div><div class="mb" style="height:72%"></div>
+            <div class="mb hi" style="height:100%"></div><div class="mb" style="height:78%"></div><div class="mb" style="height:90%"></div>
+          </div>
+        </div>
+        <div class="hc">
+          <div class="hc-lbl" data-es="YouTube Earnings · Q3 2025" data-en="YouTube Earnings · Q3 2025">YouTube Earnings · Q3 2025</div>
+          <div class="hc-val"><span class="cur">$</span>1,733.93</div>
+          <div class="hc-tag">▶ 1,925,430 vistas · Net earnings</div>
+        </div>
+        <div class="hc">
+          <div class="hc-lbl" data-es="Plataformas activas" data-en="Active platforms">Plataformas activas</div>
+          <div class="pp-row"><span class="pp">Spotify</span><span class="pp">Apple Music</span><span class="pp">Amazon</span><span class="pp">YouTube</span><span class="pp">Pandora</span><span class="pp">TikTok</span><span class="pp">Deezer</span><span class="pp">Vevo</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRIP -->
+  <div class="strip">
+    <div class="strip-lbl" data-es="Disponible en todas las plataformas" data-en="Available on all platforms">Disponible en todas las plataformas</div>
+    <div class="st-track">
+      <div class="sp">Spotify</div><div class="sp">Apple Music</div><div class="sp">Amazon Music</div><div class="sp">YouTube</div><div class="sp">Pandora</div><div class="sp">Deezer</div><div class="sp">TikTok</div><div class="sp">Vevo</div><div class="sp">SoundCloud</div><div class="sp">iHeartRadio</div><div class="sp">Rhapsody</div><div class="sp">eMusic</div><div class="sp">Napster</div><div class="sp">Instagram</div><div class="sp">Facebook</div>
+      <div class="sp">Spotify</div><div class="sp">Apple Music</div><div class="sp">Amazon Music</div><div class="sp">YouTube</div><div class="sp">Pandora</div><div class="sp">Deezer</div><div class="sp">TikTok</div><div class="sp">Vevo</div><div class="sp">SoundCloud</div><div class="sp">iHeartRadio</div><div class="sp">Rhapsody</div><div class="sp">eMusic</div><div class="sp">Napster</div><div class="sp">Instagram</div><div class="sp">Facebook</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="sec">
+    <h2 class="sec-h2" data-es="Nosotros hacemos el trabajo" data-en="We do the work">Nosotros hacemos el trabajo</h2>
+    <p class="sec-body" data-es="En E-Songs la labor de producción la hacemos nosotros personalmente. Solo entregue su audio y arte, y nos encargamos de todo lo demás." data-en="At E-Songs we personally handle the production work. Just deliver your audio and artwork, and we take care of everything else.">En E-Songs la labor de producción la hacemos nosotros personalmente. Solo entregue su audio y arte, y nos encargamos de todo lo demás.</p>
+    <div class="how-grid">
+      <div class="how-s"><div class="how-n">01 ——</div><span class="how-ic">🎵</span><div class="how-t" data-es="Distribución Digital" data-en="Digital Distribution">Distribución Digital</div><p class="how-d" data-es="Distribuimos su catálogo en todas las plataformas digitales a nivel mundial sin costo inicial." data-en="We distribute your catalog on all digital platforms worldwide with no upfront cost.">Distribuimos su catálogo en todas las plataformas digitales a nivel mundial sin costo inicial.</p><div class="how-bar"></div></div>
+      <div class="how-s"><div class="how-n">02 ——</div><span class="how-ic">💰</span><div class="how-t" data-es="Cobro de Regalías" data-en="Royalty Collection">Cobro de Regalías</div><p class="how-d" data-es="Gestionamos todas sus regalías artísticas y autorales. Pagos mensuales por depósito directo." data-en="We manage all your artistic and authorial royalties. Monthly payments by direct deposit.">Gestionamos todas sus regalías artísticas y autorales. Pagos mensuales por depósito directo.</p><div class="how-bar"></div></div>
+      <div class="how-s"><div class="how-n">03 ——</div><span class="how-ic">🎬</span><div class="how-t" data-es="Monetización YouTube" data-en="YouTube Monetization">Monetización YouTube</div><p class="how-d" data-es="Equipo permanente dedicado a reclamar y monetizar su contenido en YouTube y Vydia." data-en="Permanent team dedicated to claiming and monetizing your content on YouTube and Vydia.">Equipo permanente dedicado a reclamar y monetizar su contenido en YouTube y Vydia.</p><div class="how-bar"></div></div>
+      <div class="how-s"><div class="how-n">04 ——</div><span class="how-ic">🏛️</span><div class="how-t" data-es="Admin SoundExchange" data-en="SoundExchange Admin">Admin SoundExchange</div><p class="how-d" data-es="Registramos y gestionamos sus derechos para cobrar regalías de Pandora, SiriusXM y más." data-en="We register and manage your rights to collect royalties from Pandora, SiriusXM and more.">Registramos y gestionamos sus derechos para cobrar regalías de Pandora, SiriusXM y más.</p><div class="how-bar"></div></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="sec" style="padding-top:0;">
+    <div class="sec-ey" data-es="Nuestros Servicios" data-en="Our Services">Nuestros Servicios</div>
+    <h2 class="sec-h2" data-es="Para artistas, sellos y editores" data-en="For artists, labels and publishers">Para artistas, sellos y editores</h2>
+    <p class="sec-body" data-es="Cubrimos todos los aspectos del negocio musical para EE.UU. y América Latina." data-en="We cover all aspects of the music business for the US and Latin America.">Cubrimos todos los aspectos del negocio musical para EE.UU. y América Latina.</p>
+    <div class="svc-bento">
+      <div class="sv c5"><div class="sv-ic">🎤</div><div class="sv-t" data-es="Para Artistas y Sellos" data-en="For Artists & Labels">Para Artistas y Sellos</div><ul class="sv-list"><li data-es="Distribución digital en todas las plataformas" data-en="Digital distribution on all platforms">Distribución digital en todas las plataformas</li><li data-es="Monetización YouTube & Vydia" data-en="YouTube & Vydia monetization">Monetización YouTube & Vydia</li><li data-es="Preparación y pago de regalías de artistas" data-en="Artist royalty preparation and payment">Preparación y pago de regalías de artistas</li><li data-es="100% de sus derechos, siempre" data-en="100% of your rights, always">100% de sus derechos, siempre</li></ul></div>
+      <div class="sv c4"><div class="sv-ic">🎼</div><div class="sv-t" data-es="Para Editores de Música" data-en="For Music Publishers">Para Editores de Música</div><ul class="sv-list"><li data-es="Administración general de catálogo" data-en="General catalog administration">Administración general de catálogo</li><li data-es="Inscripciones, cobranza y pagos" data-en="Registrations, billing and payments">Inscripciones, cobranza y pagos</li><li data-es="Emisión de licencias y registraciones" data-en="License issuance and registrations">Emisión de licencias y registraciones</li></ul></div>
+      <div class="sv c3"><div class="sv-ic">🆔</div><div class="sv-t">UPC & ISRC</div><ul class="sv-list"><li data-es="Códigos UPC gratis" data-en="Free UPC codes">Códigos UPC gratis</li><li data-es="Códigos ISRC gratis" data-en="Free ISRC codes">Códigos ISRC gratis</li><li data-es="Sin cuota anual" data-en="No annual fee">Sin cuota anual</li></ul></div>
+      <div class="sv c7"><div class="sv-ic">📊</div><div class="sv-t" data-es="Portal de Regalías" data-en="Royalties Portal">Portal de Regalías</div><p style="font-size:12.5px;color:var(--t2);line-height:1.7;font-weight:300;margin-bottom:16px;" data-es="Nuestros clientes tienen acceso directo al portal de regalías para revisar y descargar estados de cuenta mensuales en Excel. Efectuamos pagos mensualmente usando depósito directo o transferencia bancaria sin ningún cargo." data-en="Our clients have direct access to the royalties portal to review and download monthly account statements in Excel. We make monthly payments using direct deposit or wire transfer at no charge.">Nuestros clientes tienen acceso directo al portal de regalías para revisar y descargar estados de cuenta mensuales en Excel.</p><button class="btn-g" style="font-size:12px;padding:9px 18px;" onclick="showPg('sello')" data-es="Acceder al Portal Demo" data-en="Access Demo Portal">Acceder al Portal Demo</button></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="sec" style="border-top:1px solid var(--bd);">
+    <div class="about-wrap">
+      <div>
+        <div class="sec-ey" data-es="Quiénes Somos" data-en="About Us">Quiénes Somos</div>
+        <h2 class="sec-h2" data-es="Más de 25 años en la industria" data-en="Over 25 years in the industry">Más de 25 años en la industria</h2>
+        <p class="about-txt" data-es="Es el conocimiento y la experiencia de los ejecutivos de E-Songs con más de 25 años en la Industria de la Música, lo que constituye la mayor carta de presentación." data-en="The knowledge and experience of E-Songs executives with over 25 years in the Music Industry is what constitutes the greatest letter of introduction.">Es el conocimiento y la experiencia de los ejecutivos de E-Songs con más de 25 años en la Industria de la Música, lo que constituye la mayor carta de presentación.</p>
+        <p class="about-txt" data-es="Somos una compañía con más de 15 años de fundada, enfocada a ofrecer un servicio profesional personalizado, ganándonos la confianza de nuestros clientes con honestidad, responsabilidad y cumplimiento." data-en="We are a company with over 15 years since founding, focused on professional personalized service, earning the trust of our clients with honesty, responsibility and commitment.">Somos una compañía con más de 15 años de fundada, enfocada a ofrecer un servicio profesional personalizado.</p>
+        <p class="about-txt" data-es="Estamos localizados en USA — un beneficio en materia de distribución, generación de ingresos y manejo del territorio más codiciado por los productores de música Latinoamericana." data-en="We are located in the USA — a benefit in terms of distribution, income generation and management of the territory most coveted by Latin American music producers.">Estamos localizados en USA — beneficio en distribución y generación de ingresos del mercado Latinoamericano.</p>
+        <div class="a-pills"><span class="a-pill" data-es="100% Tus Derechos" data-en="100% Your Rights">100% Tus Derechos</span><span class="a-pill" data-es="Sin Costo Inicial" data-en="No Upfront Cost">Sin Costo Inicial</span><span class="a-pill" data-es="Pago Mensual" data-en="Monthly Payment">Pago Mensual</span><span class="a-pill">USA Based</span></div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:22px;"><div class="about-big">25</div><div style="font-family:var(--fm);font-size:9px;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;line-height:1.5;" data-es="años en<br>la industria" data-en="years in<br>the industry">años en<br>la industria</div></div>
+        <div class="about-cards">
+          <div class="ac"><div class="ac-n">15+</div><div class="ac-l" data-es="Años operando" data-en="Years operating">Años operando</div></div>
+          <div class="ac"><div class="ac-n">USA</div><div class="ac-l" data-es="Basados en EE.UU." data-en="Based in the US">Basados en EE.UU.</div></div>
+          <div class="ac"><div class="ac-n">14+</div><div class="ac-l" data-es="Plataformas digitales" data-en="Digital platforms">Plataformas digitales</div></div>
+          <div class="ac"><div class="ac-n">∞</div><div class="ac-l" data-es="Sus derechos, siempre" data-en="Your rights, always">Sus derechos, siempre</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-sec">
+    <div class="sec-ey" data-es="Preguntas Frecuentes" data-en="FAQ">Preguntas Frecuentes</div>
+    <h2 class="sec-h2" style="margin-bottom:36px;" data-es="Todo lo que necesita saber" data-en="Everything you need to know">Todo lo que necesita saber</h2>
+    <div class="faq-grid">
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q"><div class="faq-qt" data-es="¿En qué consiste la distribución digital?" data-en="What does digital distribution consist of?">¿En qué consiste la distribución digital?</div><div class="faq-arr">+</div></div><div class="faq-a"><div class="faq-ai" data-es="Nuestros servicios ayudan a Artistas y Sellos Independientes a vender su contenido de Audio & Video en Descargas Digitales y Streaming a nivel mundial en portales como Spotify, Apple Music, Amazon, Google Play, Pandora, además del reclamo y monetización en YouTube." data-en="Our services help Artists and Independent Labels sell their Audio & Video content in Digital Downloads and Streaming worldwide on portals like Spotify, Apple Music, Amazon, Google Play, Pandora, plus YouTube claim and monetization.">Nuestros servicios ayudan a Artistas y Sellos Independientes a vender su contenido en Descargas Digitales y Streaming a nivel mundial en Spotify, Apple Music, Amazon, Pandora, además de monetización en YouTube.</div></div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q"><div class="faq-qt" data-es="¿Estaré cediendo mis derechos?" data-en="Will I be giving up my rights?">¿Estaré cediendo mis derechos?</div><div class="faq-arr">+</div></div><div class="faq-a"><div class="faq-ai" data-es="¡No, en absoluto! E Songs Entertainment no es un sello discográfico y no aceptamos ninguna participación de los derechos de su música. Los derechos le pertenecen en todo momento." data-en="Not at all! E Songs Entertainment is not a record label and we do not accept any participation in the rights to your music. The rights belong to you at all times.">¡No, en absoluto! E Songs Entertainment no es un sello discográfico y no aceptamos ninguna participación de los derechos de su música. Los derechos le pertenecen siempre.</div></div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q"><div class="faq-qt" data-es="¿Cuál es el costo de distribución?" data-en="What is the distribution cost?">¿Cuál es el costo de distribución?</div><div class="faq-arr">+</div></div><div class="faq-a"><div class="faq-ai" data-es="No tenemos costo inicial para subir contenido ni costo anual de mantenimiento. Nuestro costo es un porcentaje de las ventas, absolutamente competitivo y justo. Los términos son confidenciales." data-en="We have no upfront cost to upload content, nor annual maintenance cost. Our cost is a percentage of sales, completely competitive and fair. The terms are confidential.">No tenemos costo inicial ni costo anual. Nuestro costo es un porcentaje de las ventas, competitivo y justo. Los términos son confidenciales.</div></div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q"><div class="faq-qt" data-es="¿Cuándo y cómo se reciben los pagos?" data-en="When and how are payments received?">¿Cuándo y cómo se reciben los pagos?</div><div class="faq-arr">+</div></div><div class="faq-a"><div class="faq-ai" data-es="Los clientes tienen acceso al portal de regalías para descargar estados de cuenta mensuales en Excel. Efectuamos pagos mensualmente usando depósito directo o transferencia bancaria sin ningún cargo." data-en="Clients have access to the royalties portal to download monthly account statements in Excel. We make monthly payments using direct deposit or wire transfer at no charge.">Clientes tienen acceso al portal de regalías con estados mensuales en Excel. Pagos mensuales por depósito directo o transferencia bancaria sin cargo.</div></div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q"><div class="faq-qt" data-es="¿Puede eSongs administrar mi canal de YouTube?" data-en="Can eSongs manage my YouTube channel?">¿Puede eSongs administrar mi canal de YouTube?</div><div class="faq-arr">+</div></div><div class="faq-a"><div class="faq-ai" data-es="Sí. En E-Songs trabajamos la Monetización en YouTube & Vydia con un equipo permanente dedicado a buscar y reclamar el contenido de nuestros clientes, maximizando los ingresos." data-en="Yes. At E-Songs we work on YouTube & Vydia Monetization with a permanent team dedicated to searching for and claiming our clients' content, maximizing income.">Sí. Trabajamos monetización en YouTube & Vydia con equipo permanente dedicado a reclamar y maximizar el contenido de nuestros clientes.</div></div></div>
+      <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q"><div class="faq-qt" data-es="¿Qué es SoundExchange?" data-en="What is SoundExchange?">¿Qué es SoundExchange?</div><div class="faq-arr">+</div></div><div class="faq-a"><div class="faq-ai" data-es="SoundExchange es la entidad del gobierno de EE.UU. autorizada para cobrar regalías digitales de artistas y sellos generadas por servicios como Pandora, SiriusXM, etc. Registramos y gestionamos sus derechos para que reciba todos sus pagos." data-en="SoundExchange is the US government-authorized entity to collect digital royalties for artists and labels generated by services like Pandora, SiriusXM, etc. We register and manage your rights so you receive all your payments.">SoundExchange es la entidad de EE.UU. que cobra regalías de Pandora, SiriusXM, etc. Registramos y gestionamos sus derechos para que reciba todos sus pagos.</div></div></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="sec">
+    <div class="contact-wrap">
+      <div>
+        <div class="sec-ey" data-es="Contáctenos" data-en="Contact Us">Contáctenos</div>
+        <h2 class="sec-h2" data-es="Conozca los beneficios" data-en="Learn about the benefits">Conozca los beneficios</h2>
+        <p style="font-size:13.5px;color:var(--t2);line-height:1.75;font-weight:300;margin-bottom:24px;" data-es="Personalmente le proveemos todos los detalles. Los términos son absolutamente confidenciales." data-en="We personally provide all the details. The terms are absolutely confidential.">Personalmente le proveemos todos los detalles. Los términos son absolutamente confidenciales.</p>
+        <div class="ci"><div class="ci-ic">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e2918a8b908e879ba287918d8c8591878c96879096838b8c8f878c96cc818d8f">[email&#160;protected]</a></div></div></div>
+        <div class="ci"><div class="ci-ic">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="31435e42545c5043487154425e5f5642545f4554434550585f5c545f451f525e5c">[email&#160;protected]</a></div></div></div>
+        <div class="ci"><div class="ci-ic">🌎</div><div><div class="ci-lbl" data-es="Ubicación" data-en="Location">Ubicación</div><div class="ci-val">United States of America</div></div></div>
+        <div class="ci"><div class="ci-ic">🌐</div><div><div class="ci-lbl">Website</div><div class="ci-val">esongsentertainment.com</div></div></div>
+      </div>
+      <div class="form-a">
+        <div class="f-row2">
+          <div class="fg"><label data-es="Nombre" data-en="Name">Nombre</label><input type="text" data-es-ph="Su nombre completo" data-en-ph="Your full name" placeholder="Su nombre completo"></div>
+          <div class="fg"><label>Email</label><input type="email" placeholder="su@email.com"></div>
+        </div>
+        <div class="fg"><label data-es="Tipo de consulta" data-en="Query type">Tipo de consulta</label>
+          <select>
+            <option data-es="Distribución Digital" data-en="Digital Distribution">Distribución Digital</option>
+            <option data-es="Monetización YouTube" data-en="YouTube Monetization">Monetización YouTube</option>
+            <option data-es="Administración Regalías" data-en="Royalty Management">Administración Regalías</option>
+            <option>SoundExchange</option>
+          </select>
+        </div>
+        <div class="fg"><label data-es="Mensaje" data-en="Message">Mensaje</label><textarea data-es-ph="Cuéntenos sobre su proyecto..." data-en-ph="Tell us about your project..." placeholder="Cuéntenos sobre su proyecto..."></textarea></div>
+        <button class="btn-g" style="align-self:flex-start;" data-es="Enviar Mensaje" data-en="Send Message">Enviar Mensaje</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <div class="cta-inner">
+      <div><div class="cta-t" data-es="Vende tu música a nivel mundial" data-en="Sell your music worldwide">Vende tu música a nivel mundial</div><div class="cta-sub" data-es="UPC & ISRC GRATIS · Sin cuota anual · Sin costo inicial" data-en="Free UPC & ISRC · No annual fee · No upfront cost">UPC & ISRC GRATIS · Sin cuota anual · Sin costo inicial</div></div>
+      <div class="cta-r"><button class="btn-g" style="font-size:14px;padding:13px 30px;" data-es="Comenzar Ahora" data-en="Get Started Now">Comenzar Ahora</button><div style="font-size:9.5px;color:var(--t3);font-family:var(--fm);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9be9f4e8fef6fae9e2dbfee8f4f5fce8fef5effee9effaf2f5f6fef5efb5f8f4f6">[email&#160;protected]</a></div></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div style="display:flex;align-items:center;gap:8px;"><svg class="logo-svg" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="50" fill="#00E887"/><path d="M20 50C20 32 34 18 52 18C70 18 80 30 80 46C80 50 78 52 75 52L28 52C28 62 38 72 52 72C60 72 67 68 71 62L79 68C73 76 63 82 52 82C34 82 20 68 20 50Z" fill="white"/><path d="M28 44L73 44C72 36 63 28 52 28C41 28 31 35 28 44Z" fill="#00E887"/><polygon points="76,50 88,44 88,56" fill="#888"/></svg><span style="font-family:var(--fd);font-size:14px;font-weight:800;letter-spacing:-.03em;">e<span style="color:var(--green)">Songs</span> Entertainment</span></div>
+        <p data-es="Digital Service Provider For The Music Industry. Distribución digital profesional para artistas y sellos independientes." data-en="Digital Service Provider For The Music Industry. Professional digital distribution for artists and independent labels.">Digital Service Provider For The Music Industry.</p>
+      </div>
+      <div><div class="ft-ct" data-es="Navegación" data-en="Navigation">Navegación</div><ul class="ft-links"><li><a data-es="Inicio" data-en="Home">Inicio</a></li><li><a data-es="Servicios" data-en="Services">Servicios</a></li><li><a data-es="Nosotros" data-en="About">Nosotros</a></li><li><a data-es="Preguntas" data-en="FAQ">Preguntas</a></li></ul></div>
+      <div><div class="ft-ct" data-es="Servicios" data-en="Services">Servicios</div><ul class="ft-links"><li><a data-es="Distribución Digital" data-en="Digital Distribution">Distribución Digital</a></li><li><a data-es="Cobro de Regalías" data-en="Royalty Collection">Cobro de Regalías</a></li><li><a>YouTube</a></li><li><a>SoundExchange</a></li></ul></div>
+      <div><div class="ft-ct" data-es="Contacto" data-en="Contact">Contacto</div><ul class="ft-links"><li><a>shirley@esongs...</a></li><li><a>rosemary@esongs...</a></li><li><a>esongsentertainment.com</a></li></ul></div>
+    </div>
+    <div class="ft-bot"><div class="ft-copy">© 2026 esongsentertainment.com · All Rights Reserved</div><div style="font-size:10px;color:var(--t4);font-family:var(--fm);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="99ebf6eafcf4f8ebe0d9fceaf6f7feeafcf7edfcebedf8f0f7f4fcf7edb7faf6f4">[email&#160;protected]</a></div></div>
+  </footer>
+</div><!-- end landing -->
+<!-- ══════════════════════════════════════
+     ADMIN PANEL
+══════════════════════════════════════ -->
+<div class="pg" id="pg-admin">
+  <div class="adm-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sb-sec" data-es="Menú Principal" data-en="Main Menu">Menú Principal</div>
+      <div class="sb-i on" onclick="adminNav(this,'inicio')">
+        <div class="sb-ic">🏠</div><div><div class="sb-lbl" data-es="Inicio" data-en="Home">Inicio</div><div class="sb-dl" data-es="Vista general" data-en="Overview">Vista general</div></div>
+      </div>
+      <div class="sb-i" onclick="adminNav(this,'subir')">
+        <div class="sb-ic">📤</div><div><div class="sb-lbl" data-es="Subir Reportes" data-en="Upload Reports">Subir Reportes</div><div class="sb-dl" data-es="Enviar archivos a un sello" data-en="Send files to label">Enviar archivos a un sello</div></div>
+        <span class="sb-bx">2</span>
+      </div>
+      <div class="sb-i" onclick="adminNav(this,'sellos')">
+        <div class="sb-ic">🎵</div><div><div class="sb-lbl" data-es="Mis Sellos" data-en="My Labels">Mis Sellos</div><div class="sb-dl" data-es="Ver y gestionar cuentas" data-en="View & manage accounts">Ver y gestionar cuentas</div></div>
+        <span class="sb-bx ok">6</span>
+      </div>
+      <div class="sb-i" onclick="adminNav(this,'reportes')">
+        <div class="sb-ic">📂</div><div><div class="sb-lbl" data-es="Todos los Reportes" data-en="All Reports">Todos los Reportes</div><div class="sb-dl" data-es="Historial completo" data-en="Complete history">Historial completo</div></div>
+      </div>
+      <div class="sb-foot">
+        <div class="help-b">
+          <div class="help-bt">💡 <span data-es="Tip rápido" data-en="Quick tip">Tip rápido</span></div>
+          <div class="help-bd" data-es="Para subir: clic en Subir Reportes, elija el sello y arrastre los archivos." data-en="To upload: click Upload Reports, choose the label and drag the files.">Para subir: clic en <strong>Subir Reportes</strong>, elija el sello y arrastre los archivos.</div>
+        </div>
+        <div class="u-chip"><div class="u-av" style="background:linear-gradient(135deg,var(--green),var(--gd))">RR</div><div><div class="u-nm">Rosemary Rodgers</div><div class="u-rl" data-es="Administradora" data-en="Administrator">Administradora</div></div></div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="adm-main">
+
+      <!-- ── INICIO ── -->
+      <div class="av on" id="av-inicio">
+        <div class="pg-ey" data-es="Panel Principal" data-en="Main Panel">Panel Principal</div>
+        <div class="pg-t" data-es="¿Qué desea hacer hoy?" data-en="What would you like to do today?">¿Qué desea hacer hoy?</div>
+        <div class="pg-st" data-es="Seleccione una opción para comenzar." data-en="Select an option to get started.">Seleccione una opción para comenzar.</div>
+        <div class="wlc">
+          <div>
+            <div class="wlc-t" data-es="Bienvenida, Rosemary 👋" data-en="Welcome, Rosemary 👋">Bienvenida, Rosemary 👋</div>
+            <div class="wlc-s" data-es="Tienes 2 reportes pendientes de enviar. El resto está al día." data-en="You have 2 pending reports to send. Everything else is up to date.">Tienes <strong>2 reportes pendientes</strong> de enviar. El resto está al día.</div>
+          </div>
+          <div style="position:relative;z-index:1;text-align:right;"><div class="wlc-n">6</div><div class="wlc-nl" data-es="sellos activos" data-en="active labels">sellos activos</div></div>
+        </div>
+        <div class="qa-grid">
+          <div class="qa-c" onclick="adminNav(document.querySelector('[onclick*=subir]'),'subir')">
+            <div class="qa-ic">📤</div><div class="qa-t" data-es="Subir Reportes" data-en="Upload Reports">Subir Reportes</div>
+            <div class="qa-d" data-es="Suba archivos Excel para cualquier sello. El sistema calcula los totales automáticamente." data-en="Upload Excel files for any label. The system calculates totals automatically.">Suba archivos Excel para cualquier sello. El sistema calcula los totales automáticamente.</div>
+            <div class="qa-arr">→</div>
+          </div>
+          <div class="qa-c" onclick="adminNav(document.querySelector('[onclick*=sellos]'),'sellos')">
+            <div class="qa-ic">🎵</div><div class="qa-t" data-es="Ver Mis Sellos" data-en="View My Labels">Ver Mis Sellos</div>
+            <div class="qa-d" data-es="Vea todos sus sellos, su estado y los reportes enviados." data-en="View all your labels, their status and reports sent.">Vea todos sus sellos, su estado y los reportes enviados.</div>
+            <div class="qa-arr">→</div>
+          </div>
+          <div class="qa-c" onclick="adminNav(document.querySelector('[onclick*=reportes]'),'reportes')">
+            <div class="qa-ic">📂</div><div class="qa-t" data-es="Ver Todos los Reportes" data-en="All Reports">Ver Todos los Reportes</div>
+            <div class="qa-d" data-es="Consulte, descargue o elimine reportes. Filtre por sello, mes o año." data-en="View, download or delete reports. Filter by label, month or year.">Consulte, descargue o elimine reportes. Filtre por sello, mes o año.</div>
+            <div class="qa-arr">→</div>
+          </div>
+        </div>
+        <div class="pend-t"><div class="pend-dot"></div><span data-es="Pendientes — requieren su atención" data-en="Pending — require your attention">Pendientes — requieren su atención</span></div>
+        <div class="pend-c" onclick="adminNav(document.querySelector('[onclick*=subir]'),'subir')">
+          <div class="pc-ic">📤</div>
+          <div><div class="pc-t" data-es="Discos Relámpago — Faltan reportes de Q4 2025" data-en="Discos Relámpago — Q4 2025 reports missing">Discos Relámpago — Faltan reportes de Q4 2025</div><div class="pc-s" data-es="No se han subido archivos del último trimestre" data-en="No files uploaded for last quarter">No se han subido archivos del último trimestre</div></div>
+          <div class="pc-act" data-es="Subir ahora →" data-en="Upload now →">Subir ahora →</div>
+        </div>
+        <div class="pend-c" onclick="adminNav(document.querySelector('[onclick*=subir]'),'subir')">
+          <div class="pc-ic">⚠️</div>
+          <div><div class="pc-t" data-es="Aurora Music — Sin reportes en Q1 2026" data-en="Aurora Music — No Q1 2026 reports">Aurora Music — Sin reportes en Q1 2026</div><div class="pc-s" data-es="Este sello no tiene archivos del trimestre actual" data-en="This label has no files for the current quarter">Este sello no tiene archivos del trimestre actual</div></div>
+          <div class="pc-act" data-es="Subir ahora →" data-en="Upload now →">Subir ahora →</div>
+        </div>
+      </div>
+
+      <!-- ── SUBIR ── -->
+      <div class="av" id="av-subir">
+        <div class="pg-ey" data-es="Subir Reportes" data-en="Upload Reports">Subir Reportes</div>
+        <div class="pg-t" data-es="Enviar archivos a un sello" data-en="Send files to a label">Enviar archivos a un sello</div>
+        <div class="pg-st" data-es="Siga los 3 pasos. Es muy sencillo." data-en="Follow the 3 steps. Very simple.">Siga los 3 pasos. Es muy sencillo.</div>
+        <div class="steps-row">
+          <div class="si on" id="si1"><div class="sn">1</div><div><div class="sl" data-es="Elegir sello" data-en="Choose label">Elegir sello</div><div class="sd" data-es="¿Para quién?" data-en="For whom?">¿Para quién?</div></div></div>
+          <div class="sc"></div>
+          <div class="si" id="si2"><div class="sn">2</div><div><div class="sl" data-es="Tipo" data-en="Type">Tipo</div><div class="sd" data-es="¿Streaming o YouTube?" data-en="Streaming or YouTube?">¿Streaming o YouTube?</div></div></div>
+          <div class="sc"></div>
+          <div class="si" id="si3"><div class="sn">3</div><div><div class="sl" data-es="Subir" data-en="Upload">Subir</div><div class="sd" data-es="Arrastrar y confirmar" data-en="Drag and confirm">Arrastrar y confirmar</div></div></div>
+        </div>
+        <!-- Step 1 -->
+        <div id="sp1">
+          <div style="font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.02em;margin-bottom:5px;" data-es="Paso 1 — ¿Para qué sello es este reporte?" data-en="Step 1 — Which label is this report for?">Paso 1 — ¿Para qué sello es este reporte?</div>
+          <div style="font-size:12px;color:var(--t2);font-weight:300;margin-bottom:17px;" data-es="Haga clic en el sello al que desea enviar los archivos" data-en="Click on the label you want to send files to">Haga clic en el sello al que desea enviar los archivos</div>
+          <div class="sel-grid">
+            <div class="sel-c" onclick="pickSello(this,'Discos Relámpago')"><div class="sel-av" style="background:linear-gradient(135deg,#00E887,#00b86b)">DR</div><div class="sel-nm">Discos Relámpago</div><div class="sel-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e4a475d4d415d5c4b424f435e4f49416e4b434f4742004d4143">[email&#160;protected]</a></div><div class="sel-chk">✓</div></div>
+            <div class="sel-c" onclick="pickSello(this,'Neon Records')"><div class="sel-av" style="background:linear-gradient(135deg,#1E8EFA,#0D4F8C)">NR</div><div class="sel-nm">Neon Records</div><div class="sel-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7c121913123c0e191f130e180f521f1311">[email&#160;protected]</a></div><div class="sel-chk">✓</div></div>
+            <div class="sel-c" onclick="pickSello(this,'SoundVault')"><div class="sel-av" style="background:linear-gradient(135deg,#7C3AED,#4F1D96)">SV</div><div class="sel-nm">SoundVault</div><div class="sel-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="345d5a525b74475b415a5042554158401a5d5b">[email&#160;protected]</a></div><div class="sel-chk">✓</div></div>
+            <div class="sel-c" onclick="pickSello(this,'Aurora Music')"><div class="sel-av" style="background:linear-gradient(135deg,#00C6FF,#0D4F8C)">AM</div><div class="sel-nm">Aurora Music</div><div class="sel-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a7c6d2d5c8d5c6e7cad2d4cec489c4c8">[email&#160;protected]</a></div><div class="sel-chk">✓</div></div>
+            <div class="sel-c" onclick="pickSello(this,'Vertigo Lab')"><div class="sel-av" style="background:linear-gradient(135deg,#F5A623,#9A5C00)">VL</div><div class="sel-nm">Vertigo Lab</div><div class="sel-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f08495919db08695828499979f9c9192de939f9d">[email&#160;protected]</a></div><div class="sel-chk">✓</div></div>
+            <div class="sel-c" onclick="pickSello(this,'OceanSound')"><div class="sel-av" style="background:linear-gradient(135deg,#FF5C5C,#8C1010)">OS</div><div class="sel-nm">OceanSound</div><div class="sel-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a35291a35393f3b3429352f343e743335">[email&#160;protected]</a></div><div class="sel-chk">✓</div></div>
+          </div>
+          <div class="nav-btns"><button class="btn-g" id="b1n" disabled onclick="goSt(2)" data-es="Continuar →" data-en="Continue →">Continuar →</button></div>
+        </div>
+        <!-- Step 2 -->
+        <div id="sp2" style="display:none;">
+          <div style="font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.02em;margin-bottom:5px;" data-es="Paso 2 — ¿Qué tipo de reporte es?" data-en="Step 2 — What type of report?">Paso 2 — ¿Qué tipo de reporte es?</div>
+          <div style="font-size:12px;color:var(--t2);font-weight:300;margin-bottom:17px;" data-es="Seleccione Streaming o YouTube" data-en="Select Streaming or YouTube">Seleccione Streaming o YouTube</div>
+          <div class="type-grid">
+            <div class="type-c" onclick="pickType(this,'streaming')"><div class="type-ic">🎵</div><div><div class="type-lbl">Streaming</div><div class="type-d" data-es="Spotify, Apple Music, Amazon, Pandora…" data-en="Spotify, Apple Music, Amazon, Pandora…">Spotify, Apple Music, Amazon, Pandora…</div></div><div class="type-r">✓</div></div>
+            <div class="type-c" onclick="pickType(this,'youtube')"><div class="type-ic">▶️</div><div><div class="type-lbl">YouTube</div><div class="type-d" data-es="Ingresos por monetización en YouTube" data-en="YouTube monetization earnings">Ingresos por monetización en YouTube</div></div><div class="type-r">✓</div></div>
+          </div>
+          <div class="nav-btns"><button class="btn-ghost" onclick="goSt(1)" data-es="← Atrás" data-en="← Back">← Atrás</button><button class="btn-g" id="b2n" disabled onclick="goSt(3)" data-es="Continuar →" data-en="Continue →">Continuar →</button></div>
+        </div>
+        <!-- Step 3 -->
+        <div id="sp3" style="display:none;">
+          <div style="font-family:var(--fd);font-size:15px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;" data-es="Paso 3 — Suba los archivos" data-en="Step 3 — Upload files">Paso 3 — Suba los archivos</div>
+          <div id="sp3ctx" style="font-size:12px;color:var(--t2);font-weight:300;margin-bottom:17px;"></div>
+          <div class="dzone" id="dz3" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="onDrop(event)">
+            <span class="dz-ic">📂</span>
+            <div class="dz-main" data-es="Arrastre los archivos aquí" data-en="Drag files here">Arrastre los archivos aquí</div>
+            <div class="dz-hint" data-es="O haga clic en el botón para buscar en su computadora" data-en="Or click the button to browse your computer">O haga clic en el botón para buscar en su computadora</div>
+            <button class="btn-g" style="font-size:14px;padding:12px 30px;" onclick="simUpload()" data-es="📁  Seleccionar Archivos" data-en="📁  Browse Files">📁  Seleccionar Archivos</button>
+            <div class="dz-fmt" data-es=".xlsx · .xls · .csv · Máx 50MB" data-en=".xlsx · .xls · .csv · Max 50MB">.xlsx · .xls · .csv · Máx 50MB</div>
+          </div>
+          <div class="q-wrap" id="qw" style="display:none;">
+            <div class="q-hdr"><div class="q-t" data-es="Archivos listos" data-en="Files ready">Archivos listos</div><div class="q-cnt" id="qcnt">0</div></div>
+            <div id="qlist"></div>
+          </div>
+          <div class="suc-box" id="sucbox">
+            <span class="suc-ic">✅</span>
+            <div class="suc-t" data-es="¡Reportes enviados correctamente!" data-en="Reports sent successfully!">¡Reportes enviados correctamente!</div>
+            <div class="suc-s" id="sucmsg"></div>
+            <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn-g" onclick="resetUp()" data-es="Subir más archivos" data-en="Upload more files">Subir más archivos</button>
+              <button class="btn-ghost" onclick="adminNav(document.querySelector('[onclick*=sellos]'),'sellos')" data-es="Ver mis sellos" data-en="View my labels">Ver mis sellos</button>
+            </div>
+          </div>
+          <div class="nav-btns" id="sp3btns"><button class="btn-ghost" onclick="goSt(2)" data-es="← Atrás" data-en="← Back">← Atrás</button><button class="btn-g" id="b3n" disabled onclick="doUpload()" data-es="✓ Confirmar y Enviar" data-en="✓ Confirm & Send">✓ Confirmar y Enviar</button></div>
+        </div>
+      </div>
+
+      <!-- ── SELLOS ── -->
+      <div class="av" id="av-sellos">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+          <div><div class="pg-ey" data-es="Gestión de Sellos" data-en="Label Management">Gestión de Sellos</div><div class="pg-t" data-es="Mis Sellos Discográficos" data-en="My Record Labels">Mis Sellos Discográficos</div><div class="pg-st" data-es="Haga clic en Subir archivos para enviar reportes a un sello." data-en="Click Upload files to send reports to a label.">Haga clic en Subir archivos para enviar reportes a un sello.</div></div>
+          <button class="btn-g" style="margin-top:4px;" data-es="+ Agregar Sello" data-en="+ Add Label">+ Agregar Sello</button>
+        </div>
+        <div class="sellos-grid">
+          <div class="smc"><div class="smc-hd"><div class="smc-av" style="background:linear-gradient(135deg,#00E887,#00b86b)">DR</div><div><div class="smc-nm">Discos Relámpago</div><div class="smc-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a4c0cdd7c7cbd7d6c1c8c5c9d4c5c3cbe4c1c9c5cdc88ac7cbc9">[email&#160;protected]</a></div></div><span class="smc-st st-on" data-es="Activo" data-en="Active">Activo</span></div><div class="smc-bd"><div class="smc-stats"><div><div class="smc-sn g">2</div><div class="smc-sl" data-es="archivos subidos" data-en="files uploaded">archivos subidos</div></div><div><div class="smc-sn">$2,456</div><div class="smc-sl" data-es="total 2025" data-en="2025 total">total 2025</div></div></div><div class="smc-acts"><button class="smc-btn btn-up" onclick="quickUp('Discos Relámpago')">📤 <span data-es="Subir archivos" data-en="Upload files">Subir archivos</span></button><button class="smc-btn btn-vw" style="border:1px solid var(--bd);" onclick="showPg('sello')" data-es="Ver portal" data-en="View portal">Ver portal</button></div></div></div>
+          <div class="smc"><div class="smc-hd"><div class="smc-av" style="background:linear-gradient(135deg,#1E8EFA,#0D4F8C)">NR</div><div><div class="smc-nm">Neon Records</div><div class="smc-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4e202b21200e3c2b2d213c2a3d602d2123">[email&#160;protected]</a></div></div><span class="smc-st st-on" data-es="Activo" data-en="Active">Activo</span></div><div class="smc-bd"><div class="smc-stats"><div><div class="smc-sn g">4</div><div class="smc-sl" data-es="reportes Q1" data-en="Q1 reports">reportes Q1</div></div><div><div class="smc-sn">$142k</div><div class="smc-sl" data-es="total Q1" data-en="Q1 total">total Q1</div></div></div><div class="smc-acts"><button class="smc-btn btn-up" onclick="quickUp('Neon Records')">📤 <span data-es="Subir archivos" data-en="Upload files">Subir archivos</span></button><button class="smc-btn btn-vw" style="border:1px solid var(--bd);" data-es="Ver portal" data-en="View portal">Ver portal</button></div></div></div>
+          <div class="smc"><div class="smc-hd"><div class="smc-av" style="background:linear-gradient(135deg,#7C3AED,#4F1D96)">SV</div><div><div class="smc-nm">SoundVault</div><div class="smc-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a2cbccc4cde2d1cdd7ccc6d4c3d7ced68ccbcd">[email&#160;protected]</a></div></div><span class="smc-st st-on" data-es="Activo" data-en="Active">Activo</span></div><div class="smc-bd"><div class="smc-stats"><div><div class="smc-sn g">4</div><div class="smc-sl" data-es="reportes Q1" data-en="Q1 reports">reportes Q1</div></div><div><div class="smc-sn">$98k</div><div class="smc-sl" data-es="total Q1" data-en="Q1 total">total Q1</div></div></div><div class="smc-acts"><button class="smc-btn btn-up" onclick="quickUp('SoundVault')">📤 <span data-es="Subir archivos" data-en="Upload files">Subir archivos</span></button><button class="smc-btn btn-vw" style="border:1px solid var(--bd);" data-es="Ver portal" data-en="View portal">Ver portal</button></div></div></div>
+          <div class="smc"><div class="smc-hd"><div class="smc-av" style="background:linear-gradient(135deg,#00C6FF,#0D4F8C)">AM</div><div><div class="smc-nm">Aurora Music</div><div class="smc-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="29485c5b465b4869445c5a404a074a46">[email&#160;protected]</a></div></div><span class="smc-st st-pd" data-es="Pendiente" data-en="Pending">Pendiente</span></div><div class="smc-bd"><div class="smc-stats"><div><div class="smc-sn" style="color:var(--amber)">0</div><div class="smc-sl" data-es="reportes Q1" data-en="Q1 reports">reportes Q1</div></div><div><div class="smc-sn" style="color:var(--t3)">—</div><div class="smc-sl" data-es="pendiente" data-en="pending">pendiente</div></div></div><div class="smc-acts"><button class="smc-btn btn-up" onclick="quickUp('Aurora Music')">📤 <span data-es="Subir archivos" data-en="Upload files">Subir archivos</span></button><button class="smc-btn btn-vw" style="border:1px solid var(--bd);" data-es="Ver portal" data-en="View portal">Ver portal</button></div></div></div>
+          <div class="smc"><div class="smc-hd"><div class="smc-av" style="background:linear-gradient(135deg,#F5A623,#9A5C00)">VL</div><div><div class="smc-nm">Vertigo Lab</div><div class="smc-em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="790d1c1814390f1c0b0d101e1615181b571a1614">[email&#160;protected]</a></div></div><span class="smc-st st-on" data-es="Activo" data-en="Active">Activo</span></div><div class="smc-bd"><div class="smc-stats"><div><div class="smc-sn g">4</div><div class="smc-sl" data-es="reportes Q1" data-en="Q1 reports">reportes Q1</div></div><div><div class="smc-sn">$76k</div><div class="smc-sl" data-es="total Q1" data-en="Q1 total">total Q1</div></div></div><div class="smc-acts"><button class="smc-btn btn-up" onclick="quickUp('Vertigo Lab')">📤 <span data-es="Subir archivos" data-en="Upload files">Subir archivos</span></button><button class="smc-btn btn-vw" style="border:1px solid var(--bd);" data-es="Ver portal" data-en="View portal">Ver portal</button></div></div></div>
+          <div class="add-smc"><div style="font-size:26px;">＋</div><div style="font-family:var(--fd);font-size:13.5px;font-weight:700;letter-spacing:-.02em;" data-es="Agregar Nuevo Sello" data-en="Add New Label">Agregar Nuevo Sello</div><div style="font-size:11px;color:var(--t3);font-weight:300;text-align:center;" data-es="Crear cuenta para nuevo sello" data-en="Create account for new label">Crear cuenta para nuevo sello</div></div>
+        </div>
+      </div>
+
+      <!-- ── REPORTES ── -->
+      <div class="av" id="av-reportes">
+        <div class="pg-ey" data-es="Historial" data-en="History">Historial</div>
+        <div class="pg-t" data-es="Todos los Reportes Subidos" data-en="All Uploaded Reports">Todos los Reportes Subidos</div>
+        <div class="pg-st" data-es="Busque, descargue o elimine cualquier reporte." data-en="Search, download or delete any report.">Busque, descargue o elimine cualquier reporte.</div>
+        <div class="filter-bar">
+          <input class="f-in" type="text" placeholder="🔍 Buscar sello o archivo…">
+          <button class="f-chip on" data-es="Todos" data-en="All">Todos</button>
+          <button class="f-chip" onclick="filterChip(this)">Streaming</button>
+          <button class="f-chip" onclick="filterChip(this)">YouTube</button>
+          <button class="f-chip" onclick="filterChip(this)" data-es="Q3 2025" data-en="Q3 2025">Q3 2025</button>
+          <button class="f-chip" onclick="filterChip(this)" data-es="Sep 2025" data-en="Sep 2025">Sep 2025</button>
+        </div>
+        <div class="rpt-row"><div class="rr-ic">📗</div><div class="rr-info"><div class="rr-nm">2025-09_Discos_Relampago.xlsx</div><div class="rr-meta"><span class="tag tag-s">Streaming</span><span class="rr-per">Discos Relámpago · Sep 2025 · 454,139 streams</span></div></div><div class="rr-amt">$722.18</div><div class="rr-dt">Oct 3 '25</div><div class="rr-acts"><button class="sm-btn" data-es="↓ Descargar" data-en="↓ Download">↓ Descargar</button><button class="sm-btn del" data-es="Eliminar" data-en="Delete">Eliminar</button></div></div>
+        <div class="rpt-row"><div class="rr-ic">📗</div><div class="rr-info"><div class="rr-nm">3Q-2025_Youtube_Discos_Relampago.xlsx</div><div class="rr-meta"><span class="tag tag-y">YouTube</span><span class="rr-per">Discos Relámpago · Q3 2025 · 1,925,430 vistas</span></div></div><div class="rr-amt">$1,733.93</div><div class="rr-dt">Oct 3 '25</div><div class="rr-acts"><button class="sm-btn" data-es="↓ Descargar" data-en="↓ Download">↓ Descargar</button><button class="sm-btn del" data-es="Eliminar" data-en="Delete">Eliminar</button></div></div>
+        <div class="rpt-row"><div class="rr-ic">📗</div><div class="rr-info"><div class="rr-nm">NeonRecords_Streaming_Feb2026.xlsx</div><div class="rr-meta"><span class="tag tag-s">Streaming</span><span class="rr-per">Neon Records · Feb 2026</span></div></div><div class="rr-amt">$35,490</div><div class="rr-dt">Mar 3 '26</div><div class="rr-acts"><button class="sm-btn" data-es="↓ Descargar" data-en="↓ Download">↓ Descargar</button><button class="sm-btn del" data-es="Eliminar" data-en="Delete">Eliminar</button></div></div>
+        <div class="rpt-row"><div class="rr-ic">📗</div><div class="rr-info"><div class="rr-nm">SoundVault_YouTube_Q1_2026.xlsx</div><div class="rr-meta"><span class="tag tag-y">YouTube</span><span class="rr-per">SoundVault · Q1 2026</span></div></div><div class="rr-amt">$29,440</div><div class="rr-dt">Mar 5 '26</div><div class="rr-acts"><button class="sm-btn" data-es="↓ Descargar" data-en="↓ Download">↓ Descargar</button><button class="sm-btn del" data-es="Eliminar" data-en="Delete">Eliminar</button></div></div>
+      </div>
+
+    </main>
+  </div>
+</div><!-- end admin -->
+<!-- ══════════════════════════════════════
+     PORTAL SELLO — Discos Relámpago
+══════════════════════════════════════ -->
+<div class="pg" id="pg-sello">
+  <div class="sp-shell">
+
+    <!-- SIDEBAR — solo 2 opciones -->
+    <aside class="sidebar">
+      <div class="sb-sec" data-es="Mi Portal" data-en="My Portal">Mi Portal</div>
+      <div class="sb-i on" onclick="selloNav(this,'dashboard')">
+        <div class="sb-ic">📊</div>
+        <div>
+          <div class="sb-lbl" data-es="Mis Regalías" data-en="My Royalties">Mis Regalías</div>
+          <div class="sb-dl" data-es="Resumen y gráfico" data-en="Summary & chart">Resumen y gráfico</div>
+        </div>
+      </div>
+      <div class="sb-i" onclick="selloNav(this,'archivos')">
+        <div class="sb-ic">📂</div>
+        <div>
+          <div class="sb-lbl" data-es="Descargar Reportes" data-en="Download Reports">Descargar Reportes</div>
+          <div class="sb-dl" data-es="Archivos Excel originales" data-en="Original Excel files">Archivos Excel originales</div>
+        </div>
+        <span class="sb-bx ok">2</span>
+      </div>
+      <div class="sb-foot">
+        <div class="u-chip">
+          <div class="u-av" style="background:linear-gradient(135deg,#00E887,#00b86b)">DR</div>
+          <div>
+            <div class="u-nm">Discos Relámpago</div>
+            <div class="u-rl" data-es="Cuenta de Sello" data-en="Label Account">Cuenta de Sello</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="sp-main">
+
+      <!-- ══ VISTA 1: MIS REGALÍAS ══ -->
+      <div class="sv2 on" id="sv-dashboard">
+
+        <div class="ph-row">
+          <div>
+            <div class="ph-t" data-es="Mis Regalías" data-en="My Royalties">Mis Regalías</div>
+            <div class="ph-s" data-es="Discos Relámpago · Reportes más recientes" data-en="Discos Relámpago · Most recent reports">Discos Relámpago · Reportes más recientes</div>
+          </div>
+          <div style="font-family:var(--fm);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:7px 13px;">Sep 2025 · Q3 2025</div>
+        </div>
+
+        <!-- ── 3 MÉTRICAS GRANDES ── -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:14px;">
+
+          <div style="background:var(--card);border:1.5px solid rgba(0,232,135,.2);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),var(--cyan));"></div>
+            <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;">STREAMING · SEP 2025</div>
+            <div style="font-family:var(--fd);font-size:32px;font-weight:800;letter-spacing:-.05em;line-height:1;"><span style="font-size:14px;color:var(--green);margin-right:1px;">$</span>722.18</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:8px;font-weight:300;" data-es="Pagable a su sello" data-en="Payable to your label">Pagable a su sello</div>
+          </div>
+
+          <div style="background:var(--card);border:1.5px solid rgba(0,245,212,.2);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),#00b8a0);"></div>
+            <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;">YOUTUBE · Q3 2025</div>
+            <div style="font-family:var(--fd);font-size:32px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--cyan);"><span style="font-size:14px;margin-right:1px;">$</span>1,733.93</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:8px;font-weight:300;" data-es="Ganancias netas YouTube" data-en="YouTube net earnings">Ganancias netas YouTube</div>
+          </div>
+
+          <div style="background:linear-gradient(135deg,rgba(0,232,135,.07),rgba(0,245,212,.04));border:1.5px solid rgba(0,232,135,.25);border-radius:14px;padding:22px;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,232,135,.12),transparent 70%);"></div>
+            <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:12px;" data-es="TOTAL RECIBIDO" data-en="TOTAL RECEIVED">TOTAL RECIBIDO</div>
+            <div style="font-family:var(--fd);font-size:32px;font-weight:800;letter-spacing:-.05em;line-height:1;"><span style="font-size:14px;color:var(--green);margin-right:1px;">$</span>2,456.11</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:8px;font-weight:300;">Streaming + YouTube</div>
+          </div>
+        </div>
+
+        <!-- ── GRÁFICO + DONUT (bento 7+5) ── -->
+        <div style="display:grid;grid-template-columns:7fr 5fr;gap:11px;margin-bottom:14px;">
+
+          <!-- Barras horizontales top 5 canciones -->
+          <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px 24px;">
+            <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:18px;display:flex;align-items:center;gap:6px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);"></div>
+              <span data-es="TOP 5 CANCIONES · STREAMING SEP 2025" data-en="TOP 5 SONGS · STREAMING SEP 2025">TOP 5 CANCIONES · STREAMING SEP 2025</span>
+            </div>
+
+            <!-- Song rows -->
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+                  <span style="font-size:12.5px;font-weight:500;">El Corral de Piedra</span>
+                  <span style="font-family:var(--fm);font-size:12px;color:var(--green);font-weight:500;">$61.76</span>
+                </div>
+                <div style="height:7px;border-radius:4px;background:var(--elev2);">
+                  <div style="height:100%;width:100%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan));box-shadow:0 0 10px rgba(0,232,135,.25);"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+                  <span style="font-size:12.5px;font-weight:500;">Flor de las Flores</span>
+                  <span style="font-family:var(--fm);font-size:12px;color:var(--green);font-weight:500;">$45.98</span>
+                </div>
+                <div style="height:7px;border-radius:4px;background:var(--elev2);">
+                  <div style="height:100%;width:74%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan));"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+                  <span style="font-size:12.5px;font-weight:500;">Dijiste y Juraste</span>
+                  <span style="font-family:var(--fm);font-size:12px;color:var(--green);font-weight:500;">$29.69</span>
+                </div>
+                <div style="height:7px;border-radius:4px;background:var(--elev2);">
+                  <div style="height:100%;width:48%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan));"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+                  <span style="font-size:12.5px;font-weight:500;">Dos Amores</span>
+                  <span style="font-family:var(--fm);font-size:12px;color:var(--green);font-weight:500;">$29.25</span>
+                </div>
+                <div style="height:7px;border-radius:4px;background:var(--elev2);">
+                  <div style="height:100%;width:47%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan));"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
+                  <span style="font-size:12.5px;font-weight:500;">Se Que Te Vas</span>
+                  <span style="font-family:var(--fm);font-size:12px;color:var(--green);font-weight:500;">$26.70</span>
+                </div>
+                <div style="height:7px;border-radius:4px;background:var(--elev2);">
+                  <div style="height:100%;width:43%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--cyan));"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donut: Streaming vs YouTube -->
+          <div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;">
+            <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:18px;display:flex;align-items:center;gap:6px;">
+              <div style="width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 5px var(--cyan);"></div>
+              <span data-es="ORIGEN DE INGRESOS" data-en="INCOME SOURCE">ORIGEN DE INGRESOS</span>
+            </div>
+
+            <!-- Donut -->
+            <div style="display:flex;justify-content:center;margin-bottom:20px;">
+              <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--green) 0deg 106deg,var(--cyan) 106deg 360deg);display:flex;align-items:center;justify-content:center;position:relative;">
+                <div style="width:84px;height:84px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                  <div style="font-family:var(--fd);font-size:18px;font-weight:800;letter-spacing:-.04em;">29%</div>
+                  <div style="font-family:var(--fm);font-size:7.5px;color:var(--t3);letter-spacing:.05em;" data-es="Streaming" data-en="Streaming">Streaming</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Leyenda -->
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--elev);border-radius:8px;border:1px solid var(--bd);">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:8px;height:8px;border-radius:2px;background:var(--green);"></div>
+                  <span style="font-size:12px;color:var(--t2);" data-es="Streaming" data-en="Streaming">Streaming</span>
+                </div>
+                <span style="font-family:var(--fm);font-size:12px;font-weight:500;">$722.18</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--elev);border-radius:8px;border:1px solid var(--bd);">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:8px;height:8px;border-radius:2px;background:var(--cyan);"></div>
+                  <span style="font-size:12px;color:var(--t2);">YouTube</span>
+                </div>
+                <span style="font-family:var(--fm);font-size:12px;font-weight:500;">$1,733.93</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--ggl);border-radius:8px;border:1px solid var(--bdg);">
+                <span style="font-size:12px;font-weight:600;color:var(--green);" data-es="Total" data-en="Total">Total</span>
+                <span style="font-family:var(--fd);font-size:16px;font-weight:800;">$2,456.11</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BOTÓN IR A DESCARGAS ── -->
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn-ghost" style="font-size:12.5px;padding:10px 20px;gap:7px;display:flex;align-items:center;" onclick="selloNav(document.querySelectorAll('#pg-sello .sb-i')[1],'archivos')">
+            <span data-es="Ver mis archivos Excel" data-en="View my Excel files">Ver mis archivos Excel</span> →
+          </button>
+        </div>
+
+      </div><!-- end sv-dashboard -->
+
+      <!-- ══ VISTA 2: DESCARGAR REPORTES ══ -->
+      <div class="sv2" id="sv-archivos">
+
+        <div class="ph-row">
+          <div>
+            <div class="ph-t" data-es="Descargar Reportes" data-en="Download Reports">Descargar Reportes</div>
+            <div class="ph-s" data-es="Sus archivos Excel originales listos para descargar" data-en="Your original Excel files ready to download">Sus archivos Excel originales listos para descargar</div>
+          </div>
+        </div>
+
+        <!-- Banner total -->
+        <div style="background:linear-gradient(135deg,rgba(0,232,135,.08),rgba(0,245,212,.04));border:1.5px solid var(--bdg);border-radius:16px;padding:24px 28px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:relative;overflow:hidden;">
+          <div style="position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,232,135,.09),transparent 70%);"></div>
+          <div style="position:relative;z-index:1;">
+            <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:6px;" data-es="TOTAL DISPONIBLE" data-en="TOTAL AVAILABLE">TOTAL DISPONIBLE</div>
+            <div style="font-family:var(--fd);font-size:36px;font-weight:800;letter-spacing:-.05em;">$2,456.11</div>
+            <div style="font-size:12px;color:var(--t2);font-weight:300;margin-top:4px;" data-es="en sus 2 reportes más recientes" data-en="across your 2 most recent reports">en sus 2 reportes más recientes</div>
+          </div>
+          <div style="display:flex;gap:24px;position:relative;z-index:1;">
+            <div style="text-align:right;">
+              <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:3px;">STREAMING</div>
+              <div style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--green);">$722.18</div>
+            </div>
+            <div style="width:1px;background:var(--bd);"></div>
+            <div style="text-align:right;">
+              <div style="font-family:var(--fm);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:3px;">YOUTUBE</div>
+              <div style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--cyan);">$1,733.93</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Archivo 1 -->
+        <div style="background:var(--card);border:1px solid rgba(0,232,135,.15);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:10px;transition:border-color .2s;"
+          onmouseover="this.style.borderColor='rgba(0,232,135,.4)'" onmouseout="this.style.borderColor='rgba(0,232,135,.15)'">
+          <div style="width:52px;height:52px;border-radius:12px;background:rgba(0,232,135,.08);border:1px solid var(--bdg);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📗</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">2025-09_Discos_Relampago.xlsx</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span class="tag tag-s">Streaming</span>
+              <span style="font-size:11px;color:var(--t2);font-weight:300;" data-es="Septiembre 2025 · 45,487 filas · 454,139 streams" data-en="September 2025 · 45,487 rows · 454,139 streams">Septiembre 2025 · 45,487 filas · 454,139 streams</span>
+            </div>
+          </div>
+          <div style="text-align:right;padding-right:16px;flex-shrink:0;">
+            <div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--green);">$722.18</div>
+            <div style="font-family:var(--fm);font-size:8.5px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;" data-es="PAGABLE AL SELLO" data-en="PAYABLE TO LABEL">PAGABLE AL SELLO</div>
+          </div>
+          <button class="btn-g" style="font-size:12.5px;padding:11px 20px;flex-shrink:0;" data-es="↓ Descargar" data-en="↓ Download">↓ Descargar</button>
+        </div>
+
+        <!-- Archivo 2 -->
+        <div style="background:var(--card);border:1px solid rgba(0,245,212,.15);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:16px;transition:border-color .2s;"
+          onmouseover="this.style.borderColor='rgba(0,245,212,.4)'" onmouseout="this.style.borderColor='rgba(0,245,212,.15)'">
+          <div style="width:52px;height:52px;border-radius:12px;background:rgba(0,245,212,.07);border:1px solid rgba(0,245,212,.2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📗</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">3Q-2025_Youtube_Discos_Relampago.xlsx</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span class="tag tag-y">YouTube</span>
+              <span style="font-size:11px;color:var(--t2);font-weight:300;" data-es="Q3 2025 · 871 activos · 1,925,430 vistas" data-en="Q3 2025 · 871 assets · 1,925,430 views">Q3 2025 · 871 activos · 1,925,430 vistas</span>
+            </div>
+          </div>
+          <div style="text-align:right;padding-right:16px;flex-shrink:0;">
+            <div style="font-family:var(--fd);font-size:22px;font-weight:800;color:var(--cyan);">$1,733.93</div>
+            <div style="font-family:var(--fm);font-size:8.5px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;">NET EARNINGS Q3</div>
+          </div>
+          <button class="btn-g" style="font-size:12.5px;padding:11px 20px;flex-shrink:0;" data-es="↓ Descargar" data-en="↓ Download">↓ Descargar</button>
+        </div>
+
+        <!-- Nota de contacto -->
+        <div style="background:var(--elev);border:1px solid var(--bd);border-radius:10px;padding:14px 18px;margin-top:12px;display:flex;align-items:flex-start;gap:11px;">
+          <div style="font-size:17px;flex-shrink:0;">💡</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.68;font-weight:300;"
+            data-es="¿Dudas sobre sus montos? Contáctenos: rosemary@esongsentertainment.com"
+            data-en="Questions about your amounts? Contact us: rosemary@esongsentertainment.com">
+            ¿Dudas sobre sus montos? Contáctenos: <strong style="color:var(--t1);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cdbfa2bea8a0acbfb48da8bea2a3aabea8a3b9a8bfb9aca4a3a0a8a3b9e3aea2a0">[email&#160;protected]</a></strong>
+          </div>
+        </div>
+
+      </div><!-- end sv-archivos -->
+
+    </main>
+  </div>
+</div><!-- end sello -->
+</div><!-- end sello -->
+
+<!-- ══════════════════════
+     JAVASCRIPT
+══════════════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ─── PAGE SWITCHING ───
+function showPg(id) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tn-tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('pg-' + id).classList.add('on');
+  const tabMap = {landing:'tab-landing',admin:'tab-admin',sello:'tab-sello'};
+  if(tabMap[id]) document.getElementById(tabMap[id]).classList.add('on');
+  document.querySelectorAll('.mob-btn').forEach(b => b.classList.remove('on'));
+  const mb = document.getElementById('mbt-' + id);
+  if(mb) mb.classList.add('on');
+  window.scrollTo(0, 0);
+}
+function checkMobile(){
+  const mn = document.getElementById('mob-nav');
+  if(mn) mn.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+}
+window.addEventListener('resize', checkMobile);
+checkMobile();
+
+// ─── ADMIN NAV ───
+let curAdminView = 'inicio';
+function adminNav(el, id) {
+  document.querySelectorAll('#pg-admin .sb-i').forEach(i => i.classList.remove('on'));
+  document.querySelectorAll('.av').forEach(v => v.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.getElementById('av-' + id).classList.add('on');
+  curAdminView = id;
+}
+
+// ─── SELLO NAV ───
+function selloNav(el, id) {
+  document.querySelectorAll('#pg-sello .sb-i').forEach(i => i.classList.remove('on'));
+  document.querySelectorAll('.sv2').forEach(v => v.classList.remove('on'));
+  if(el) el.classList.add('on');
+  document.getElementById('sv-' + id).classList.add('on');
+}
+
+// ─── UPLOAD WIZARD ───
+let selSello = null, selType = null, uploadedFiles = [];
+
+function goSt(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('sp'+i).style.display = i===n?'block':'none';
+    const si = document.getElementById('si'+i);
+    si.classList.remove('on','done');
+    if(i===n) si.classList.add('on');
+    if(i<n) si.classList.add('done');
+  });
+  if(n===3) {
+    const ctx = document.getElementById('sp3ctx');
+    const tLabel = selType==='streaming'?'🎵 Streaming':'▶️ YouTube';
+    ctx.innerHTML = 'Para: <strong>'+selSello+'</strong> · Tipo: <strong>'+tLabel+'</strong>';
+    document.getElementById('dz3').style.display = 'block';
+    document.getElementById('sucbox').classList.remove('show');
+    document.getElementById('sp3btns').style.display = 'flex';
+    document.getElementById('qw').style.display = 'none';
+  }
+}
+
+function pickSello(el, name) {
+  document.querySelectorAll('.sel-c').forEach(c => c.classList.remove('picked'));
+  el.classList.add('picked');
+  selSello = name;
+  document.getElementById('b1n').disabled = false;
+}
+
+function pickType(el, type) {
+  document.querySelectorAll('.type-c').forEach(c => c.classList.remove('picked'));
+  el.classList.add('picked');
+  selType = type;
+  document.getElementById('b2n').disabled = false;
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('dz3').classList.remove('over');
+  const names = [...e.dataTransfer.files]
+    .filter(f => /\.(xlsx|xls|csv)$/i.test(f.name))
+    .map(f => f.name);
+  if(names.length) addToQ(names);
+}
+
+function simUpload() {
+  const prefix = selSello ? selSello.replace(/\s/g,'_') : 'Sello';
+  const t = selType==='youtube'?'YouTube':'Streaming';
+  addToQ([prefix+'_'+t+'_Mar2026.xlsx']);
+}
+
+function addToQ(names) {
+  uploadedFiles = [...uploadedFiles, ...names];
+  renderQ();
+  document.getElementById('qw').style.display = 'block';
+  document.getElementById('b3n').disabled = false;
+}
+
+function renderQ() {
+  const list = document.getElementById('qlist');
+  const cnt = document.getElementById('qcnt');
+  cnt.textContent = uploadedFiles.length + ' archivo' + (uploadedFiles.length!==1?'s':'');
+  list.innerHTML = uploadedFiles.map(f => `
+    <div class="qi">
+      <div class="qi-ic">📗</div>
+      <div class="qi-info"><div class="qi-n">${f}</div><div class="qi-m">${selSello||''} · ${selType==='youtube'?'YouTube':'Streaming'}</div></div>
+      <div class="qi-p"><div class="q-bar"><div class="q-fill" style="width:100%"></div></div><span class="q-pct">Listo ✓</span></div>
+    </div>`).join('');
+}
+
+function doUpload() {
+  document.getElementById('sp3btns').style.display = 'none';
+  document.getElementById('qw').style.display = 'none';
+  document.getElementById('dz3').style.display = 'none';
+  const t = selType==='streaming'?'Streaming':'YouTube';
+  document.getElementById('sucmsg').textContent =
+    uploadedFiles.length + ' archivo(s) enviados a ' + selSello + ' (' + t + '). El sello ya puede verlos en su portal.';
+  document.getElementById('sucbox').classList.add('show');
+}
+
+function resetUp() {
+  selSello = null; selType = null; uploadedFiles = [];
+  document.querySelectorAll('.sel-c').forEach(c => c.classList.remove('picked'));
+  document.querySelectorAll('.type-c').forEach(c => c.classList.remove('picked'));
+  document.getElementById('b1n').disabled = true;
+  document.getElementById('b2n').disabled = true;
+  document.getElementById('b3n').disabled = true;
+  document.getElementById('dz3').style.display = 'block';
+  document.getElementById('sucbox').classList.remove('show');
+  document.getElementById('sp3btns').style.display = 'flex';
+  document.getElementById('qw').style.display = 'none';
+  goSt(1);
+}
+
+function quickUp(selloName) {
+  showPg('admin');
+  adminNav(document.querySelectorAll('#pg-admin .sb-i')[1], 'subir');
+  goSt(1);
+  setTimeout(() => {
+    document.querySelectorAll('.sel-c').forEach(c => {
+      if(c.querySelector('.sel-nm') && c.querySelector('.sel-nm').textContent.trim() === selloName)
+        pickSello(c, selloName);
+    });
+  }, 50);
+}
+
+function filterChip(el) {
+  el.closest('.filter-bar').querySelectorAll('.f-chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+let curLang = 'es';
+function setLang(lang) {
+  curLang = lang;
+  document.querySelectorAll('.lbtn').forEach(b => {
+    b.classList.toggle('on', b.textContent.toLowerCase() === lang);
+  });
+  document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+    const val = el.getAttribute('data-' + lang);
+    if(val && el.children.length === 0) el.textContent = val;
+  });
+  document.querySelectorAll('[data-' + lang + '-ph]').forEach(el => {
+    el.placeholder = el.getAttribute('data-' + lang + '-ph');
+  });
+}
+</script>
+</body>
+</html>

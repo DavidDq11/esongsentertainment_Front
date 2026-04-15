@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm add -D @types/react @types/react-dom)",
+      "Bash(pnpm build)",
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}
