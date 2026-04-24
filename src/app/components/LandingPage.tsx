@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Music, TrendingUp, Shield, BarChart3, ArrowRight, Plus, CheckCircle2, Globe, FileText } from "lucide-react";
 import { useLang } from "../contexts/LanguageContext";
 import { LP } from "../i18n";
+import logoImg from "../../assets/logo.webp";
 
 // ── Color tokens ──────────────────────────────────────────────────────────────
 const G1   = "#d4af37";          // gold primary
@@ -591,10 +592,8 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 pb-8 md:pb-10 border-b mb-6" style={{ borderColor: BD }}>
             <div className="md:col-span-2">
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
-                <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: `linear-gradient(135deg, ${G1}, ${G2})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ color: "black", fontSize: "13px", fontWeight: 900, fontStyle: "italic" }}>e</span>
-                </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+                <img src={logoImg} alt="eSongs Entertainment" style={{ width: "42px", height: "42px", objectFit: "contain" }} />
                 <span style={{ fontSize: "1rem", fontWeight: 800, color: T1 }}>
                   e<span style={{ color: G1 }}>Songs</span> Entertainment
                 </span>

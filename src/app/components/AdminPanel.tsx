@@ -498,7 +498,9 @@ export function AdminPanel() {
             <div className="rsp-wrap" style={{ background: `linear-gradient(135deg,rgba(212,175,55,0.07),rgba(212,175,55,0.03))`, border: `1px solid ${bdA}`, borderRadius: "14px", padding: "26px 30px", marginBottom: "22px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", right: "-44px", top: "-44px", width: "180px", height: "180px", borderRadius: "50%", background: "radial-gradient(circle,rgba(212,175,55,0.1),transparent 70%)" }} />
               <div>
-                <div style={{ fontSize: "19px", fontWeight: 800, letterSpacing: "-.03em", marginBottom: "5px", color: t1 }}>{tx.welcomeTitle}</div>
+                <div style={{ fontSize: "19px", fontWeight: 800, letterSpacing: "-.03em", marginBottom: "5px", color: t1 }}>
+                  {tx.welcomeTitle}
+                </div>
                 <div style={{ fontSize: "15px", color: t2, fontWeight: 300, lineHeight: 1.6, maxWidth: "380px" }}>{tx.welcomeDesc}</div>
               </div>
               <div style={{ textAlign: "right", position: "relative", zIndex: 1 }}>
