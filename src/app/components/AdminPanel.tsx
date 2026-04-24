@@ -129,6 +129,8 @@ export function AdminPanel() {
   const [filterYear,      setFilterYear]   = useState("all");
   const [filterLabelName, setFilterLabel]  = useState("all");
   const [search,          setSearch]       = useState("");
+  const [reportPage,      setReportPage]   = useState(1);
+  const REPORTS_PER_PAGE = 15;
 
   // New sello form
   const [showNewSello, setShowNewSello] = useState(false);
@@ -347,6 +349,8 @@ export function AdminPanel() {
                r.sello_nombre.toLowerCase().includes(search.toLowerCase());
     return mt && my && ml && ms;
   });
+  const totalReportPages = Math.max(1, Math.ceil(filteredReports.length / REPORTS_PER_PAGE));
+  const pagedReports = filteredReports.slice((reportPage - 1) * REPORTS_PER_PAGE, reportPage * REPORTS_PER_PAGE);
 
   const statusBadge = (s: "activo" | "inactivo") =>
     s === "activo"
@@ -362,17 +366,17 @@ export function AdminPanel() {
   ] as const;
 
   const selectStyle: React.CSSProperties = {
-    fontFamily: "inherit", fontSize: "11px",
+    fontFamily: "inherit", fontSize: "14px",
     background: card, border: `1px solid ${bd}`,
     color: t2, borderRadius: "7px",
-    padding: "6px 10px", outline: "none", cursor: "pointer",
+    padding: "8px 12px", outline: "none", cursor: "pointer",
   };
 
   const inputStyle: React.CSSProperties = {
-    fontFamily: "inherit", fontSize: "12px",
+    fontFamily: "inherit", fontSize: "15px",
     background: elev, border: `1px solid ${bd}`,
     color: t1, borderRadius: "7px",
-    padding: "8px 12px", outline: "none", width: "100%",
+    padding: "10px 14px", outline: "none", width: "100%",
     boxSizing: "border-box",
   };
 
@@ -395,7 +399,7 @@ export function AdminPanel() {
             >
               <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: on ? "rgba(212,175,55,0.12)" : elev, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", flexShrink: 0 }}>{item.icon}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "12.5px", fontWeight: 500, lineHeight: 1.2 }}>{item.label}</div>
+                <div style={{ fontSize: "15px", fontWeight: 500, lineHeight: 1.2 }}>{item.label}</div>
                 <div style={{ fontSize: "10px", color: on ? "rgba(212,175,55,0.45)" : t3, fontWeight: 300, marginTop: "1px" }}>{item.desc}</div>
               </div>
               {"badge" in item && item.badge && (
@@ -408,35 +412,39 @@ export function AdminPanel() {
         })}
 
         <div style={{ marginTop: "auto", paddingTop: "13px", borderTop: `1px solid ${bd}` }}>
-          {storage && (
-            <div style={{ background: ggl, border: `1px solid ${storage.pct >= 90 ? "rgba(239,68,68,0.3)" : storage.pct >= 75 ? "rgba(245,158,11,0.3)" : bdA}`, borderRadius: "8px", padding: "10px 12px", marginBottom: "9px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
-                <div style={{ fontSize: "10px", fontWeight: 600, color: storage.pct >= 90 ? "#ef4444" : storage.pct >= 75 ? amber : accent }}>
-                  {lang === "es" ? "Almacenamiento" : "Storage"}
+          {storage && (() => {
+            const FILE_LIMIT = 1000;
+            const filePct = Math.min(100, Math.round((storage.total_files / FILE_LIMIT) * 100));
+            return (
+              <div style={{ background: ggl, border: `1px solid ${filePct >= 90 ? "rgba(239,68,68,0.3)" : filePct >= 75 ? "rgba(245,158,11,0.3)" : bdA}`, borderRadius: "8px", padding: "10px 12px", marginBottom: "9px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
+                  <div style={{ fontSize: "10px", fontWeight: 600, color: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : accent }}>
+                    {lang === "es" ? "Archivos en R2" : "Files in R2"}
+                  </div>
+                  <div style={{ fontFamily: "monospace", fontSize: "9px", color: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : t3 }}>
+                    {storage.total_files} / {FILE_LIMIT}
+                  </div>
                 </div>
-                <div style={{ fontFamily: "monospace", fontSize: "9px", color: storage.pct >= 90 ? "#ef4444" : storage.pct >= 75 ? amber : t3 }}>
-                  {storage.used_gb} / 8 GB
+                <div style={{ height: "3px", borderRadius: "2px", background: elev, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${filePct}%`, borderRadius: "2px", background: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : accent, transition: "width .3s" }} />
+                </div>
+                <div style={{ fontSize: "9px", color: t3, marginTop: "4px" }}>
+                  {filePct}% {lang === "es" ? "del límite" : "of limit"}
+                  {filePct >= 90 && <span style={{ color: "#ef4444", fontWeight: 600 }}> · {lang === "es" ? "¡Límite próximo!" : "Limit near!"}</span>}
                 </div>
               </div>
-              <div style={{ height: "3px", borderRadius: "2px", background: elev, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${storage.pct}%`, borderRadius: "2px", background: storage.pct >= 90 ? "#ef4444" : storage.pct >= 75 ? amber : accent, transition: "width .3s" }} />
-              </div>
-              <div style={{ fontSize: "9px", color: t3, marginTop: "4px" }}>
-                {storage.total_files} {lang === "es" ? "archivos" : "files"} · {storage.pct}%
-                {storage.pct >= 90 && <span style={{ color: "#ef4444", fontWeight: 600 }}> · {lang === "es" ? "¡Límite próximo!" : "Limit near!"}</span>}
-              </div>
-            </div>
-          )}
+            );
+          })()}
           <div style={{ background: ggl, border: `1px solid ${bdA}`, borderRadius: "8px", padding: "12px", marginBottom: "9px" }}>
-            <div style={{ fontSize: "11px", fontWeight: 600, color: accent, marginBottom: "3px" }}>{tx.tipTitle}</div>
-            <div style={{ fontSize: "10.5px", color: t2, lineHeight: 1.5, fontWeight: 300 }}>{tx.tipBody}</div>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: accent, marginBottom: "3px" }}>{tx.tipTitle}</div>
+            <div style={{ fontSize: "13px", color: t2, lineHeight: 1.5, fontWeight: 300 }}>{tx.tipBody}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 10px", borderRadius: "8px", backgroundColor: elev }}>
             <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: `linear-gradient(135deg,${accent},${green})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9px", fontWeight: 800, color: "#010e06", flexShrink: 0 }}>
               {user?.nombre?.slice(0, 2).toUpperCase() ?? "AD"}
             </div>
             <div>
-              <div style={{ fontSize: "11px", fontWeight: 600, color: t1 }}>{user?.nombre ?? "Admin"}</div>
+              <div style={{ fontSize: "13px", fontWeight: 600, color: t1 }}>{user?.nombre ?? "Admin"}</div>
               <div style={{ fontFamily: "monospace", fontSize: "8.5px", color: t3, letterSpacing: ".04em" }}>{tx.adminUser}</div>
             </div>
           </div>
@@ -464,13 +472,13 @@ export function AdminPanel() {
           <div>
             <EyeBrow text="Panel Principal" />
             <div style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-.035em", marginBottom: "3px", color: t1 }}>{tx.inicioTitle}</div>
-            <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.inicioSub}</div>
+            <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.inicioSub}</div>
 
             <div className="rsp-wrap" style={{ background: `linear-gradient(135deg,rgba(212,175,55,0.07),rgba(212,175,55,0.03))`, border: `1px solid ${bdA}`, borderRadius: "14px", padding: "26px 30px", marginBottom: "22px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", right: "-44px", top: "-44px", width: "180px", height: "180px", borderRadius: "50%", background: "radial-gradient(circle,rgba(212,175,55,0.1),transparent 70%)" }} />
               <div>
                 <div style={{ fontSize: "19px", fontWeight: 800, letterSpacing: "-.03em", marginBottom: "5px", color: t1 }}>{tx.welcomeTitle}</div>
-                <div style={{ fontSize: "12.5px", color: t2, fontWeight: 300, lineHeight: 1.6, maxWidth: "380px" }}>{tx.welcomeDesc}</div>
+                <div style={{ fontSize: "15px", color: t2, fontWeight: 300, lineHeight: 1.6, maxWidth: "380px" }}>{tx.welcomeDesc}</div>
               </div>
               <div style={{ textAlign: "right", position: "relative", zIndex: 1 }}>
                 <div style={{ fontFamily: "monospace", fontSize: "32px", fontWeight: 800, color: accent, lineHeight: 1 }}>
@@ -497,27 +505,6 @@ export function AdminPanel() {
               ))}
             </div>
 
-            <div style={{ fontSize: "13.5px", fontWeight: 700, marginBottom: "9px", display: "flex", alignItems: "center", gap: "7px", color: t1 }}>
-              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: amber, display: "inline-block" }} />
-              {tx.pendingTitle}
-            </div>
-            {[
-              { icon: "📤", title: tx.pendingItem1, desc: tx.pendingItem1Desc },
-              { icon: "⚠️", title: tx.pendingItem2, desc: tx.pendingItem2Desc },
-            ].map(p => (
-              <div key={p.title} onClick={() => navTo("subir")} style={{ backgroundColor: card, border: "1px solid rgba(245,158,11,0.2)", borderRadius: "10px", padding: "13px 16px", display: "flex", alignItems: "center", gap: "13px", marginBottom: "7px", cursor: "pointer", transition: "all .18s" }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(245,158,11,0.42)"; el.style.backgroundColor = elev; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(245,158,11,0.2)"; el.style.backgroundColor = card; }}>
-                <div style={{ fontSize: "19px", flexShrink: 0 }}>{p.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "12.5px", fontWeight: 600, marginBottom: "2px", color: t1 }}>{p.title}</div>
-                  <div style={{ fontSize: "11px", color: t2, fontWeight: 300 }}>{p.desc}</div>
-                </div>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: amber, background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.2)", padding: "5px 12px", borderRadius: "5px", flexShrink: 0, whiteSpace: "nowrap" }}>
-                  {tx.uploadNow}
-                </div>
-              </div>
-            ))}
           </div>
         )}
 
@@ -526,15 +513,15 @@ export function AdminPanel() {
           <div>
             <EyeBrow text={tx.subir} />
             <div style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-.035em", marginBottom: "3px", color: t1 }}>{tx.subirTitle}</div>
-            <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.subirSub}</div>
+            <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.subirSub}</div>
 
-            {storage && storage.pct >= 100 && (
+            {storage && storage.total_files >= 1000 && (
               <div style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: "12px", padding: "28px", textAlign: "center", marginBottom: "22px" }}>
                 <div style={{ fontSize: "36px", marginBottom: "10px" }}>🚫</div>
                 <div style={{ fontSize: "16px", fontWeight: 700, color: t1, marginBottom: "8px" }}>
-                  {lang === "es" ? "Almacenamiento lleno (8 GB)" : "Storage Full (8 GB)"}
+                  {lang === "es" ? "Límite de archivos alcanzado (1,000)" : "File Limit Reached (1,000)"}
                 </div>
-                <div style={{ fontSize: "12px", color: t2, lineHeight: 1.6 }}>
+                <div style={{ fontSize: "14px", color: t2, lineHeight: 1.6 }}>
                   {lang === "es"
                     ? "Se ha alcanzado el límite de almacenamiento gratuito de Cloudflare R2. Elimina reportes antiguos en la sección Reportes antes de subir nuevos archivos."
                     : "The Cloudflare R2 free storage limit has been reached. Delete old reports in the Reports section before uploading new files."}
@@ -576,7 +563,7 @@ export function AdminPanel() {
             {step === 1 && (
               <div>
                 <div style={{ fontSize: "15px", fontWeight: 700, marginBottom: "5px", color: t1 }}>{tx.paso1Title}</div>
-                <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "17px" }}>{tx.paso1Sub}</div>
+                <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "17px" }}>{tx.paso1Sub}</div>
                 {sellos.length === 0 ? (
                   <div style={{ color: t3, textAlign: "center", padding: "32px" }}>
                     {loadingData ? (lang === "es" ? "Cargando sellos…" : "Loading labels…") : (lang === "es" ? "No hay sellos registrados." : "No labels registered.")}
@@ -601,7 +588,7 @@ export function AdminPanel() {
                 )}
                 <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                   <button disabled={!selSello} onClick={() => goSt(2)}
-                    style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 24px", borderRadius: "8px", border: "none", cursor: selSello ? "pointer" : "not-allowed", background: selSello ? accent : elev, color: selSello ? "#020a04" : t3, boxShadow: selSello ? "0 0 22px rgba(212,175,55,0.25)" : "none" }}>
+                    style={{ fontFamily: "inherit", fontSize: "15px", fontWeight: 600, padding: "11px 24px", borderRadius: "8px", border: "none", cursor: selSello ? "pointer" : "not-allowed", background: selSello ? accent : elev, color: selSello ? "#020a04" : t3, boxShadow: selSello ? "0 0 22px rgba(212,175,55,0.25)" : "none" }}>
                     {tx.continuar}
                   </button>
                 </div>
@@ -612,7 +599,7 @@ export function AdminPanel() {
             {step === 2 && (
               <div>
                 <div style={{ fontSize: "15px", fontWeight: 700, marginBottom: "5px", color: t1 }}>{tx.paso2Title}</div>
-                <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "17px" }}>{tx.paso2Sub}</div>
+                <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "17px" }}>{tx.paso2Sub}</div>
                 <div className="rsp-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "18px" }}>
                   {([
                     { key: "streaming" as const, icon: "🎵", label: "Streaming", desc: tx.streamingPlatDesc },
@@ -627,7 +614,7 @@ export function AdminPanel() {
                         <div style={{ fontSize: "26px", flexShrink: 0 }}>{t.icon}</div>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: "14px", fontWeight: 700, marginBottom: "2px", color: t1 }}>{t.label}</div>
-                          <div style={{ fontSize: "11px", color: t2, fontWeight: 300 }}>{t.desc}</div>
+                          <div style={{ fontSize: "13px", color: t2, fontWeight: 300 }}>{t.desc}</div>
                         </div>
                         <div style={{ width: "19px", height: "19px", borderRadius: "50%", border: `2px solid ${picked ? accent : bd}`, background: picked ? accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", color: picked ? "#010e06" : "transparent", flexShrink: 0, transition: "all .2s" }}>✓</div>
                       </div>
@@ -656,7 +643,7 @@ export function AdminPanel() {
                 <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                   <button onClick={() => goSt(1)} style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 500, padding: "10px 20px", background: "transparent", color: t2, border: `1px solid ${bd}`, borderRadius: "8px", cursor: "pointer" }}>{tx.atras}</button>
                   <button disabled={!selType} onClick={() => goSt(3)}
-                    style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 24px", borderRadius: "8px", border: "none", cursor: selType ? "pointer" : "not-allowed", background: selType ? accent : elev, color: selType ? "#020a04" : t3, boxShadow: selType ? "0 0 22px rgba(212,175,55,0.25)" : "none" }}>
+                    style={{ fontFamily: "inherit", fontSize: "15px", fontWeight: 600, padding: "11px 24px", borderRadius: "8px", border: "none", cursor: selType ? "pointer" : "not-allowed", background: selType ? accent : elev, color: selType ? "#020a04" : t3, boxShadow: selType ? "0 0 22px rgba(212,175,55,0.25)" : "none" }}>
                     {tx.continuar}
                   </button>
                 </div>
@@ -667,7 +654,7 @@ export function AdminPanel() {
             {step === 3 && (
               <div>
                 <div style={{ fontSize: "15px", fontWeight: 700, marginBottom: "4px", color: t1 }}>{tx.paso3Title}</div>
-                <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "17px" }}>
+                <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "17px" }}>
                   {lang === "es" ? "Para" : "For"}: <strong style={{ color: t1 }}>{selSello?.nombre}</strong> · {lang === "es" ? "Tipo" : "Type"}: <strong style={{ color: t1 }}>{selType === "streaming" ? "🎵 Streaming" : "▶️ YouTube"}</strong> · Q{selTrimestre} {selAnio}
                 </div>
 
@@ -684,7 +671,7 @@ export function AdminPanel() {
                         onChange={e => { if (e.target.files?.[0]) doUpload(e.target.files[0]); }} />
                       <div style={{ fontSize: "46px", marginBottom: "12px", lineHeight: 1 }}>📂</div>
                       <div style={{ fontSize: "19px", fontWeight: 800, marginBottom: "6px", color: t1 }}>{upState === "dragging" ? tx.dropActive : tx.dropTitle}</div>
-                      <div style={{ fontSize: "12.5px", color: t2, fontWeight: 300, maxWidth: "360px", margin: "0 auto 16px" }}>{tx.dropSub}</div>
+                      <div style={{ fontSize: "15px", color: t2, fontWeight: 300, maxWidth: "360px", margin: "0 auto 16px" }}>{tx.dropSub}</div>
                       <button onClick={e => { e.stopPropagation(); fileRef.current?.click(); }}
                         style={{ fontFamily: "inherit", fontSize: "14px", fontWeight: 600, padding: "12px 30px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
                         {tx.seleccionar}
@@ -701,13 +688,13 @@ export function AdminPanel() {
                   <div style={{ background: "rgba(212,175,55,0.05)", border: `1px solid rgba(212,175,55,0.15)`, borderRadius: "12px", padding: "24px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
                       <div style={{ fontSize: "20px" }}>📗</div>
-                      <div style={{ flex: 1, fontSize: "12.5px", fontWeight: 500, color: t1 }}>{upFile?.name}</div>
-                      <span style={{ fontFamily: "monospace", fontSize: "12px", color: accent }}>{progress}%</span>
+                      <div style={{ flex: 1, fontSize: "15px", fontWeight: 500, color: t1 }}>{upFile?.name}</div>
+                      <span style={{ fontFamily: "monospace", fontSize: "14px", color: accent }}>{progress}%</span>
                     </div>
                     <div style={{ width: "100%", height: "3px", borderRadius: "2px", background: elev, overflow: "hidden", marginBottom: "8px" }}>
                       <div style={{ height: "100%", width: `${progress}%`, borderRadius: "2px", background: `linear-gradient(90deg,${accent},${green})`, transition: "width .2s" }} />
                     </div>
-                    <div style={{ fontSize: "11px", color: t3 }}>{tx.uploading}</div>
+                    <div style={{ fontSize: "13px", color: t3 }}>{tx.uploading}</div>
                   </div>
                 )}
 
@@ -715,7 +702,7 @@ export function AdminPanel() {
                   <div style={{ background: "rgba(239,68,68,0.07)", border: `1px solid rgba(239,68,68,0.2)`, borderRadius: "12px", padding: "28px", textAlign: "center" }}>
                     <div style={{ fontSize: "36px", marginBottom: "10px" }}>❌</div>
                     <div style={{ fontSize: "15px", fontWeight: 700, color: t1, marginBottom: "6px" }}>{lang === "es" ? "Error al subir" : "Upload failed"}</div>
-                    <div style={{ fontSize: "12px", color: "#fca5a5", marginBottom: "18px" }}>{upError}</div>
+                    <div style={{ fontSize: "14px", color: "#fca5a5", marginBottom: "18px" }}>{upError}</div>
                     <button onClick={() => { setUpState("idle"); setUpError(null); }}
                       style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 600, padding: "10px 24px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer" }}>
                       {lang === "es" ? "Reintentar" : "Try again"}
@@ -741,7 +728,7 @@ export function AdminPanel() {
                       </div>
                     )}
                     <div style={{ display: "flex", gap: "9px", justifyContent: "center", flexWrap: "wrap" }}>
-                      <button onClick={resetUp} style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 24px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer" }}>{tx.subirMas}</button>
+                      <button onClick={resetUp} style={{ fontFamily: "inherit", fontSize: "15px", fontWeight: 600, padding: "11px 24px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer" }}>{tx.subirMas}</button>
                       <button onClick={() => navTo("sellos")} style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 500, padding: "10px 20px", background: "transparent", color: t2, border: `1px solid ${bd}`, borderRadius: "8px", cursor: "pointer" }}>{tx.verSellos}</button>
                     </div>
                   </div>
@@ -756,14 +743,14 @@ export function AdminPanel() {
           <div>
             <EyeBrow text={tx.bulk} />
             <div style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-.035em", marginBottom: "3px", color: t1 }}>{tx.bulkTitle}</div>
-            <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.bulkSub}</div>
+            <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.bulkSub}</div>
 
             {/* IDLE / DRAGGING: drop zone */}
             {(bulkState === "idle" || bulkState === "dragging") && (
               <div>
                 {/* Default quarter + year */}
                 <div style={{ ...cardStyle, padding: "16px 20px", marginBottom: "18px" }}>
-                  <div style={{ fontSize: "11px", color: t3, letterSpacing: ".06em", textTransform: "uppercase" as const, marginBottom: "10px" }}>{tx.bulkDefaultsLabel}</div>
+                  <div style={{ fontSize: "13px", color: t3, letterSpacing: ".06em", textTransform: "uppercase" as const, marginBottom: "10px" }}>{tx.bulkDefaultsLabel}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                     <div>
                       <label style={{ fontSize: "9px", color: t3, letterSpacing: ".08em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>{tx.bulkTrimLabel}</label>
@@ -789,7 +776,7 @@ export function AdminPanel() {
                     onChange={e => { setBulkState("idle"); handleBulkFiles(e.target.files); }} />
                   <div style={{ fontSize: "46px", marginBottom: "12px", lineHeight: 1 }}>📦</div>
                   <div style={{ fontSize: "19px", fontWeight: 800, marginBottom: "6px", color: t1 }}>{bulkState === "dragging" ? tx.bulkDropActive : tx.bulkDropTitle}</div>
-                  <div style={{ fontSize: "12.5px", color: t2, fontWeight: 300, maxWidth: "400px", margin: "0 auto 16px" }}>{tx.bulkDropSub}</div>
+                  <div style={{ fontSize: "15px", color: t2, fontWeight: 300, maxWidth: "400px", margin: "0 auto 16px" }}>{tx.bulkDropSub}</div>
                   <button onClick={e => { e.stopPropagation(); bulkFileRef.current?.click(); }}
                     style={{ fontFamily: "inherit", fontSize: "14px", fontWeight: 600, padding: "12px 30px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
                     {tx.bulkSelectBtn}
@@ -804,7 +791,7 @@ export function AdminPanel() {
             {bulkState === "previewing" && (
               <div>
                 <div style={{ fontSize: "14px", fontWeight: 700, color: t1, marginBottom: "4px" }}>{tx.bulkPreviewTitle}</div>
-                <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "14px" }}>
+                <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "14px" }}>
                   {bulkPreviews.length} {tx.bulkDropSub.split(" ").slice(-3).join(" ")}
                 </div>
                 {bulkPreviews.some(p => p.isDuplicate) && (
@@ -829,11 +816,11 @@ export function AdminPanel() {
                     <tbody>
                       {bulkPreviews.map((p, i) => (
                         <tr key={i} style={{ borderBottom: `1px solid ${bd}`, background: p.isDuplicate ? "rgba(245,158,11,0.04)" : "transparent" }}>
-                          <td style={{ padding: "9px 14px", fontSize: "11px", color: t1, maxWidth: "240px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                          <td style={{ padding: "9px 14px", fontSize: "13px", color: t1, maxWidth: "240px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
                             {p.isDuplicate && <span title={lang === "es" ? "Ya existe en el sistema" : "Already exists"} style={{ marginRight: "6px", cursor: "help" }}>⚠️</span>}
                             {p.file.name}
                           </td>
-                          <td style={{ padding: "9px 14px", fontSize: "11px", color: p.sello ? t1 : "#ef4444" }}>{p.sello || tx.bulkUnknown}</td>
+                          <td style={{ padding: "9px 14px", fontSize: "13px", color: p.sello ? t1 : "#ef4444" }}>{p.sello || tx.bulkUnknown}</td>
                           <td style={{ padding: "9px 14px" }}>
                             {p.tipo === "unknown" ? (
                               <span style={{ fontFamily: "monospace", fontSize: "8px", padding: "2px 7px", borderRadius: "4px", background: "rgba(239,68,68,0.08)", color: "#ff8888", border: "1px solid rgba(239,68,68,0.2)" }}>{tx.bulkUnknown}</span>
@@ -843,8 +830,8 @@ export function AdminPanel() {
                               </span>
                             )}
                           </td>
-                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "11px", color: t2 }}>Q{p.trimestre}</td>
-                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "11px", color: t2 }}>{p.anio}</td>
+                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "13px", color: t2 }}>Q{p.trimestre}</td>
+                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "13px", color: t2 }}>{p.anio}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -856,7 +843,7 @@ export function AdminPanel() {
                     {tx.bulkCancelBtn}
                   </button>
                   <button onClick={doBulkUpload}
-                    style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 26px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
+                    style={{ fontFamily: "inherit", fontSize: "15px", fontWeight: 600, padding: "11px 26px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
                     {tx.bulkConfirmBtn.replace("{n}", String(bulkPreviews.length))}
                   </button>
                 </div>
@@ -868,7 +855,7 @@ export function AdminPanel() {
               <div style={{ background: "rgba(212,175,55,0.05)", border: `1px solid rgba(212,175,55,0.15)`, borderRadius: "12px", padding: "36px", textAlign: "center" }}>
                 <div style={{ fontSize: "38px", marginBottom: "14px" }}>⏳</div>
                 <div style={{ fontSize: "15px", fontWeight: 700, color: t1, marginBottom: "6px" }}>{tx.bulkUploading}</div>
-                <div style={{ fontSize: "12px", color: t2 }}>{bulkPreviews.length} {lang === "es" ? "archivos en cola…" : "files in queue…"}</div>
+                <div style={{ fontSize: "14px", color: t2 }}>{bulkPreviews.length} {lang === "es" ? "archivos en cola…" : "files in queue…"}</div>
               </div>
             )}
 
@@ -899,8 +886,8 @@ export function AdminPanel() {
                     <tbody>
                       {bulkResponse.results.map((r: BulkUploadResult, i: number) => (
                         <tr key={i} style={{ borderBottom: `1px solid ${bd}` }}>
-                          <td style={{ padding: "9px 14px", fontSize: "11px", color: t1, maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{r.filename}</td>
-                          <td style={{ padding: "9px 14px", fontSize: "11px", color: t2 }}>{r.sello ?? "—"}</td>
+                          <td style={{ padding: "9px 14px", fontSize: "13px", color: t1, maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{r.filename}</td>
+                          <td style={{ padding: "9px 14px", fontSize: "13px", color: t2 }}>{r.sello ?? "—"}</td>
                           <td style={{ padding: "9px 14px" }}>
                             {r.tipo ? (
                               <span style={{ fontFamily: "monospace", fontSize: "8px", padding: "2px 7px", borderRadius: "4px", background: r.tipo === "streaming" ? "rgba(212,175,55,0.1)" : "rgba(255,96,96,0.08)", color: r.tipo === "streaming" ? accent : "#ff8888", border: r.tipo === "streaming" ? `1px solid rgba(212,175,55,0.2)` : "1px solid rgba(255,96,96,0.18)" }}>
@@ -913,7 +900,7 @@ export function AdminPanel() {
                             {r.status === "error" && <span title={r.error} style={{ fontFamily: "monospace", fontSize: "9px", padding: "3px 8px", borderRadius: "5px", background: "rgba(239,68,68,0.08)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)", cursor: "help" }}>{tx.bulkStatusError}</span>}
                             {r.status === "skipped" && <span style={{ fontFamily: "monospace", fontSize: "9px", padding: "3px 8px", borderRadius: "5px", background: "rgba(245,158,11,0.07)", color: amber, border: "1px solid rgba(245,158,11,0.2)" }}>{tx.bulkStatusSkipped}</span>}
                           </td>
-                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "11px", color: r.status === "ok" ? t1 : t3 }}>
+                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "13px", color: r.status === "ok" ? t1 : t3 }}>
                             {r.status === "ok" && r.total_regalias != null ? fmtCurrency(r.total_regalias) : "—"}
                           </td>
                         </tr>
@@ -923,7 +910,7 @@ export function AdminPanel() {
                 </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button onClick={resetBulk}
-                    style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 26px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
+                    style={{ fontFamily: "inherit", fontSize: "15px", fontWeight: 600, padding: "11px 26px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
                     {tx.bulkResetBtn}
                   </button>
                 </div>
@@ -939,10 +926,10 @@ export function AdminPanel() {
               <div>
                 <EyeBrow text={lang === "es" ? "Gestión de Sellos" : "Label Management"} />
                 <div style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-.035em", marginBottom: "3px", color: t1 }}>{tx.sellosTitle}</div>
-                <div style={{ fontSize: "12px", color: t2, fontWeight: 300 }}>{tx.sellosSub}</div>
+                <div style={{ fontSize: "14px", color: t2, fontWeight: 300 }}>{tx.sellosSub}</div>
               </div>
               <button onClick={() => setShowNewSello(v => !v)}
-                style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 24px", background: showNewSello ? elev : accent, color: showNewSello ? t2 : "#020a04", border: showNewSello ? `1px solid ${bd}` : "none", borderRadius: "8px", cursor: "pointer", marginTop: "4px", boxShadow: showNewSello ? "none" : "0 0 22px rgba(212,175,55,0.25)" }}>
+                style={{ fontFamily: "inherit", fontSize: "15px", fontWeight: 600, padding: "11px 24px", background: showNewSello ? elev : accent, color: showNewSello ? t2 : "#020a04", border: showNewSello ? `1px solid ${bd}` : "none", borderRadius: "8px", cursor: "pointer", marginTop: "4px", boxShadow: showNewSello ? "none" : "0 0 22px rgba(212,175,55,0.25)" }}>
                 {showNewSello ? (lang === "es" ? "Cancelar" : "Cancel") : tx.agregarSello}
               </button>
             </div>
@@ -954,7 +941,7 @@ export function AdminPanel() {
                   {lang === "es" ? "Nuevo Sello" : "New Label"}
                 </div>
                 {newSelloErr && (
-                  <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "6px", padding: "8px 12px", color: "#fca5a5", fontSize: "11px", marginBottom: "12px" }}>{newSelloErr}</div>
+                  <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "6px", padding: "8px 12px", color: "#fca5a5", fontSize: "13px", marginBottom: "12px" }}>{newSelloErr}</div>
                 )}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "12px" }}>
                   {[
@@ -997,8 +984,8 @@ export function AdminPanel() {
                     <div style={{ padding: "18px 18px 12px", display: "flex", alignItems: "flex-start", gap: "11px" }}>
                       <div style={{ width: "42px", height: "42px", borderRadius: "10px", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 800, color: "#fff", background: labelGrad(s.iniciales ?? "?") }}>{s.iniciales ?? "?"}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: "14.5px", fontWeight: 700, marginBottom: "2px", color: t1 }}>{s.nombre}</div>
-                        <div style={{ fontSize: "10.5px", color: t3, fontWeight: 300 }}>{s.email}</div>
+                        <div style={{ fontSize: "16px", fontWeight: 700, marginBottom: "2px", color: t1 }}>{s.nombre}</div>
+                        <div style={{ fontSize: "13px", color: t3, fontWeight: 300 }}>{s.email}</div>
                       </div>
                       {statusBadge(s.estado)}
                     </div>
@@ -1015,19 +1002,19 @@ export function AdminPanel() {
                       </div>
                       <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
                         <button onClick={() => { setSelSello(s); navTo("subir"); }}
-                          style={{ flex: 1, fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 8px", borderRadius: "6px", cursor: "pointer", border: "none", background: accent, color: "#020a04", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", minWidth: "60px" }}>
+                          style={{ flex: 1, fontFamily: "inherit", fontSize: "13px", fontWeight: 600, padding: "7px 8px", borderRadius: "6px", cursor: "pointer", border: "none", background: accent, color: "#020a04", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", minWidth: "60px" }}>
                           📤 {tx.subirArchivos}
                         </button>
                         <button onClick={() => handleOpenEdit(s)}
-                          style={{ fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: elev, color: t2, border: `1px solid ${bd}` }}>
+                          style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: elev, color: t2, border: `1px solid ${bd}` }}>
                           ✏️
                         </button>
                         <button onClick={() => handleToggleEstado(s)}
-                          style={{ fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: s.estado === "activo" ? "rgba(245,158,11,0.1)" : "rgba(212,175,55,0.1)", color: s.estado === "activo" ? amber : accent, border: `1px solid ${s.estado === "activo" ? "rgba(245,158,11,0.25)" : bdA}` }}>
+                          style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: s.estado === "activo" ? "rgba(245,158,11,0.1)" : "rgba(212,175,55,0.1)", color: s.estado === "activo" ? amber : accent, border: `1px solid ${s.estado === "activo" ? "rgba(245,158,11,0.25)" : bdA}` }}>
                           {s.estado === "activo" ? "⏸" : "▶"}
                         </button>
                         <button onClick={() => handleHardDelete(s)}
-                          style={{ fontFamily: "inherit", fontSize: "11px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: "rgba(239,68,68,0.08)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>
+                          style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 600, padding: "7px 9px", borderRadius: "6px", cursor: "pointer", background: "rgba(239,68,68,0.08)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>
                           🗑
                         </button>
                       </div>
@@ -1041,8 +1028,8 @@ export function AdminPanel() {
                   onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bdA; el.style.background = ggl; }}
                   onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bd; el.style.background = card; }}>
                   <div style={{ fontSize: "26px" }}>＋</div>
-                  <div style={{ fontSize: "13.5px", fontWeight: 700, color: t1 }}>{tx.agregarNuevo}</div>
-                  <div style={{ fontSize: "11px", color: t3, fontWeight: 300, textAlign: "center" }}>{tx.agregarNuevoDesc}</div>
+                  <div style={{ fontSize: "15px", fontWeight: 700, color: t1 }}>{tx.agregarNuevo}</div>
+                  <div style={{ fontSize: "13px", color: t3, fontWeight: 300, textAlign: "center" }}>{tx.agregarNuevoDesc}</div>
                 </div>
               </div>
             )}
@@ -1054,24 +1041,24 @@ export function AdminPanel() {
           <div>
             <EyeBrow text={lang === "es" ? "Historial" : "History"} />
             <div style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-.035em", marginBottom: "3px", color: t1 }}>{tx.reportesTitle}</div>
-            <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.reportesSub}</div>
+            <div style={{ fontSize: "14px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.reportesSub}</div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
-              <input type="text" placeholder={tx.buscarPlaceholder} value={search} onChange={e => setSearch(e.target.value)}
-                style={{ fontFamily: "inherit", fontSize: "12px", background: card, border: `1px solid ${bd}`, color: t1, borderRadius: "7px", padding: "7px 12px", width: "185px", outline: "none" }} />
+              <input type="text" placeholder={tx.buscarPlaceholder} value={search} onChange={e => { setSearch(e.target.value); setReportPage(1); }}
+                style={{ fontFamily: "inherit", fontSize: "14px", background: card, border: `1px solid ${bd}`, color: t1, borderRadius: "7px", padding: "7px 12px", width: "185px", outline: "none" }} />
 
-              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} style={selectStyle}>
+              <select value={filterYear} onChange={e => { setFilterYear(e.target.value); setReportPage(1); }} style={selectStyle}>
                 <option value="all" style={{ backgroundColor: card }}>{tx.allYears}</option>
                 {reportYears.map(y => <option key={y} value={y} style={{ backgroundColor: card }}>{y}</option>)}
               </select>
 
-              <select value={filterLabelName} onChange={e => setFilterLabel(e.target.value)} style={selectStyle}>
+              <select value={filterLabelName} onChange={e => { setFilterLabel(e.target.value); setReportPage(1); }} style={selectStyle}>
                 <option value="all" style={{ backgroundColor: card }}>{tx.allLabels}</option>
                 {reportLabels.map(l => <option key={l} value={l} style={{ backgroundColor: card }}>{l}</option>)}
               </select>
 
               {[{ k: "all", l: tx.todos }, { k: "streaming", l: "Streaming" }, { k: "youtube", l: "YouTube" }].map(f => (
-                <button key={f.k} onClick={() => setFilterType(f.k)}
+                <button key={f.k} onClick={() => { setFilterType(f.k); setReportPage(1); }}
                   style={{ fontFamily: "monospace", fontSize: "9px", letterSpacing: ".07em", padding: "6px 13px", borderRadius: "16px", cursor: "pointer", border: filterType === f.k ? `1px solid ${accent}` : `1px solid ${bd}`, color: filterType === f.k ? accent : t3, background: filterType === f.k ? ggl : "none", transition: "all .18s" }}>
                   {f.l}
                 </button>
@@ -1085,39 +1072,84 @@ export function AdminPanel() {
                 {lang === "es" ? "No se encontraron reportes." : "No reports found."}
               </div>
             ) : (
-              filteredReports.map(r => (
-                <div key={r.id}
-                  style={{ backgroundColor: card, border: `1px solid ${bd}`, borderRadius: "10px", display: "flex", alignItems: "center", gap: "13px", padding: "13px 17px", marginBottom: "6px", transition: "all .18s" }}
-                  onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(212,175,55,0.14)"; el.style.backgroundColor = elev; }}
-                  onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bd; el.style.backgroundColor = card; }}>
-                  <div style={{ fontSize: "22px", flexShrink: 0 }}>📗</div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="rsp-report-name" style={{ fontSize: "12.5px", fontWeight: 500, marginBottom: "3px", color: t1 }}>{r.nombre_archivo}</div>
-                    <div style={{ display: "flex", gap: "7px", alignItems: "center", flexWrap: "wrap" }}>
-                      <span style={{ fontFamily: "monospace", fontSize: "8px", padding: "2px 7px", borderRadius: "4px", background: r.tipo === "streaming" ? "rgba(212,175,55,0.1)" : "rgba(255,96,96,0.08)", color: r.tipo === "streaming" ? accent : "#ff8888", border: r.tipo === "streaming" ? `1px solid rgba(212,175,55,0.2)` : "1px solid rgba(255,96,96,0.18)" }}>
-                        {r.tipo === "streaming" ? "Streaming" : "YouTube"}
-                      </span>
-                      <span style={{ fontSize: "10.5px", color: t2 }}>{r.sello_nombre}</span>
-                      <span style={{ fontFamily: "monospace", fontSize: "8.5px", color: t3, background: elev, padding: "2px 6px", borderRadius: "4px" }}>Q{r.trimestre} {r.anio}</span>
+              <>
+                {pagedReports.map(r => (
+                  <div key={r.id}
+                    style={{ backgroundColor: card, border: `1px solid ${bd}`, borderRadius: "10px", display: "flex", alignItems: "center", gap: "13px", padding: "13px 17px", marginBottom: "6px", transition: "all .18s" }}
+                    onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(212,175,55,0.14)"; el.style.backgroundColor = elev; }}
+                    onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bd; el.style.backgroundColor = card; }}>
+                    <div style={{ fontSize: "22px", flexShrink: 0 }}>📗</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="rsp-report-name" style={{ fontSize: "15px", fontWeight: 500, marginBottom: "3px", color: t1 }}>{r.nombre_archivo}</div>
+                      <div style={{ display: "flex", gap: "7px", alignItems: "center", flexWrap: "wrap" }}>
+                        <span style={{ fontFamily: "monospace", fontSize: "8px", padding: "2px 7px", borderRadius: "4px", background: r.tipo === "streaming" ? "rgba(212,175,55,0.1)" : "rgba(255,96,96,0.08)", color: r.tipo === "streaming" ? accent : "#ff8888", border: r.tipo === "streaming" ? `1px solid rgba(212,175,55,0.2)` : "1px solid rgba(255,96,96,0.18)" }}>
+                          {r.tipo === "streaming" ? "Streaming" : "YouTube"}
+                        </span>
+                        <span style={{ fontSize: "13px", color: t2 }}>{r.sello_nombre}</span>
+                        <span style={{ fontFamily: "monospace", fontSize: "8.5px", color: t3, background: elev, padding: "2px 6px", borderRadius: "4px" }}>Q{r.trimestre} {r.anio}</span>
+                      </div>
+                    </div>
+                    <div className="hide-on-mobile" style={{ fontFamily: "monospace", fontSize: "15px", color: t1, whiteSpace: "nowrap" }}>{fmtCurrency(r.total_regalias)}</div>
+                    <div style={{ display: "flex", gap: "5px", flexShrink: 0 }}>
+                      <button onClick={() => handleDownloadReport(r.id)}
+                        style={{ fontFamily: "monospace", fontSize: "9px", padding: "5px 10px", background: "transparent", border: `1px solid ${bd}`, color: t2, borderRadius: "5px", cursor: "pointer", transition: "all .18s" }}
+                        onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bdA; el.style.color = accent; el.style.background = ggl; }}
+                        onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bd; el.style.color = t2; el.style.background = "transparent"; }}>
+                        {tx.descargar}
+                      </button>
+                      <button onClick={() => handleDeleteReport(r.id)}
+                        style={{ fontFamily: "monospace", fontSize: "9px", padding: "5px 10px", background: "transparent", border: `1px solid ${bd}`, color: t2, borderRadius: "5px", cursor: "pointer", transition: "all .18s" }}
+                        onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(255,96,96,0.3)"; el.style.color = "#ff6060"; el.style.background = "rgba(255,96,96,0.06)"; }}
+                        onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bd; el.style.color = t2; el.style.background = "transparent"; }}>
+                        {tx.eliminar}
+                      </button>
                     </div>
                   </div>
-                  <div className="hide-on-mobile" style={{ fontFamily: "monospace", fontSize: "12.5px", color: t1, whiteSpace: "nowrap" }}>{fmtCurrency(r.total_regalias)}</div>
-                  <div style={{ display: "flex", gap: "5px", flexShrink: 0 }}>
-                    <button onClick={() => handleDownloadReport(r.id)}
-                      style={{ fontFamily: "monospace", fontSize: "9px", padding: "5px 10px", background: "transparent", border: `1px solid ${bd}`, color: t2, borderRadius: "5px", cursor: "pointer", transition: "all .18s" }}
-                      onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bdA; el.style.color = accent; el.style.background = ggl; }}
-                      onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bd; el.style.color = t2; el.style.background = "transparent"; }}>
-                      {tx.descargar}
-                    </button>
-                    <button onClick={() => handleDeleteReport(r.id)}
-                      style={{ fontFamily: "monospace", fontSize: "9px", padding: "5px 10px", background: "transparent", border: `1px solid ${bd}`, color: t2, borderRadius: "5px", cursor: "pointer", transition: "all .18s" }}
-                      onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(255,96,96,0.3)"; el.style.color = "#ff6060"; el.style.background = "rgba(255,96,96,0.06)"; }}
-                      onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = bd; el.style.color = t2; el.style.background = "transparent"; }}>
-                      {tx.eliminar}
-                    </button>
+                ))}
+
+                {/* Paginación */}
+                {totalReportPages > 1 && (
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "16px", padding: "12px 4px" }}>
+                    <div style={{ fontFamily: "monospace", fontSize: "10px", color: t3 }}>
+                      {lang === "es"
+                        ? `${(reportPage - 1) * REPORTS_PER_PAGE + 1}–${Math.min(reportPage * REPORTS_PER_PAGE, filteredReports.length)} de ${filteredReports.length}`
+                        : `${(reportPage - 1) * REPORTS_PER_PAGE + 1}–${Math.min(reportPage * REPORTS_PER_PAGE, filteredReports.length)} of ${filteredReports.length}`}
+                    </div>
+                    <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                      <button onClick={() => setReportPage(1)} disabled={reportPage === 1}
+                        style={{ fontFamily: "monospace", fontSize: "10px", padding: "5px 9px", background: "transparent", border: `1px solid ${bd}`, color: reportPage === 1 ? t3 : t2, borderRadius: "5px", cursor: reportPage === 1 ? "not-allowed" : "pointer", opacity: reportPage === 1 ? 0.4 : 1 }}>
+                        «
+                      </button>
+                      <button onClick={() => setReportPage(p => Math.max(1, p - 1))} disabled={reportPage === 1}
+                        style={{ fontFamily: "monospace", fontSize: "10px", padding: "5px 9px", background: "transparent", border: `1px solid ${bd}`, color: reportPage === 1 ? t3 : t2, borderRadius: "5px", cursor: reportPage === 1 ? "not-allowed" : "pointer", opacity: reportPage === 1 ? 0.4 : 1 }}>
+                        ‹
+                      </button>
+                      {Array.from({ length: totalReportPages }, (_, i) => i + 1)
+                        .filter(p => p === 1 || p === totalReportPages || Math.abs(p - reportPage) <= 1)
+                        .reduce<(number | "…")[]>((acc, p, i, arr) => {
+                          if (i > 0 && (p as number) - (arr[i - 1] as number) > 1) acc.push("…");
+                          acc.push(p);
+                          return acc;
+                        }, [])
+                        .map((p, i) => p === "…"
+                          ? <span key={`el-${i}`} style={{ fontFamily: "monospace", fontSize: "10px", color: t3, padding: "0 4px" }}>…</span>
+                          : <button key={p} onClick={() => setReportPage(p as number)}
+                              style={{ fontFamily: "monospace", fontSize: "10px", padding: "5px 9px", border: `1px solid ${reportPage === p ? accent : bd}`, background: reportPage === p ? ggl : "transparent", color: reportPage === p ? accent : t2, borderRadius: "5px", cursor: "pointer", fontWeight: reportPage === p ? 700 : 400 }}>
+                              {p}
+                            </button>
+                        )}
+                      <button onClick={() => setReportPage(p => Math.min(totalReportPages, p + 1))} disabled={reportPage === totalReportPages}
+                        style={{ fontFamily: "monospace", fontSize: "10px", padding: "5px 9px", background: "transparent", border: `1px solid ${bd}`, color: reportPage === totalReportPages ? t3 : t2, borderRadius: "5px", cursor: reportPage === totalReportPages ? "not-allowed" : "pointer", opacity: reportPage === totalReportPages ? 0.4 : 1 }}>
+                        ›
+                      </button>
+                      <button onClick={() => setReportPage(totalReportPages)} disabled={reportPage === totalReportPages}
+                        style={{ fontFamily: "monospace", fontSize: "10px", padding: "5px 9px", background: "transparent", border: `1px solid ${bd}`, color: reportPage === totalReportPages ? t3 : t2, borderRadius: "5px", cursor: reportPage === totalReportPages ? "not-allowed" : "pointer", opacity: reportPage === totalReportPages ? 0.4 : 1 }}>
+                        »
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
+                )}
+              </>
             )}
           </div>
         )}
@@ -1135,14 +1167,14 @@ export function AdminPanel() {
                 <div style={{ fontSize: "16px", fontWeight: 800, color: t1 }}>
                   {lang === "es" ? "Editar Sello" : "Edit Label"}
                 </div>
-                <div style={{ fontSize: "11px", color: t3, marginTop: "2px" }}>{editSello.nombre}</div>
+                <div style={{ fontSize: "13px", color: t3, marginTop: "2px" }}>{editSello.nombre}</div>
               </div>
               <button onClick={() => setEditSello(null)}
                 style={{ background: "transparent", border: "none", color: t3, fontSize: "20px", cursor: "pointer", lineHeight: 1 }}>✕</button>
             </div>
 
             {editErr && (
-              <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "6px", padding: "8px 12px", color: "#fca5a5", fontSize: "11px", marginBottom: "14px" }}>{editErr}</div>
+              <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "6px", padding: "8px 12px", color: "#fca5a5", fontSize: "13px", marginBottom: "14px" }}>{editErr}</div>
             )}
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "14px" }}>
@@ -1161,7 +1193,7 @@ export function AdminPanel() {
                     type={f.type}
                     value={(editForm as Record<string, string>)[f.key]}
                     onChange={e => setEditForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                    style={{ fontFamily: "inherit", fontSize: "12px", background: "#0a0a0a", border: `1px solid ${bd}`, color: t1, borderRadius: "7px", padding: "8px 12px", outline: "none", width: "100%", boxSizing: "border-box" as const }}
+                    style={{ fontFamily: "inherit", fontSize: "14px", background: "#0a0a0a", border: `1px solid ${bd}`, color: t1, borderRadius: "7px", padding: "8px 12px", outline: "none", width: "100%", boxSizing: "border-box" as const }}
                   />
                 </div>
               ))}

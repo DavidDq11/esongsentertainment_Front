@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
 import { authApi } from "../services/api";
+import logoImg from "../../assets/logo.webp";
 
 const G1   = "#d4af37";
 const G2   = "#f5c842";
@@ -105,20 +106,11 @@ export function LoginPage() {
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <a href="/" style={{ textDecoration: "none" }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "52px",
-                height: "52px",
-                borderRadius: "50%",
-                background: `linear-gradient(135deg, ${G1}, ${G2})`,
-                marginBottom: "16px",
-              }}
-            >
-              <span style={{ color: "#000", fontSize: "1.4rem", fontWeight: 900, fontStyle: "italic" }}>e</span>
-            </div>
+            <img
+              src={logoImg}
+              alt="eSongs Entertainment"
+              style={{ height: "64px", width: "auto", marginBottom: "16px", display: "inline-block" }}
+            />
           </a>
           <h1 style={{ color: T1, fontSize: "1.6rem", fontWeight: 800, margin: 0, letterSpacing: "-0.03em" }}>
             {t.title}

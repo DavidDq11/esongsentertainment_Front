@@ -136,7 +136,7 @@ export function LabelsPortal() {
               style={{
                 display: "flex", alignItems: "center", gap: 10,
                 width: "100%", padding: "9px 12px", borderRadius: 8,
-                border: "none", cursor: "pointer", fontSize: "0.85rem",
+                border: "none", cursor: "pointer", fontSize: "1rem",
                 fontWeight: active ? 600 : 400,
                 backgroundColor: active ? "rgba(212,175,55,0.12)" : "transparent",
                 color: active ? accent : t2,
@@ -172,10 +172,10 @@ export function LabelsPortal() {
             background: `linear-gradient(135deg, ${amber}40, ${amber}20)`,
             border: `1px solid ${amber}40`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "0.75rem", flexShrink: 0,
+            fontSize: "0.88rem", flexShrink: 0,
           }}>{initials}</div>
           <div style={{ minWidth: 0 }}>
-            <div style={{ color: t1, fontSize: "0.78rem", fontWeight: 600, lineHeight: 1.2 }}>{labelName}</div>
+            <div style={{ color: t1, fontSize: "0.92rem", fontWeight: 600, lineHeight: 1.2 }}>{labelName}</div>
             <div style={{ color: t3, fontSize: "0.7rem" }}>{tx.cuentaSello}</div>
           </div>
         </div>
@@ -186,7 +186,7 @@ export function LabelsPortal() {
   if (loading) {
     return (
       <div style={{ display: "flex", minHeight: "calc(100vh - 73px)", backgroundColor: bg, alignItems: "center", justifyContent: "center" }}>
-        <div style={{ color: t3, fontSize: "0.9rem" }}>{lang === "es" ? "Cargando…" : "Loading…"}</div>
+        <div style={{ color: t3, fontSize: "1rem" }}>{lang === "es" ? "Cargando…" : "Loading…"}</div>
       </div>
     );
   }
@@ -194,7 +194,7 @@ export function LabelsPortal() {
   if (error) {
     return (
       <div style={{ display: "flex", minHeight: "calc(100vh - 73px)", backgroundColor: bg, alignItems: "center", justifyContent: "center" }}>
-        <div style={{ color: "#fca5a5", fontSize: "0.9rem" }}>{error}</div>
+        <div style={{ color: "#fca5a5", fontSize: "1rem" }}>{error}</div>
       </div>
     );
   }
@@ -210,7 +210,7 @@ export function LabelsPortal() {
         <h1 style={{ color: t1, fontSize: "1.6rem", fontWeight: 600, margin: 0, lineHeight: 1.2 }}>
           {tx.portalWelcome}
         </h1>
-        <p style={{ color: t3, fontSize: "0.875rem", marginTop: 6 }}>{tx.portalWelcomeSub}</p>
+        <p style={{ color: t3, fontSize: "1.05rem", marginTop: 6 }}>{tx.portalWelcomeSub}</p>
       </div>
 
       <div className="rsp-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 28 }}>
@@ -226,7 +226,7 @@ export function LabelsPortal() {
             border: `1px solid ${m.color === null ? bdA : bd}`,
             borderRadius: 14, padding: "20px 22px",
           }}>
-            <div style={{ color: t3, fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+            <div style={{ color: t3, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
               {m.label}
             </div>
             <div style={{
@@ -239,11 +239,11 @@ export function LabelsPortal() {
               {m.amount}
             </div>
             {m.periodo && (
-              <div style={{ color: accent, fontSize: "0.72rem", fontWeight: 600, marginTop: 5, letterSpacing: "0.03em" }}>
+              <div style={{ color: accent, fontSize: "0.85rem", fontWeight: 600, marginTop: 5, letterSpacing: "0.03em" }}>
                 {m.periodo}
               </div>
             )}
-            <div style={{ color: t3, fontSize: "0.72rem", marginTop: 3 }}>{m.sub}</div>
+            <div style={{ color: t3, fontSize: "0.85rem", marginTop: 3 }}>{m.sub}</div>
           </div>
         ))}
       </div>
@@ -251,13 +251,13 @@ export function LabelsPortal() {
       <div className="rsp-charts-row" style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 16, marginBottom: 28 }}>
         <div style={{ background: card, border: `1px solid ${bd}`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ marginBottom: 18 }}>
-            <div style={{ color: t1, fontSize: "0.95rem", fontWeight: 600 }}>
+            <div style={{ color: t1, fontSize: "1.08rem", fontWeight: 600 }}>
               {tx.top5Title}{periodoLabel ? ` — ${periodoLabel}` : ""}
             </div>
-            <div style={{ color: t3, fontSize: "0.78rem", marginTop: 2 }}>{tx.top5Sub}</div>
+            <div style={{ color: t3, fontSize: "0.92rem", marginTop: 2 }}>{tx.top5Sub}</div>
           </div>
           {topSongs.length === 0 ? (
-            <div style={{ color: t3, fontSize: "0.85rem", textAlign: "center", padding: "24px 0" }}>
+            <div style={{ color: t3, fontSize: "1rem", textAlign: "center", padding: "24px 0" }}>
               {lang === "es" ? "Sin datos de canciones aún." : "No song data yet."}
             </div>
           ) : (
@@ -266,15 +266,15 @@ export function LabelsPortal() {
                 <div key={song.titulo + i}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ color: i === 0 ? amber : t3, fontSize: "0.72rem", fontWeight: 700, width: 16 }}>
+                      <span style={{ color: i === 0 ? amber : t3, fontSize: "0.85rem", fontWeight: 700, width: 16 }}>
                         {i + 1}
                       </span>
                       <div>
-                        <div style={{ color: t1, fontSize: "0.82rem", fontWeight: 500 }}>{song.titulo}</div>
+                        <div style={{ color: t1, fontSize: "1.05rem", fontWeight: 500 }}>{song.titulo}</div>
                         <div style={{ color: t3, fontSize: "0.7rem" }}>{song.artista}</div>
                       </div>
                     </div>
-                    <span style={{ color: t2, fontSize: "0.78rem" }}>{Number(song.reproducciones).toLocaleString()}</span>
+                    <span style={{ color: t2, fontSize: "0.92rem" }}>{Number(song.reproducciones).toLocaleString()}</span>
                   </div>
                   <div style={{ height: 5, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
                     <div style={{
@@ -295,8 +295,8 @@ export function LabelsPortal() {
 
         <div style={{ background: card, border: `1px solid ${bd}`, borderRadius: 14, padding: "22px 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
           <div style={{ alignSelf: "flex-start", marginBottom: 16 }}>
-            <div style={{ color: t1, fontSize: "0.95rem", fontWeight: 600 }}>{tx.distribucion}</div>
-            <div style={{ color: t3, fontSize: "0.78rem", marginTop: 2 }}>{tx.distSub}</div>
+            <div style={{ color: t1, fontSize: "1.08rem", fontWeight: 600 }}>{tx.distribucion}</div>
+            <div style={{ color: t3, fontSize: "0.92rem", marginTop: 2 }}>{tx.distSub}</div>
           </div>
           {(() => {
             const total = resumen?.total ?? 0;
@@ -328,10 +328,10 @@ export function LabelsPortal() {
                       <div style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: item.color, flexShrink: 0 }} />
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <span style={{ color: t2, fontSize: "0.78rem" }}>{item.label}</span>
-                          <span style={{ color: t2, fontSize: "0.78rem" }}>{item.pct}</span>
+                          <span style={{ color: t2, fontSize: "0.92rem" }}>{item.label}</span>
+                          <span style={{ color: t2, fontSize: "0.92rem" }}>{item.pct}</span>
                         </div>
-                        <div style={{ color: item.color, fontSize: "0.72rem" }}>{item.amount}</div>
+                        <div style={{ color: item.color, fontSize: "0.85rem" }}>{item.amount}</div>
                       </div>
                     </div>
                   ))}
@@ -356,8 +356,8 @@ export function LabelsPortal() {
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <div>
-          <div style={{ color: t1, fontSize: "0.95rem", fontWeight: 600, marginBottom: 4 }}>{tx.ctaTitle}</div>
-          <div style={{ color: t3, fontSize: "0.82rem" }}>
+          <div style={{ color: t1, fontSize: "1.08rem", fontWeight: 600, marginBottom: 4 }}>{tx.ctaTitle}</div>
+          <div style={{ color: t3, fontSize: "1.05rem" }}>
             {reports.length} {tx.ctaSub} · {tx.total} {fmtCurrency(resumen?.total ?? 0)}
           </div>
         </div>
@@ -366,7 +366,7 @@ export function LabelsPortal() {
           style={{
             padding: "10px 22px", borderRadius: 9, border: "none", cursor: "pointer",
             background: `linear-gradient(135deg, ${accent}, ${green})`,
-            color: "#000", fontWeight: 600, fontSize: "0.85rem", whiteSpace: "nowrap",
+            color: "#000", fontWeight: 600, fontSize: "1rem", whiteSpace: "nowrap",
           }}
         >
           {tx.ctaBtn}
@@ -382,7 +382,7 @@ export function LabelsPortal() {
         <h1 style={{ color: t1, fontSize: "1.6rem", fontWeight: 600, margin: 0, lineHeight: 1.2 }}>
           {tx.archivosTitle}
         </h1>
-        <p style={{ color: t3, fontSize: "0.875rem", marginTop: 6 }}>{tx.archivosSub}</p>
+        <p style={{ color: t3, fontSize: "1.05rem", marginTop: 6 }}>{tx.archivosSub}</p>
       </div>
 
       <div className="rsp-cta-wrap" style={{
@@ -393,7 +393,7 @@ export function LabelsPortal() {
         marginBottom: 24,
       }}>
         <div>
-          <div style={{ color: t3, fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+          <div style={{ color: t3, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
             {tx.totalRegalias}
           </div>
           <div style={{
@@ -423,7 +423,7 @@ export function LabelsPortal() {
           <div style={{
             padding: "6px 14px", borderRadius: 99,
             background: "rgba(212,175,55,0.12)", color: accent,
-            fontSize: "0.78rem", fontWeight: 600,
+            fontSize: "0.92rem", fontWeight: 600,
           }}>
             {filteredFiles.length} {tx.archivosDispo}
           </div>
@@ -462,8 +462,8 @@ export function LabelsPortal() {
               }}>📊</div>
 
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ color: t1, fontSize: "0.88rem", fontWeight: 500, marginBottom: 2 }}>{file.nombre_archivo}</div>
-                <div style={{ color: t3, fontSize: "0.75rem" }}>
+                <div style={{ color: t1, fontSize: "1.05rem", fontWeight: 500, marginBottom: 2 }}>{file.nombre_archivo}</div>
+                <div style={{ color: t3, fontSize: "0.88rem" }}>
                   {file.tipo} · Q{file.trimestre} {file.anio}
                 </div>
               </div>
@@ -484,7 +484,7 @@ export function LabelsPortal() {
                   border: `1px solid ${isDl ? "rgba(212,175,55,0.4)" : bdClr}`,
                   background: isDl ? "rgba(212,175,55,0.15)" : bgClr,
                   color: isDl ? accent : color,
-                  fontSize: "0.82rem", fontWeight: 600,
+                  fontSize: "1.05rem", fontWeight: 600,
                   cursor: isDl ? "not-allowed" : "pointer", transition: "all 0.2s",
                   whiteSpace: "nowrap", flexShrink: 0,
                 }}
@@ -502,7 +502,7 @@ export function LabelsPortal() {
         display: "flex", alignItems: "flex-start", gap: 12,
       }}>
         <span style={{ fontSize: "1rem", flexShrink: 0, marginTop: 1 }}>ℹ️</span>
-        <div style={{ color: t2, fontSize: "0.82rem", lineHeight: 1.5 }}>
+        <div style={{ color: t2, fontSize: "1.05rem", lineHeight: 1.5 }}>
           {tx.contactNote}{" "}
           <span style={{ color: accent }}>reportes@esongsent.com</span>. {tx.contactNote2}
         </div>

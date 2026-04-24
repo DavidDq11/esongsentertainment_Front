@@ -49,7 +49,7 @@ export function Layout() {
           <a href="/" className="flex items-center gap-3 group" style={{ textDecoration: "none" }}>
             <div className="relative">
               <div className="flex items-center justify-center">
-                <img src={logoImg} alt="eSongs" style={{ width: 48, height: 48, objectFit: "contain" }} className="md:!w-[62px] md:!h-[62px]" />
+                <img src={logoImg} alt="eSongs" style={{ width: 58, height: 58, objectFit: "contain" }} className="md:!w-[76px] md:!h-[76px]" />
               </div>
               <div
                 className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
