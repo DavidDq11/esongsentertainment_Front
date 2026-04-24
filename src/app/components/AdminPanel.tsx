@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
-import { sellosApi, reportesApi, storageApi, type Sello, type Reporte, type StorageInfo, type BulkUploadResult, type BulkUploadResponse } from "../services/api";
+import { authApi, sellosApi, reportesApi, storageApi, type Sello, type Reporte, type StorageInfo, type BulkUploadResult, type BulkUploadResponse } from "../services/api";
 import { T } from "../i18n";
 
 type AdminView  = "inicio" | "subir" | "sellos" | "reportes" | "bulk";
@@ -110,6 +110,12 @@ export function AdminPanel() {
   const [editForm,    setEditForm]    = useState({ nombre: "", representante: "", email: "", pais: "", telefono: "", iniciales: "", password: "" });
   const [editLoading, setEditLoading] = useState(false);
   const [editErr,     setEditErr]     = useState<string | null>(null);
+
+  // Delete confirm modal state
+  const [deleteSello,     setDeleteSello]     = useState<Sello | null>(null);
+  const [deletePassword,  setDeletePassword]  = useState("");
+  const [deleteLoading,   setDeleteLoading]   = useState(false);
+  const [deleteErr,       setDeleteErr]       = useState<string | null>(null);
 
   // Upload wizard state
   const [step,     setStep]    = useState<UploadStep>(1);
@@ -286,17 +292,32 @@ export function AdminPanel() {
     }
   };
 
-  const handleHardDelete = async (s: Sello) => {
-    const msg = lang === "es"
-      ? `⚠️ ELIMINAR "${s.nombre}" permanentemente?\n\nSe borrarán TODOS sus reportes y archivos de almacenamiento.\nEsta acción NO se puede deshacer.`
-      : `⚠️ Permanently DELETE "${s.nombre}"?\n\nALL reports and storage files will be erased.\nThis action CANNOT be undone.`;
-    if (!window.confirm(msg)) return;
+  const handleHardDelete = (s: Sello) => {
+    setDeleteSello(s);
+    setDeletePassword("");
+    setDeleteErr(null);
+  };
+
+  const confirmHardDelete = async () => {
+    if (!deleteSello || !user?.email) return;
+    setDeleteLoading(true);
+    setDeleteErr(null);
     try {
-      await sellosApi.remove(s.id);
-      setSellos(prev => prev.filter(x => x.id !== s.id));
+      await authApi.login(user.email, deletePassword);
+    } catch {
+      setDeleteErr(lang === "es" ? "Contraseña incorrecta." : "Incorrect password.");
+      setDeleteLoading(false);
+      return;
+    }
+    try {
+      await sellosApi.remove(deleteSello.id);
+      setSellos(prev => prev.filter(x => x.id !== deleteSello.id));
+      setDeleteSello(null);
       refreshData();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Error");
+      setDeleteErr(err instanceof Error ? err.message : "Error");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -1155,6 +1176,62 @@ export function AdminPanel() {
         )}
 
       </main>
+
+      {/* DELETE CONFIRM MODAL */}
+      {deleteSello && (
+        <div
+          onClick={e => { if (e.target === e.currentTarget) { setDeleteSello(null); setDeletePassword(""); setDeleteErr(null); } }}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.82)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ background: "#161616", border: "1px solid rgba(239,68,68,0.3)", borderRadius: "16px", padding: "32px", width: "100%", maxWidth: "460px", boxShadow: "0 24px 80px rgba(0,0,0,0.8)" }}>
+
+            <div style={{ textAlign: "center", marginBottom: "24px" }}>
+              <div style={{ fontSize: "42px", marginBottom: "12px" }}>⚠️</div>
+              <div style={{ fontSize: "18px", fontWeight: 800, color: "#ef4444", marginBottom: "8px" }}>
+                {lang === "es" ? "Eliminar sello permanentemente" : "Permanently delete label"}
+              </div>
+              <div style={{ fontSize: "14px", color: t2, lineHeight: 1.6 }}>
+                {lang === "es"
+                  ? <>Se eliminarán <strong style={{ color: t1 }}>todos los reportes y archivos</strong> de <strong style={{ color: "#ef4444" }}>{deleteSello.nombre}</strong>. Esta acción no se puede deshacer.</>
+                  : <>All reports and files for <strong style={{ color: "#ef4444" }}>{deleteSello.nombre}</strong> will be <strong style={{ color: t1 }}>permanently erased</strong>. This cannot be undone.</>}
+              </div>
+            </div>
+
+            <div style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: "10px", padding: "16px 18px", marginBottom: "20px" }}>
+              <label style={{ fontSize: "11px", color: "#fca5a5", letterSpacing: ".08em", textTransform: "uppercase" as const, display: "block", marginBottom: "8px", fontWeight: 600 }}>
+                {lang === "es" ? "Confirma tu contraseña para continuar" : "Enter your password to confirm"}
+              </label>
+              <input
+                type="password"
+                autoFocus
+                value={deletePassword}
+                onChange={e => { setDeletePassword(e.target.value); setDeleteErr(null); }}
+                onKeyDown={e => { if (e.key === "Enter" && deletePassword) confirmHardDelete(); }}
+                placeholder="••••••••"
+                style={{ fontFamily: "inherit", fontSize: "15px", background: "#0a0a0a", border: `1px solid ${deleteErr ? "rgba(239,68,68,0.5)" : "rgba(239,68,68,0.2)"}`, color: t1, borderRadius: "7px", padding: "10px 14px", outline: "none", width: "100%", boxSizing: "border-box" as const }}
+              />
+              {deleteErr && (
+                <div style={{ fontSize: "12px", color: "#fca5a5", marginTop: "7px", display: "flex", alignItems: "center", gap: "5px" }}>
+                  <span>✕</span> {deleteErr}
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button
+                onClick={() => { setDeleteSello(null); setDeletePassword(""); setDeleteErr(null); }}
+                style={{ flex: 1, fontFamily: "inherit", fontSize: "14px", fontWeight: 500, padding: "11px 16px", background: "transparent", color: t2, border: `1px solid ${bd}`, borderRadius: "8px", cursor: "pointer" }}>
+                {lang === "es" ? "Cancelar" : "Cancel"}
+              </button>
+              <button
+                onClick={confirmHardDelete}
+                disabled={!deletePassword || deleteLoading}
+                style={{ flex: 1, fontFamily: "inherit", fontSize: "14px", fontWeight: 700, padding: "11px 16px", background: !deletePassword || deleteLoading ? "rgba(239,68,68,0.3)" : "#ef4444", color: "#fff", border: "none", borderRadius: "8px", cursor: !deletePassword || deleteLoading ? "not-allowed" : "pointer", transition: "all .2s" }}>
+                {deleteLoading ? "…" : (lang === "es" ? "🗑 Eliminar definitivamente" : "🗑 Delete permanently")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* EDIT SELLO MODAL */}
       {editSello && (

@@ -5,6 +5,7 @@ export interface AuthUser {
   role: "admin" | "sello";
   nombre: string;
   iniciales?: string;
+  email?: string;
 }
 
 interface AuthCtx {

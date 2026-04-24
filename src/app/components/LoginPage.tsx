@@ -54,7 +54,7 @@ export function LoginPage() {
     setLoading(true);
     try {
       const res = await authApi.login(email.trim(), password);
-      login({ token: res.token, role: res.role, nombre: res.nombre, iniciales: res.iniciales });
+      login({ token: res.token, role: res.role, nombre: res.nombre, iniciales: res.iniciales, email: email.trim() });
       navigate(res.role === "admin" ? "/admin" : "/portal", { replace: true });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Error al iniciar sesión");
