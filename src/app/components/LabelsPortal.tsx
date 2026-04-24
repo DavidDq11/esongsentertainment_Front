@@ -201,6 +201,7 @@ export function LabelsPortal() {
 
   const resumen = dashboard?.resumen;
   const topSongs = dashboard?.topSongs ?? [];
+  const periodoLabel = resumen?.trimestre && resumen?.anio ? `Q${resumen.trimestre} ${resumen.anio}` : "";
 
   const ViewRegalias = (
     <div className="panel-main-padding" style={{ padding: "32px 32px 48px" }}>
@@ -214,9 +215,9 @@ export function LabelsPortal() {
 
       <div className="rsp-grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 28 }}>
         {[
-          { label: tx.streaming, amount: fmtCurrency(resumen?.streaming ?? 0), sub: tx.distDigital,   color: green  },
-          { label: tx.youtube,   amount: fmtCurrency(resumen?.youtube   ?? 0), sub: tx.contentId,     color: accent },
-          { label: tx.total,     amount: fmtCurrency(resumen?.total     ?? 0), sub: tx.streamingPlus, color: null   },
+          { label: tx.streaming, amount: fmtCurrency(resumen?.streaming ?? 0), sub: tx.distDigital,   color: green,  periodo: periodoLabel ? `Streaming · ${periodoLabel}` : ""  },
+          { label: tx.youtube,   amount: fmtCurrency(resumen?.youtube   ?? 0), sub: tx.contentId,     color: accent, periodo: periodoLabel ? `YouTube · ${periodoLabel}` : ""    },
+          { label: tx.total,     amount: fmtCurrency(resumen?.total     ?? 0), sub: tx.streamingPlus, color: null,   periodo: periodoLabel                                       },
         ].map(m => (
           <div key={m.label} style={{
             background: m.color === null
@@ -237,7 +238,12 @@ export function LabelsPortal() {
             }}>
               {m.amount}
             </div>
-            <div style={{ color: t3, fontSize: "0.75rem", marginTop: 6 }}>{m.sub}</div>
+            {m.periodo && (
+              <div style={{ color: accent, fontSize: "0.72rem", fontWeight: 600, marginTop: 5, letterSpacing: "0.03em" }}>
+                {m.periodo}
+              </div>
+            )}
+            <div style={{ color: t3, fontSize: "0.72rem", marginTop: 3 }}>{m.sub}</div>
           </div>
         ))}
       </div>
@@ -245,7 +251,9 @@ export function LabelsPortal() {
       <div className="rsp-charts-row" style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 16, marginBottom: 28 }}>
         <div style={{ background: card, border: `1px solid ${bd}`, borderRadius: 14, padding: "22px 24px" }}>
           <div style={{ marginBottom: 18 }}>
-            <div style={{ color: t1, fontSize: "0.95rem", fontWeight: 600 }}>{tx.top5Title}</div>
+            <div style={{ color: t1, fontSize: "0.95rem", fontWeight: 600 }}>
+              {tx.top5Title}{periodoLabel ? ` — ${periodoLabel}` : ""}
+            </div>
             <div style={{ color: t3, fontSize: "0.78rem", marginTop: 2 }}>{tx.top5Sub}</div>
           </div>
           {topSongs.length === 0 ? (
@@ -327,6 +335,13 @@ export function LabelsPortal() {
                       </div>
                     </div>
                   ))}
+                  {periodoLabel && (
+                    <div style={{ marginTop: 6, paddingTop: 8, borderTop: `1px solid ${bd}`, textAlign: "center" }}>
+                      <span style={{ fontFamily: "monospace", fontSize: "0.68rem", color: t3, letterSpacing: "0.06em" }}>
+                        {lang === "es" ? "Periodo" : "Period"}: <span style={{ color: accent }}>{periodoLabel}</span>
+                      </span>
+                    </div>
+                  )}
                 </div>
               </>
             );

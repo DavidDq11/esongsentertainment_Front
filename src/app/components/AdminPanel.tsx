@@ -2,12 +2,22 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
-import { sellosApi, reportesApi, storageApi, type Sello, type Reporte, type StorageInfo } from "../services/api";
+import { sellosApi, reportesApi, storageApi, type Sello, type Reporte, type StorageInfo, type BulkUploadResult, type BulkUploadResponse } from "../services/api";
 import { T } from "../i18n";
 
-type AdminView  = "inicio" | "subir" | "sellos" | "reportes";
+type AdminView  = "inicio" | "subir" | "sellos" | "reportes" | "bulk";
 type UploadStep = 1 | 2 | 3;
 type UploadState = "idle" | "dragging" | "uploading" | "success" | "error";
+type BulkState  = "idle" | "dragging" | "previewing" | "uploading" | "done";
+
+interface BulkPreviewItem {
+  file: File;
+  sello: string;
+  tipo: "streaming" | "youtube" | "unknown";
+  trimestre: number;
+  anio: number;
+  isDuplicate: boolean;
+}
 
 const bg    = "#0a0a0a";
 const card  = "#111111";
@@ -48,6 +58,36 @@ function EyeBrow({ text }: { text: string }) {
       {text}
     </div>
   );
+}
+
+function parseBulkFilename(filename: string, defaultTrimestre: string, defaultAnio: string): BulkPreviewItem {
+  // Streaming pattern: {year}-{month}_{Label}[_{extra}].xlsx
+  const streamingMatch = filename.match(/^(\d{4})-(\d{2})_(.+?)(?:\.xlsx)?$/i);
+  if (streamingMatch) {
+    const anio = parseInt(streamingMatch[1]);
+    const month = parseInt(streamingMatch[2]);
+    const base = (streamingMatch[3] ?? "");
+    const parts = base.split("_");
+    const sello = (parts[0] ?? "").trim().replace(/^[-\s]+/, "");
+    const trimestre = Math.min(4, Math.ceil(month / 3)) || 1;
+    return { file: null as unknown as File, sello, tipo: "streaming", trimestre, anio, isDuplicate: false };
+  }
+  // YouTube pattern: {Q}Q-{year} Youtube[ _-]{Label}.xlsx
+  const youtubeMatch = filename.match(/^(\d+)Q-(\d{4})\s+Youtube[\s_-]+(.+?)(?:\.xlsx)?$/i);
+  if (youtubeMatch) {
+    const trimestre = Math.min(4, parseInt(youtubeMatch[1])) || 1;
+    const anio = parseInt(youtubeMatch[2]);
+    const sello = youtubeMatch[3].trim();
+    return { file: null as unknown as File, sello, tipo: "youtube", trimestre, anio, isDuplicate: false };
+  }
+  return {
+    file: null as unknown as File,
+    sello: "",
+    tipo: "unknown",
+    trimestre: parseInt(defaultTrimestre) || 1,
+    anio: parseInt(defaultAnio) || new Date().getFullYear(),
+    isDuplicate: false,
+  };
 }
 
 export function AdminPanel() {
@@ -95,6 +135,59 @@ export function AdminPanel() {
   const [newSello, setNewSello] = useState({ nombre: "", email: "", password: "", iniciales: "", representante: "" });
   const [newSelloErr, setNewSelloErr] = useState<string | null>(null);
   const [newSelloLoading, setNewSelloLoading] = useState(false);
+
+  // Bulk upload state
+  const [bulkState,     setBulkState]    = useState<BulkState>("idle");
+  const [bulkTrimestre, setBulkTrimestre] = useState("1");
+  const [bulkAnio,      setBulkAnio]     = useState(String(new Date().getFullYear()));
+  const [bulkPreviews,  setBulkPreviews] = useState<BulkPreviewItem[]>([]);
+  const [bulkResponse,  setBulkResponse] = useState<BulkUploadResponse | null>(null);
+  const [bulkError,     setBulkError]    = useState<string | null>(null);
+  const bulkFileRef = useRef<HTMLInputElement>(null);
+
+  const resetBulk = () => {
+    setBulkState("idle");
+    setBulkPreviews([]);
+    setBulkResponse(null);
+    setBulkError(null);
+    if (bulkFileRef.current) bulkFileRef.current.value = "";
+  };
+
+  const handleBulkFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const xlsx = Array.from(files).filter(f => f.name.endsWith(".xlsx")).slice(0, 30);
+    if (xlsx.length === 0) return;
+    const previews = xlsx.map(f => {
+      const parsed = parseBulkFilename(f.name, bulkTrimestre, bulkAnio);
+      const isDuplicate = parsed.tipo !== "unknown" && allReports.some(r =>
+        r.sello_nombre.trim().toLowerCase() === parsed.sello.trim().toLowerCase() &&
+        r.tipo === parsed.tipo &&
+        r.trimestre === parsed.trimestre &&
+        r.anio === parsed.anio
+      );
+      return { ...parsed, file: f, isDuplicate };
+    });
+    setBulkPreviews(previews);
+    setBulkState("previewing");
+  };
+
+  const doBulkUpload = async () => {
+    setBulkState("uploading");
+    setBulkError(null);
+    try {
+      const fd = new FormData();
+      bulkPreviews.forEach(p => fd.append("files[]", p.file));
+      fd.append("trimestre", bulkTrimestre);
+      fd.append("anio", bulkAnio);
+      const result = await reportesApi.bulkUpload(fd);
+      setBulkResponse(result);
+      setBulkState("done");
+      refreshData();
+    } catch (err: unknown) {
+      setBulkError(err instanceof Error ? err.message : "Error");
+      setBulkState("previewing");
+    }
+  };
 
   useEffect(() => {
     Promise.all([sellosApi.list(), reportesApi.list(), storageApi.usage()])
@@ -263,6 +356,7 @@ export function AdminPanel() {
   const navItems = [
     { id: "inicio"   as AdminView, icon: "🏠", label: tx.inicio,   desc: tx.inicioDesc },
     { id: "subir"    as AdminView, icon: "📤", label: tx.subir,    desc: tx.subirDesc },
+    { id: "bulk"     as AdminView, icon: "📦", label: tx.bulk,     desc: tx.bulkDesc },
     { id: "sellos"   as AdminView, icon: "🎵", label: tx.sellos,   desc: tx.sellosDesc,   badge: { text: String(sellos.length), type: "green" } },
     { id: "reportes" as AdminView, icon: "📂", label: tx.reportes, desc: tx.reportesDesc },
   ] as const;
@@ -652,6 +746,187 @@ export function AdminPanel() {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* === BULK UPLOAD === */}
+        {view === "bulk" && (
+          <div>
+            <EyeBrow text={tx.bulk} />
+            <div style={{ fontSize: "22px", fontWeight: 800, letterSpacing: "-.035em", marginBottom: "3px", color: t1 }}>{tx.bulkTitle}</div>
+            <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "22px" }}>{tx.bulkSub}</div>
+
+            {/* IDLE / DRAGGING: drop zone */}
+            {(bulkState === "idle" || bulkState === "dragging") && (
+              <div>
+                {/* Default quarter + year */}
+                <div style={{ ...cardStyle, padding: "16px 20px", marginBottom: "18px" }}>
+                  <div style={{ fontSize: "11px", color: t3, letterSpacing: ".06em", textTransform: "uppercase" as const, marginBottom: "10px" }}>{tx.bulkDefaultsLabel}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                    <div>
+                      <label style={{ fontSize: "9px", color: t3, letterSpacing: ".08em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>{tx.bulkTrimLabel}</label>
+                      <select value={bulkTrimestre} onChange={e => setBulkTrimestre(e.target.value)} style={{ ...selectStyle, width: "100%" }}>
+                        {["1","2","3","4"].map(q => <option key={q} value={q} style={{ backgroundColor: card }}>Q{q}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: "9px", color: t3, letterSpacing: ".08em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>{tx.bulkAnioLabel}</label>
+                      <input type="number" value={bulkAnio} onChange={e => setBulkAnio(e.target.value)} min="2000" max="2099" style={inputStyle} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Drop zone */}
+                <div
+                  onDragOver={e => { e.preventDefault(); setBulkState("dragging"); }}
+                  onDragLeave={() => setBulkState("idle")}
+                  onDrop={e => { e.preventDefault(); setBulkState("idle"); handleBulkFiles(e.dataTransfer.files); }}
+                  onClick={() => bulkFileRef.current?.click()}
+                  style={{ border: `2.5px dashed ${bulkState === "dragging" ? accent : "rgba(212,175,55,0.28)"}`, borderRadius: "16px", padding: "50px 32px", textAlign: "center", cursor: "pointer", background: bulkState === "dragging" ? "rgba(212,175,55,0.044)" : "rgba(212,175,55,0.013)", transition: "all .25s", marginBottom: "13px" }}>
+                  <input ref={bulkFileRef} type="file" accept=".xlsx" multiple style={{ display: "none" }}
+                    onChange={e => { setBulkState("idle"); handleBulkFiles(e.target.files); }} />
+                  <div style={{ fontSize: "46px", marginBottom: "12px", lineHeight: 1 }}>📦</div>
+                  <div style={{ fontSize: "19px", fontWeight: 800, marginBottom: "6px", color: t1 }}>{bulkState === "dragging" ? tx.bulkDropActive : tx.bulkDropTitle}</div>
+                  <div style={{ fontSize: "12.5px", color: t2, fontWeight: 300, maxWidth: "400px", margin: "0 auto 16px" }}>{tx.bulkDropSub}</div>
+                  <button onClick={e => { e.stopPropagation(); bulkFileRef.current?.click(); }}
+                    style={{ fontFamily: "inherit", fontSize: "14px", fontWeight: 600, padding: "12px 30px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
+                    {tx.bulkSelectBtn}
+                  </button>
+                  <div style={{ fontFamily: "monospace", fontSize: "8.5px", color: t3, letterSpacing: ".1em", textTransform: "uppercase" as const, marginTop: "12px" }}>.xlsx · Máx 30 archivos</div>
+                </div>
+                <div style={{ fontSize: "10px", color: t3, textAlign: "center", fontFamily: "monospace", letterSpacing: ".02em" }}>{tx.bulkPatternHint}</div>
+              </div>
+            )}
+
+            {/* PREVIEWING: confirmation table */}
+            {bulkState === "previewing" && (
+              <div>
+                <div style={{ fontSize: "14px", fontWeight: 700, color: t1, marginBottom: "4px" }}>{tx.bulkPreviewTitle}</div>
+                <div style={{ fontSize: "12px", color: t2, fontWeight: 300, marginBottom: "14px" }}>
+                  {bulkPreviews.length} {tx.bulkDropSub.split(" ").slice(-3).join(" ")}
+                </div>
+                {bulkPreviews.some(p => p.isDuplicate) && (
+                  <div style={{ background: "rgba(245,158,11,0.07)", border: "1px solid rgba(245,158,11,0.25)", borderRadius: "8px", padding: "10px 14px", color: amber, fontSize: "11.5px", marginBottom: "14px" }}>
+                    ⚠️ {lang === "es"
+                      ? `${bulkPreviews.filter(p => p.isDuplicate).length} archivo(s) ya existen en el sistema (sello + tipo + trimestre + año coinciden). El backend los marcará como "skipped".`
+                      : `${bulkPreviews.filter(p => p.isDuplicate).length} file(s) already exist in the system (label + type + quarter + year match). The backend will mark them as "skipped".`}
+                  </div>
+                )}
+                {bulkError && (
+                  <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "8px", padding: "10px 14px", color: "#fca5a5", fontSize: "11.5px", marginBottom: "14px" }}>{bulkError}</div>
+                )}
+                <div style={{ ...cardStyle, overflow: "hidden", marginBottom: "16px" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ borderBottom: `1px solid ${bd}` }}>
+                        {[tx.bulkColFile, tx.bulkColSello, tx.bulkColTipo, tx.bulkColQ, tx.bulkColAnio].map(h => (
+                          <th key={h} style={{ textAlign: "left", padding: "9px 14px", fontFamily: "monospace", fontSize: "8px", letterSpacing: ".1em", textTransform: "uppercase" as const, color: t3, fontWeight: 600 }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bulkPreviews.map((p, i) => (
+                        <tr key={i} style={{ borderBottom: `1px solid ${bd}`, background: p.isDuplicate ? "rgba(245,158,11,0.04)" : "transparent" }}>
+                          <td style={{ padding: "9px 14px", fontSize: "11px", color: t1, maxWidth: "240px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                            {p.isDuplicate && <span title={lang === "es" ? "Ya existe en el sistema" : "Already exists"} style={{ marginRight: "6px", cursor: "help" }}>⚠️</span>}
+                            {p.file.name}
+                          </td>
+                          <td style={{ padding: "9px 14px", fontSize: "11px", color: p.sello ? t1 : "#ef4444" }}>{p.sello || tx.bulkUnknown}</td>
+                          <td style={{ padding: "9px 14px" }}>
+                            {p.tipo === "unknown" ? (
+                              <span style={{ fontFamily: "monospace", fontSize: "8px", padding: "2px 7px", borderRadius: "4px", background: "rgba(239,68,68,0.08)", color: "#ff8888", border: "1px solid rgba(239,68,68,0.2)" }}>{tx.bulkUnknown}</span>
+                            ) : (
+                              <span style={{ fontFamily: "monospace", fontSize: "8px", padding: "2px 7px", borderRadius: "4px", background: p.tipo === "streaming" ? "rgba(212,175,55,0.1)" : "rgba(255,96,96,0.08)", color: p.tipo === "streaming" ? accent : "#ff8888", border: p.tipo === "streaming" ? `1px solid rgba(212,175,55,0.2)` : "1px solid rgba(255,96,96,0.18)" }}>
+                                {p.tipo === "streaming" ? "Streaming" : "YouTube"}
+                              </span>
+                            )}
+                          </td>
+                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "11px", color: t2 }}>Q{p.trimestre}</td>
+                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "11px", color: t2 }}>{p.anio}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div style={{ display: "flex", gap: "9px", justifyContent: "flex-end" }}>
+                  <button onClick={resetBulk}
+                    style={{ fontFamily: "inherit", fontSize: "13px", fontWeight: 500, padding: "10px 20px", background: "transparent", color: t2, border: `1px solid ${bd}`, borderRadius: "8px", cursor: "pointer" }}>
+                    {tx.bulkCancelBtn}
+                  </button>
+                  <button onClick={doBulkUpload}
+                    style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 26px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
+                    {tx.bulkConfirmBtn.replace("{n}", String(bulkPreviews.length))}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* UPLOADING */}
+            {bulkState === "uploading" && (
+              <div style={{ background: "rgba(212,175,55,0.05)", border: `1px solid rgba(212,175,55,0.15)`, borderRadius: "12px", padding: "36px", textAlign: "center" }}>
+                <div style={{ fontSize: "38px", marginBottom: "14px" }}>⏳</div>
+                <div style={{ fontSize: "15px", fontWeight: 700, color: t1, marginBottom: "6px" }}>{tx.bulkUploading}</div>
+                <div style={{ fontSize: "12px", color: t2 }}>{bulkPreviews.length} {lang === "es" ? "archivos en cola…" : "files in queue…"}</div>
+              </div>
+            )}
+
+            {/* DONE: results */}
+            {bulkState === "done" && bulkResponse && (
+              <div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px", marginBottom: "20px" }}>
+                  {[
+                    { label: tx.bulkResultOk,      value: bulkResponse.ok,      color: accent },
+                    { label: tx.bulkResultErrors,   value: bulkResponse.errors,  color: "#ef4444" },
+                    { label: tx.bulkResultSkipped,  value: bulkResponse.skipped, color: amber },
+                  ].map(s => (
+                    <div key={s.label} style={{ ...cardStyle, padding: "18px 20px", textAlign: "center" }}>
+                      <div style={{ fontFamily: "monospace", fontSize: "28px", fontWeight: 800, color: s.color, lineHeight: 1, marginBottom: "4px" }}>{s.value}</div>
+                      <div style={{ fontSize: "10px", color: t3 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ ...cardStyle, overflow: "hidden", marginBottom: "18px" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ borderBottom: `1px solid ${bd}` }}>
+                        {[tx.bulkColFile, tx.bulkColSello, tx.bulkColTipo, tx.bulkColStatus, tx.bulkColRegalias].map(h => (
+                          <th key={h} style={{ textAlign: "left", padding: "9px 14px", fontFamily: "monospace", fontSize: "8px", letterSpacing: ".1em", textTransform: "uppercase" as const, color: t3, fontWeight: 600 }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bulkResponse.results.map((r: BulkUploadResult, i: number) => (
+                        <tr key={i} style={{ borderBottom: `1px solid ${bd}` }}>
+                          <td style={{ padding: "9px 14px", fontSize: "11px", color: t1, maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{r.filename}</td>
+                          <td style={{ padding: "9px 14px", fontSize: "11px", color: t2 }}>{r.sello ?? "—"}</td>
+                          <td style={{ padding: "9px 14px" }}>
+                            {r.tipo ? (
+                              <span style={{ fontFamily: "monospace", fontSize: "8px", padding: "2px 7px", borderRadius: "4px", background: r.tipo === "streaming" ? "rgba(212,175,55,0.1)" : "rgba(255,96,96,0.08)", color: r.tipo === "streaming" ? accent : "#ff8888", border: r.tipo === "streaming" ? `1px solid rgba(212,175,55,0.2)` : "1px solid rgba(255,96,96,0.18)" }}>
+                                {r.tipo === "streaming" ? "Streaming" : "YouTube"}
+                              </span>
+                            ) : <span style={{ color: t3 }}>—</span>}
+                          </td>
+                          <td style={{ padding: "9px 14px" }}>
+                            {r.status === "ok" && <span style={{ fontFamily: "monospace", fontSize: "9px", padding: "3px 8px", borderRadius: "5px", background: "rgba(212,175,55,0.08)", color: accent, border: `1px solid rgba(212,175,55,0.2)` }}>{tx.bulkStatusOk}</span>}
+                            {r.status === "error" && <span title={r.error} style={{ fontFamily: "monospace", fontSize: "9px", padding: "3px 8px", borderRadius: "5px", background: "rgba(239,68,68,0.08)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)", cursor: "help" }}>{tx.bulkStatusError}</span>}
+                            {r.status === "skipped" && <span style={{ fontFamily: "monospace", fontSize: "9px", padding: "3px 8px", borderRadius: "5px", background: "rgba(245,158,11,0.07)", color: amber, border: "1px solid rgba(245,158,11,0.2)" }}>{tx.bulkStatusSkipped}</span>}
+                          </td>
+                          <td style={{ padding: "9px 14px", fontFamily: "monospace", fontSize: "11px", color: r.status === "ok" ? t1 : t3 }}>
+                            {r.status === "ok" && r.total_regalias != null ? fmtCurrency(r.total_regalias) : "—"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <button onClick={resetBulk}
+                    style={{ fontFamily: "inherit", fontSize: "13.5px", fontWeight: 600, padding: "11px 26px", background: accent, color: "#020a04", border: "none", borderRadius: "8px", cursor: "pointer", boxShadow: "0 0 22px rgba(212,175,55,0.25)" }}>
+                    {tx.bulkResetBtn}
+                  </button>
+                </div>
               </div>
             )}
           </div>

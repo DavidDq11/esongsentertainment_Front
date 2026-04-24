@@ -90,6 +90,22 @@ export interface Reporte {
   iniciales: string;
 }
 
+export interface BulkUploadResult {
+  filename: string;
+  status: "ok" | "error" | "skipped";
+  sello?: string;
+  tipo?: "streaming" | "youtube";
+  total_regalias?: number;
+  error?: string;
+}
+
+export interface BulkUploadResponse {
+  ok: number;
+  errors: number;
+  skipped: number;
+  results: BulkUploadResult[];
+}
+
 export const reportesApi = {
   list: (params?: { sello_id?: string; tipo?: string; anio?: string }) => {
     const qs = params ? "?" + new URLSearchParams(params as Record<string, string>).toString() : "";
@@ -106,6 +122,18 @@ export const reportesApi = {
         throw new Error(err.error || res.statusText);
       }
       return res.json() as Promise<Reporte>;
+    }),
+  bulkUpload: (formData: FormData) =>
+    fetch(`${BASE}/api/reportes/bulk`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: formData,
+    }).then(async (res) => {
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText }));
+        throw new Error(err.error || res.statusText);
+      }
+      return res.json() as Promise<BulkUploadResponse>;
     }),
   download: (id: string) => request<{ url: string }>("GET", `/api/reportes/${id}/download`),
   remove: (id: string) => request<{ ok: boolean }>("DELETE", `/api/reportes/${id}`),
