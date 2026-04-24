@@ -200,7 +200,15 @@ export function LabelsPortal() {
   }
 
   const resumen = dashboard?.resumen;
-  const topSongs = dashboard?.topSongs ?? [];
+  const topSongs = (() => {
+    const seen = new Set<string>();
+    return (dashboard?.topSongs ?? []).filter(s => {
+      const key = s.titulo.trim().toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  })();
   const periodoLabel = resumen?.trimestre && resumen?.anio ? `Q${resumen.trimestre} ${resumen.anio}` : "";
 
   const ViewRegalias = (
