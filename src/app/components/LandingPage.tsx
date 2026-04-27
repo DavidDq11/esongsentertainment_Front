@@ -3,6 +3,18 @@ import { Music, TrendingUp, Shield, BarChart3, ArrowRight, Plus, CheckCircle2, G
 import { useLang } from "../contexts/LanguageContext";
 import { LP } from "../i18n";
 import logoImg from "../../assets/logo.webp";
+import appleMusicLogo from "../../assets/logos-landing/apple-music.png";
+import amazonMusicLogo from "../../assets/logos-landing/amazon-music.png";
+import googlePlayLogo from "../../assets/logos-landing/google-play.png";
+import pandoraLogo from "../../assets/logos-landing/pandora_logo_icon_144995.png";
+import napsterLogo from "../../assets/logos-landing/napster_brands_icon_256540.png";
+import instagramLogo from "../../assets/logos-landing/instagram.png";
+import soundcloudLogo from "../../assets/logos-landing/soundcloud.png";
+import tikTokLogo from "../../assets/logos-landing/tik-tok.png";
+import facebookLogo from "../../assets/logos-landing/facebook.png";
+import spotifyLogo from "../../assets/logos-landing/spotify.png";
+import deezerLogo from "../../assets/logos-landing/deezer.png";
+import youtubeLogo from "../../assets/logos-landing/youtube.png";
 
 // ── Color tokens ──────────────────────────────────────────────────────────────
 const G1   = "#d4af37";          // gold primary
@@ -22,24 +34,24 @@ const rg = (a: number) => `rgba(212,175,55,${a})`;
 
 // ── Platforms with brand colors ───────────────────────────────────────────────
 const PLATFORM_LIST = [
-  { name: "Apple Music",  color: "#fc3c44", icon: "🎵" },
-  { name: "Spotify",      color: "#1db954", icon: "🎧" },
-  { name: "Amazon Music", color: "#00a8e1", icon: "🎼" },
-  { name: "Google Play",  color: "#4285f4", icon: "▶️" },
-  { name: "Pandora",      color: "#3668ff", icon: "📻" },
+  { name: "Apple Music",  color: "#fc3c44", logo: appleMusicLogo },
+  { name: "Spotify",      color: "#1db954", logo: spotifyLogo },
+  { name: "Amazon Music", color: "#00a8e1", logo: amazonMusicLogo },
+  { name: "Google Play",  color: "#4285f4", logo: googlePlayLogo },
+  { name: "Pandora",      color: "#3668ff", logo: pandoraLogo },
   { name: "Rhapsody",     color: "#e6001a", icon: "🎶" },
   { name: "7Digital",     color: "#d4af37", icon: "🎵" },
-  { name: "Napster",      color: "#009bdb", icon: "🎧" },
+  { name: "Napster",      color: "#009bdb", logo: napsterLogo },
   { name: "eMusic",       color: "#ff6600", icon: "🎼" },
   { name: "MediaNet",     color: "#8b5cf6", icon: "📻" },
-  { name: "YouTube",      color: "#ff0000", icon: "🎬" },
+  { name: "YouTube",      color: "#ff0000", logo: youtubeLogo },
   { name: "VEVO",         color: "#e60026", icon: "▶️" },
-  { name: "TikTok",       color: "#ff0050", icon: "🎤" },
-  { name: "SoundCloud",   color: "#ff5500", icon: "☁️" },
-  { name: "Instagram",    color: "#e1306c", icon: "📸" },
+  { name: "TikTok",       color: "#ff0050", logo: tikTokLogo },
+  { name: "SoundCloud",   color: "#ff5500", logo: soundcloudLogo },
+  { name: "Instagram",    color: "#e1306c", logo: instagramLogo },
   { name: "iHeartRadio",  color: "#cc2128", icon: "❤️" },
-  { name: "Deezer",       color: "#a238ff", icon: "🎙️" },
-  { name: "Facebook",     color: "#1877f2", icon: "👍" },
+  { name: "Deezer",       color: "#a238ff", logo: deezerLogo },
+  { name: "Facebook",     color: "#1877f2", logo: facebookLogo },
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -350,10 +362,14 @@ export function LandingPage() {
         <div style={{ overflow: "hidden", marginTop: "24px" }}>
           <div className="flex gap-0 animate-scroll" style={{ width: "max-content" }}>
             {[...PLATFORM_LIST, ...PLATFORM_LIST].map((p, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap", padding: "0 20px" }}>
-                <span style={{ fontSize: "14px" }}>{p.icon}</span>
-                <span style={{ fontSize: "0.875rem", fontWeight: 700, color: p.color, letterSpacing: "0.05em" }}>{p.name}</span>
-                <span style={{ marginLeft: "20px", color: "#4a2e1a", fontSize: "14px" }}>·</span>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px", whiteSpace: "nowrap", padding: "0 20px" }}>
+                {p.logo ? (
+                  <img src={p.logo} alt={`${p.name} logo`} style={{ width: 22, height: 22, objectFit: "contain" }} />
+                ) : (
+                  <span style={{ fontSize: "16px" }}>{p.icon}</span>
+                )}
+                <span style={{ fontSize: "1rem", fontWeight: 700, color: p.color, letterSpacing: "0.05em" }}>{p.name}</span>
+                <span style={{ marginLeft: "20px", color: "#4a2e1a", fontSize: "16px" }}>·</span>
               </div>
             ))}
           </div>
@@ -604,15 +620,15 @@ export function LandingPage() {
               {/* Social */}
               <div style={{ display: "flex", gap: "10px" }}>
                 {[
-                  { href: "https://www.facebook.com/esongsentertainment",  label: "Facebook",  icon: "f" },
-                  { href: "https://www.youtube.com/@esongsentertainment",  label: "YouTube",   icon: "▶" },
-                  { href: "https://www.instagram.com/esongsentertainment", label: "Instagram", icon: "◉" },
+                  { href: "https://www.facebook.com/esongsradios", label: "Facebook",  logo: facebookLogo },
+                  { href: "https://www.youtube.com/@esongsradio2543", label: "YouTube",   logo: youtubeLogo },
+                  { href: "https://www.instagram.com/e_songs_radio/", label: "Instagram", logo: instagramLogo },
                 ].map((s) => (
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                    style={{ width: "36px", height: "36px", borderRadius: "8px", backgroundColor: CARD, border: `1px solid ${BD}`, display: "flex", alignItems: "center", justifyContent: "center", color: T3, fontSize: "0.85rem", fontWeight: 700, textDecoration: "none", transition: "all 0.2s" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = rg(0.3); (e.currentTarget as HTMLElement).style.color = G1; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = BD; (e.currentTarget as HTMLElement).style.color = T3; }}>
-                    {s.icon}
+                    style={{ width: "36px", height: "36px", borderRadius: "8px", backgroundColor: CARD, border: `1px solid ${BD}`, display: "flex", alignItems: "center", justifyContent: "center", color: T3, textDecoration: "none", transition: "all 0.2s" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = rg(0.3); }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = BD; }}>
+                    <img src={s.logo} alt={`${s.label} logo`} style={{ width: 18, height: 18, objectFit: "contain" }} />
                   </a>
                 ))}
               </div>
