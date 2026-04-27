@@ -134,30 +134,15 @@ export function Layout() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="px-5 py-2 rounded-lg text-sm transition-all duration-200"
-                  style={{ border: "1px solid rgba(212,175,55,0.3)", color: "#d4af37", textDecoration: "none" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(212,175,55,0.1)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
-                >
-                  {tx.btnLogin}
-                </Link>
-                <Link
-                  to="/login"
-                  className="px-5 py-2 rounded-lg text-sm text-black transition-all duration-200"
-                  style={{
-                    background: "linear-gradient(135deg, #d4af37, #f5c842)",
-                    boxShadow: "0 4px 15px rgba(212,175,55,0.3)",
-                    textDecoration: "none",
-                  }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 25px rgba(212,175,55,0.5)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 15px rgba(212,175,55,0.3)"; }}
-                >
-                  {tx.btnAdmin}
-                </Link>
-              </>
+              <Link
+                to="/login"
+                className="px-5 py-2 rounded-lg text-sm transition-all duration-200"
+                style={{ border: "1px solid rgba(212,175,55,0.3)", color: "#d4af37", textDecoration: "none" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(212,175,55,0.1)"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "transparent"; }}
+              >
+                {tx.btnLogin}
+              </Link>
             )}
           </div>
 
@@ -205,32 +190,13 @@ export function Layout() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  onClick={() => setMenuOpen(false)}
-                  style={{ color: "#d4af37", fontSize: "0.875rem", textDecoration: "none" }}
-                >
-                  {tx.btnLogin}
-                </Link>
-                <Link
-                  to="/login"
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    display: "block",
-                    textAlign: "center",
-                    padding: "10px",
-                    borderRadius: "8px",
-                    background: "linear-gradient(135deg, #d4af37, #f5c842)",
-                    color: "#010e06",
-                    fontSize: "0.875rem",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                  }}
-                >
-                  {tx.btnAdmin}
-                </Link>
-              </>
+              <Link
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                style={{ color: "#d4af37", fontSize: "0.875rem", textDecoration: "none" }}
+              >
+                {tx.btnLogin}
+              </Link>
             )}
             {/* Mobile lang toggle */}
             <div style={{ display: "flex", gap: 6, paddingTop: 4 }}>
