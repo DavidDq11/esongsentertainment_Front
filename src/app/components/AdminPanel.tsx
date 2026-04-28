@@ -192,24 +192,7 @@ export function AdminPanel() {
       setBulkState("done");
       refreshData();
     } catch (err: unknown) {
-      let errorMsg = err instanceof Error ? err.message : "Error";
-      
-      // Handle specific backend errors
-      if (errorMsg.includes("Uno o más archivos exceden el tamaño máximo")) {
-        errorMsg = lang === "es" 
-          ? "Uno o más archivos exceden el máximo de 20 MB. Por favor, reduce el tamaño de tus archivos."
-          : "One or more files exceed the 20 MB limit. Please reduce file sizes.";
-      } else if (errorMsg.includes("Demasiados archivos")) {
-        errorMsg = lang === "es"
-          ? "Demasiados archivos. El máximo permitido es 30 archivos por carga."
-          : "Too many files. Maximum of 30 files per upload.";
-      } else if (errorMsg.includes("Bad Request")) {
-        errorMsg = lang === "es"
-          ? "No se pudieron procesar los archivos. Verifica que sean archivos Excel (.xlsx) válidos."
-          : "Could not process files. Please verify they are valid Excel files (.xlsx).";
-      }
-      
-      setBulkError(errorMsg);
+      setBulkError(err instanceof Error ? err.message : "Error");
       setBulkState("previewing");
     }
   };
@@ -457,7 +440,7 @@ export function AdminPanel() {
               <div style={{ background: ggl, border: `1px solid ${filePct >= 90 ? "rgba(239,68,68,0.3)" : filePct >= 75 ? "rgba(245,158,11,0.3)" : bdA}`, borderRadius: "8px", padding: "10px 12px", marginBottom: "9px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
                   <div style={{ fontSize: "10px", fontWeight: 600, color: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : accent }}>
-                    {lang === "es" ? "Archivos almacenados" : "Files almacened"}
+                    {lang === "es" ? "Archivos en R2" : "Files in R2"}
                   </div>
                   <div style={{ fontFamily: "monospace", fontSize: "9px", color: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : t3 }}>
                     {storage.total_files} / {FILE_LIMIT}
@@ -842,40 +825,7 @@ export function AdminPanel() {
                   </div>
                 )}
                 {bulkError && (
-                  <div style={{ background: "rgba(212,175,55,0.08)", border: "2px solid rgba(212,175,55,0.25)", borderRadius: "14px", padding: "24px", color: t2, marginBottom: "20px", position: "relative", overflow: "hidden" }}>
-                    <div style={{ position: "absolute", top: "-10px", right: "-10px", width: "70px", height: "70px", borderRadius: "50%", background: "radial-gradient(circle, rgba(212,175,55,0.1), transparent 70%)", pointerEvents: "none" }} />
-                    <div style={{ position: "relative", zIndex: 1 }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: "14px", marginBottom: "12px" }}>
-                        <div style={{ fontSize: "32px", lineHeight: 1, flexShrink: 0 }}>💡</div>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: "18px", fontWeight: 700, color: accent, marginBottom: "6px" }}>
-                            {lang === "es" ? "Verifica el archivo" : "Check your file"}
-                          </div>
-                          <div style={{ fontSize: "14px", color: t2, lineHeight: 1.6 }}>
-                            {bulkError}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", borderRadius: "10px", padding: "14px 14px", marginTop: "12px" }}>
-                        <div style={{ fontSize: "13px", color: t1, lineHeight: 1.7 }}>
-                          {lang === "es" ? (
-                            <>
-                              <strong style={{ color: accent }}>Usa este formato:</strong><br/>
-                              📊 Streaming: <code style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>2025-01_Sello.xlsx</code><br/>
-                              📹 YouTube: <code style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>1Q-2025 Youtube -Sello.xlsx</code>
-                            </>
-                          ) : (
-                            <>
-                              <strong style={{ color: accent }}>Use this format:</strong><br/>
-                              📊 Streaming: <code style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>2025-01_Label.xlsx</code><br/>
-                              📹 YouTube: <code style={{ background: "rgba(0,0,0,0.2)", padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>1Q-2025 Youtube -Label.xlsx</code>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "8px", padding: "10px 14px", color: "#fca5a5", fontSize: "11.5px", marginBottom: "14px" }}>{bulkError}</div>
                 )}
                 <div style={{ ...cardStyle, overflow: "hidden", marginBottom: "16px" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -935,66 +885,6 @@ export function AdminPanel() {
             {/* DONE: results */}
             {bulkState === "done" && bulkResponse && (
               <div>
-                {/* Error alert if there are errors */}
-                {bulkResponse.errors > 0 && (
-                  <div style={{ background: "linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.04))", border: "1.5px solid rgba(239,68,68,0.25)", borderRadius: "14px", padding: "28px", marginBottom: "24px", position: "relative", overflow: "hidden" }}>
-                    <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "100px", height: "100px", borderRadius: "50%", background: "radial-gradient(circle, rgba(239,68,68,0.12), transparent 70%)", pointerEvents: "none" }} />
-                    <div style={{ position: "relative", zIndex: 1 }}>
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: "14px", marginBottom: "16px" }}>
-                        <div style={{ fontSize: "32px", lineHeight: 1, flexShrink: 0 }}>⚠️</div>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: "18px", fontWeight: 800, color: "#ef4444", marginBottom: "6px" }}>
-                            {lang === "es" ? `${bulkResponse.errors} archivo(s) no se pudieron procesar` : `${bulkResponse.errors} file(s) could not be processed`}
-                          </div>
-                          <div style={{ fontSize: "14px", color: t2, lineHeight: 1.6, marginBottom: "14px" }}>
-                            {lang === "es"
-                              ? "Algunos archivos no están organizados correctamente o no corresponden al formato esperado. Revisa los detalles abajo y sube nuevamente los archivos corregidos."
-                              : "Some files are not properly organized or don't match the expected format. Review the details below and re-upload the corrected files."}
-                          </div>
-                          <div style={{ display: "grid", gridTemplateColumns: lang === "es" ? "1fr 1fr" : "1fr", gap: "10px", marginTop: "12px" }}>
-                            {bulkResponse.results
-                              .filter((r: BulkUploadResult) => r.status === "error")
-                              .slice(0, 5)
-                              .map((r: BulkUploadResult, i: number) => (
-                                <div key={i} style={{ background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "8px", padding: "10px 12px" }}>
-                                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#ff8888", marginBottom: "4px", wordBreak: "break-word" }}>📄 {r.filename}</div>
-                                  <div style={{ fontSize: "11px", color: t2, lineHeight: 1.4 }}>{r.error}</div>
-                                </div>
-                              ))}
-                          </div>
-                          {bulkResponse.results.filter((r: BulkUploadResult) => r.status === "error").length > 5 && (
-                            <div style={{ fontSize: "11px", color: t3, marginTop: "8px", fontStyle: "italic" }}>
-                              {lang === "es" ? `+ ${bulkResponse.errors - 5} archivo(s) más con errores` : `+ ${bulkResponse.errors - 5} more file(s) with errors`}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: "8px", padding: "12px 14px", marginTop: "16px" }}>
-                        <div style={{ fontSize: "11px", fontWeight: 700, color: "#ff8888", marginBottom: "6px", textTransform: "uppercase", letterSpacing: ".04em" }}>
-                          💡 {lang === "es" ? "Recomendaciones" : "Recommendations"}
-                        </div>
-                        <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "12px", color: t2, lineHeight: 1.6 }}>
-                          {lang === "es" ? (
-                            <>
-                              <li>Verifica que el nombre del archivo siga el formato correcto (ej: 2025-01_Sello.xlsx o 1Q-2025 Youtube -Sello.xlsx)</li>
-                              <li>Asegúrate de que el trimestre y año coincidan con los que especificaste</li>
-                              <li>El nombre del sello debe existir en el sistema</li>
-                              <li>Revisa que no haya caracteres especiales no permitidos</li>
-                            </>
-                          ) : (
-                            <>
-                              <li>Verify the filename follows the correct format (e.g., 2025-01_Label.xlsx or 1Q-2025 Youtube -Label.xlsx)</li>
-                              <li>Make sure the quarter and year match those you specified</li>
-                              <li>The label name must exist in the system</li>
-                              <li>Check for disallowed special characters</li>
-                            </>
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px", marginBottom: "20px" }}>
                   {[
                     { label: tx.bulkResultOk,      value: bulkResponse.ok,      color: accent },
