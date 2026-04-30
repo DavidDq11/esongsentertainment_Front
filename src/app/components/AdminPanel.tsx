@@ -8,7 +8,7 @@ import { T } from "../i18n";
 type AdminView  = "inicio" | "subir" | "sellos" | "reportes" | "bulk";
 type UploadStep = 1 | 2 | 3;
 type UploadState = "idle" | "dragging" | "uploading" | "success" | "error";
-type BulkState  = "idle" | "dragging" | "previewing" | "uploading" | "done";
+type BulkState  = "idle" | "dragging" | "previewing" | "uploading" | "processing" | "done";
 
 interface BulkPreviewItem {
   file: File;
@@ -95,6 +95,19 @@ export function AdminPanel() {
   const { user } = useAuth();
   const tx = T[lang];
 
+  // Add CSS animation for indeterminate progress
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+
   // Navigation
   const [view, setView] = useState<AdminView>("inicio");
   const navTo = (v: AdminView) => setView(v);
@@ -151,6 +164,7 @@ export function AdminPanel() {
   const [bulkPreviews,  setBulkPreviews] = useState<BulkPreviewItem[]>([]);
   const [bulkResponse,  setBulkResponse] = useState<BulkUploadResponse | null>(null);
   const [bulkError,     setBulkError]    = useState<string | null>(null);
+  const [bulkProgress,  setBulkProgress] = useState(0);
   const bulkFileRef = useRef<HTMLInputElement>(null);
 
   const resetBulk = () => {
@@ -158,6 +172,7 @@ export function AdminPanel() {
     setBulkPreviews([]);
     setBulkResponse(null);
     setBulkError(null);
+    setBulkProgress(0);
     if (bulkFileRef.current) bulkFileRef.current.value = "";
   };
 
@@ -182,12 +197,17 @@ export function AdminPanel() {
   const doBulkUpload = async () => {
     setBulkState("uploading");
     setBulkError(null);
+    setBulkProgress(0);
     try {
       const fd = new FormData();
       bulkPreviews.forEach(p => fd.append("files[]", p.file));
       fd.append("trimestre", bulkTrimestre);
       fd.append("anio", bulkAnio);
-      const result = await reportesApi.bulkUpload(fd);
+      const result = await reportesApi.bulkUpload(
+        fd,
+        (progress) => setBulkProgress(progress),
+        () => setBulkState("processing")
+      );
       setBulkResponse(result);
       setBulkState("done");
       refreshData();
@@ -874,11 +894,31 @@ export function AdminPanel() {
             )}
 
             {/* UPLOADING */}
-            {bulkState === "uploading" && (
+            {(bulkState === "uploading" || bulkState === "processing") && (
               <div style={{ background: "rgba(212,175,55,0.05)", border: `1px solid rgba(212,175,55,0.15)`, borderRadius: "12px", padding: "36px", textAlign: "center" }}>
-                <div style={{ fontSize: "38px", marginBottom: "14px" }}>⏳</div>
-                <div style={{ fontSize: "15px", fontWeight: 700, color: t1, marginBottom: "6px" }}>{tx.bulkUploading}</div>
-                <div style={{ fontSize: "14px", color: t2 }}>{bulkPreviews.length} {lang === "es" ? "archivos en cola…" : "files in queue…"}</div>
+                <div style={{ fontSize: "38px", marginBottom: "14px" }}>{bulkState === "uploading" ? "📤" : "⚙️"}</div>
+                <div style={{ fontSize: "15px", fontWeight: 700, color: t1, marginBottom: "6px" }}>
+                  {bulkState === "uploading" ? tx.bulkUploading : tx.bulkProcessing}
+                </div>
+                <div style={{ fontSize: "14px", color: t2, marginBottom: "20px" }}>{bulkPreviews.length} {lang === "es" ? "archivos en cola…" : "files in queue…"}</div>
+                <div style={{ width: "100%", height: "8px", background: "rgba(255,255,255,0.1)", borderRadius: "4px", overflow: "hidden", marginBottom: "10px" }}>
+                  {bulkState === "processing" ? (
+                    <div style={{
+                      height: "100%", width: "100%",
+                      background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+                      borderRadius: "4px",
+                      animation: "shimmer 1.5s infinite",
+                    }} />
+                  ) : (
+                    <div style={{
+                      height: "100%", width: `${bulkProgress}%`,
+                      background: `linear-gradient(90deg, ${accent}, ${green})`,
+                      transition: "width 0.3s ease",
+                      borderRadius: "4px"
+                    }} />
+                  )}
+                </div>
+                <div style={{ fontSize: "12px", color: t3 }}>{bulkState === "processing" ? (lang === "es" ? "Procesando…" : "Processing…") : `${bulkProgress}% ${lang === "es" ? "completado" : "completed"}`}</div>
               </div>
             )}
 

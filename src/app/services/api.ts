@@ -123,17 +123,41 @@ export const reportesApi = {
       }
       return res.json() as Promise<Reporte>;
     }),
-  bulkUpload: (formData: FormData) =>
-    fetch(`${BASE}/api/reportes/bulk`, {
-      method: "POST",
-      headers: authHeaders(),
-      body: formData,
-    }).then(async (res) => {
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: res.statusText }));
-        throw new Error(err.error || res.statusText);
+  bulkUpload: (formData: FormData, onProgress?: (progress: number) => void, onUploadComplete?: () => void) =>
+    new Promise<BulkUploadResponse>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `${BASE}/api/reportes/bulk`);
+      const token = getToken();
+      if (token) {
+        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
       }
-      return res.json() as Promise<BulkUploadResponse>;
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) {
+          onProgress(Math.round((e.loaded / e.total) * 100));
+        }
+      };
+      xhr.upload.onload = () => {
+        if (onUploadComplete) onUploadComplete();
+      };
+      xhr.onload = async () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            resolve(data);
+          } catch (err) {
+            reject(new Error("Invalid JSON response"));
+          }
+        } else {
+          try {
+            const err = JSON.parse(xhr.responseText);
+            reject(new Error(err.error || xhr.statusText));
+          } catch {
+            reject(new Error(xhr.statusText));
+          }
+        }
+      };
+      xhr.onerror = () => reject(new Error("Network error"));
+      xhr.send(formData);
     }),
   download: (id: string) => request<{ url: string }>("GET", `/api/reportes/${id}/download`),
   remove: (id: string) => request<{ ok: boolean }>("DELETE", `/api/reportes/${id}`),
