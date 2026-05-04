@@ -401,7 +401,7 @@ export function AdminPanel() {
   const navItems = [
     { id: "inicio"   as AdminView, icon: "🏠", label: tx.inicio,   desc: tx.inicioDesc },
     { id: "subir"    as AdminView, icon: "📤", label: tx.subir,    desc: tx.subirDesc },
-    { id: "bulk"     as AdminView, icon: "📦", label: tx.bulk,     desc: tx.bulkDesc },
+    // { id: "bulk"     as AdminView, icon: "📦", label: tx.bulk,     desc: tx.bulkDesc },
     { id: "sellos"   as AdminView, icon: "🎵", label: tx.sellos,   desc: tx.sellosDesc,   badge: { text: String(sellos.length), type: "green" } },
     { id: "reportes" as AdminView, icon: "📂", label: tx.reportes, desc: tx.reportesDesc },
   ] as const;
