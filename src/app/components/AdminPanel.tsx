@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Fragment } from "react";
 import { Link } from "react-router";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -241,7 +241,7 @@ export function AdminPanel() {
   const doUpload = async (file: File) => {
     if (!selSello || !selType) return;
 
-    const alreadyExists = reportes.some(
+    const alreadyExists = allReports.some(
       r => r.sello_id === selSello.id && r.nombre_archivo === file.name
     );
     if (alreadyExists) {
@@ -601,9 +601,9 @@ export function AdminPanel() {
                 const on   = step === n;
                 const done = step > n;
                 return (
-                  <>
-                    {i > 0 && <div key={`sep-${n}`} style={{ width: "16px", height: "1px", background: bd, flexShrink: 0 }} />}
-                    <div key={n} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 16px", borderRadius: "8px", flex: 1, border: on ? `1px solid ${bdA}` : done ? `1px solid rgba(212,175,55,0.14)` : `1px solid ${bd}`, background: on ? ggl : done ? "rgba(212,175,55,0.03)" : card, opacity: step < n ? 0.65 : 1 }}>
+                  <Fragment key={n}>
+                    {i > 0 && <div style={{ width: "16px", height: "1px", background: bd, flexShrink: 0 }} />}
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 16px", borderRadius: "8px", flex: 1, border: on ? `1px solid ${bdA}` : done ? `1px solid rgba(212,175,55,0.14)` : `1px solid ${bd}`, background: on ? ggl : done ? "rgba(212,175,55,0.03)" : card, opacity: step < n ? 0.65 : 1 }}>
                       <div style={{ width: "24px", height: "24px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "monospace", fontSize: "10px", flexShrink: 0, background: on ? accent : done ? "rgba(212,175,55,0.14)" : elev, color: on ? "#010e06" : done ? accent : t3, border: on ? `1px solid ${accent}` : `1px solid ${bd}`, fontWeight: on || done ? 700 : 500 }}>
                         {done ? "✓" : n}
                       </div>
@@ -612,7 +612,7 @@ export function AdminPanel() {
                         <div style={{ fontSize: "9.5px", color: on ? "rgba(212,175,55,0.5)" : t3, fontWeight: 300 }}>{stepLabels[i].desc}</div>
                       </div>
                     </div>
-                  </>
+                  </Fragment>
                 );
               })}
             </div>
