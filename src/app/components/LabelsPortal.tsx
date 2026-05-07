@@ -200,6 +200,16 @@ export function LabelsPortal() {
   }
 
   const resumen = dashboard?.resumen;
+
+  // Get filename of the most recent report matching the current period
+  const topFileName = (() => {
+    if (!resumen?.trimestre || !resumen?.anio) return null;
+    const match = [...reports]
+      .filter(r => r.trimestre === resumen.trimestre && r.anio === resumen.anio)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+    return match?.nombre_archivo?.replace(/\.xlsx$/i, "") ?? null;
+  })();
+
   const topSongs = (() => {
     const seen = new Set<string>();
     return (dashboard?.topSongs ?? [])
@@ -265,11 +275,9 @@ export function LabelsPortal() {
               {tx.top5Title}{periodoLabel ? ` — ${periodoLabel}` : ""}
             </div>
             <div style={{ color: t3, fontSize: "0.92rem", marginTop: 2 }}>
-              {resumen?.nombre_archivo
-                ? resumen.nombre_archivo.replace(/\.xlsx$/i, "")
-                : resumen?.tipo === "youtube"
-                  ? (lang === "es" ? "por regalías · YouTube" : "by royalties · YouTube")
-                  : (lang === "es" ? "por reproducciones · Streaming" : "by streams · Streaming")}
+              {topFileName ?? (resumen?.tipo_top === "youtube"
+                ? (lang === "es" ? "por regalías · YouTube" : "by royalties · YouTube")
+                : (lang === "es" ? "por reproducciones · Streaming" : "by streams · Streaming"))}
             </div>
           </div>
           {topSongs.length === 0 ? (
