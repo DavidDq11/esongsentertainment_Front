@@ -240,6 +240,20 @@ export function AdminPanel() {
 
   const doUpload = async (file: File) => {
     if (!selSello || !selType) return;
+
+    const alreadyExists = reportes.some(
+      r => r.sello_id === selSello.id && r.nombre_archivo === file.name
+    );
+    if (alreadyExists) {
+      setUpFile(file);
+      setUpState("error");
+      setUpError(lang === "es"
+        ? `El archivo "${file.name}" ya fue subido anteriormente para este sello.`
+        : `The file "${file.name}" has already been uploaded for this label.`
+      );
+      return;
+    }
+
     setUpFile(file);
     setUpState("uploading");
     setProgress(0);
