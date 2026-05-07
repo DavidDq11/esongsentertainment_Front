@@ -14,12 +14,25 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+function handleExpiredSession() {
+  localStorage.removeItem("esongs_auth");
+  // Import toast dynamically to avoid circular deps
+  import("sonner").then(({ toast }) => {
+    toast.error("Your session has expired. Please log in again.", { duration: 4000 });
+    setTimeout(() => { window.location.href = "/"; }, 500);
+  });
+}
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     method,
     headers: { "Content-Type": "application/json", ...authHeaders() },
     body: body != null ? JSON.stringify(body) : undefined,
   });
+  if (res.status === 401) {
+    handleExpiredSession();
+    throw new Error("Session expired");
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(err.error || res.statusText);

@@ -1,7 +1,7 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
 import logoImg from "../../assets/logo.webp";
 import { Link } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { useLang } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -11,6 +11,10 @@ export function Layout() {
   const location  = useLocation();
   const navigate  = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    navigate("/", { replace: true });
+  }, []);
   const { lang, setLang } = useLang();
   const { user, logout } = useAuth();
   const tx = T[lang];

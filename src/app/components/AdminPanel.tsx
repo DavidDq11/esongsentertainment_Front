@@ -460,7 +460,7 @@ export function AdminPanel() {
               <div style={{ background: ggl, border: `1px solid ${filePct >= 90 ? "rgba(239,68,68,0.3)" : filePct >= 75 ? "rgba(245,158,11,0.3)" : bdA}`, borderRadius: "8px", padding: "10px 12px", marginBottom: "9px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
                   <div style={{ fontSize: "10px", fontWeight: 600, color: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : accent }}>
-                    {lang === "es" ? "Archivos en R2" : "Files in R2"}
+                    {lang === "es" ? "Reportes subidos" : "Uploaded Reports"}
                   </div>
                   <div style={{ fontFamily: "monospace", fontSize: "9px", color: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : t3 }}>
                     {storage.total_files} / {FILE_LIMIT}
@@ -469,10 +469,11 @@ export function AdminPanel() {
                 <div style={{ height: "3px", borderRadius: "2px", background: elev, overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${filePct}%`, borderRadius: "2px", background: filePct >= 90 ? "#ef4444" : filePct >= 75 ? amber : accent, transition: "width .3s" }} />
                 </div>
-                <div style={{ fontSize: "9px", color: t3, marginTop: "4px" }}>
-                  {filePct}% {lang === "es" ? "del límite" : "of limit"}
-                  {filePct >= 90 && <span style={{ color: "#ef4444", fontWeight: 600 }}> · {lang === "es" ? "¡Límite próximo!" : "Limit near!"}</span>}
-                </div>
+                {filePct >= 90 && (
+                  <div style={{ fontSize: "9px", color: "#ef4444", fontWeight: 600, marginTop: "4px" }}>
+                    {lang === "es" ? "¡Espacio casi lleno!" : "Almost full!"}
+                  </div>
+                )}
               </div>
             );
           })()}

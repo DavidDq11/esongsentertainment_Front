@@ -129,20 +129,24 @@ export function LandingPage() {
       ],
     },
     {
-      icon: BarChart3,
-      color: G2,
-      title: lang === "es" ? "Portal de Distribución para Clientes" : "Client Distribution Portal",
-      desc:  lang === "es" ? "Portal seguro con reportes de ventas personalizados y análisis estadístico detallado." : "Secure portal with personalized sales reports and detailed statistical analysis.",
+      icon: TrendingUp,
+      color: "#7c3aed",
+      title: lang === "es" ? "Contabilidad de Regalías" : "Royalty Accounting Services",
+      desc:  lang === "es" ? "Para sellos independientes, editores y titulares de derechos. Impulsado por la plataforma Curve." : "For Independent Labels, Publishers, and Rights Holders. Powered by the Curve platform.",
       items: lang === "es" ? [
-        "Portal de acceso seguro para clientes de distribución",
-        "Reportes de ventas trimestrales personalizados",
-        "Análisis estadístico detallado de todos sus lanzamientos",
-        "Gestión de datos históricos de ventas para precisión y transparencia a largo plazo",
+        "Gestión de reportes de ventas — recepción, organización y procesamiento",
+        "Configuración de portal digital de regalías para cada cliente",
+        "Preparación de estados de regalías para artistas, artistas secundarios y productores",
+        "Acceso digital directo para todos los receptores de regalías",
+        "Mantenimiento de datos y sistema de contabilidad actualizado",
+        "Impulsado por Curve — la plataforma de contabilidad de regalías líder",
       ] : [
-        "Secure financial login portal for easy and protected account access",
-        "Quarterly personalized sales reports tailored for each distribution client",
-        "Detailed statistical sales analysis for all your releases",
-        "Historical sales data management for long-term accuracy and transparency",
+        "Sales Report Management — receive, organize, and process all distributor reports",
+        "Digital Royalty Portal Setup for each client and all royalty recipients",
+        "Royalty Statement Preparation for Artists, Side Artists, and Producers",
+        "Direct digital access for all royalty recipients via website and mobile app",
+        "Data & System Maintenance — royalty data kept accessible and up to date",
+        "Powered by Curve — the prestigious royalty accounting platform",
       ],
     },
     {
@@ -171,24 +175,20 @@ export function LandingPage() {
       ],
     },
     {
-      icon: TrendingUp,
-      color: "#7c3aed",
-      title: lang === "es" ? "Contabilidad de Regalías" : "Royalty Accounting Services",
-      desc:  lang === "es" ? "Para sellos independientes, editores y titulares de derechos. Impulsado por la plataforma Curve." : "For Independent Labels, Publishers, and Rights Holders. Powered by the Curve platform.",
+      icon: BarChart3,
+      color: G2,
+      title: lang === "es" ? "Portal de Distribución para Clientes" : "Client Distribution Portal",
+      desc:  lang === "es" ? "Portal seguro con reportes de ventas personalizados y análisis estadístico detallado." : "Secure portal with personalized sales reports and detailed statistical analysis.",
       items: lang === "es" ? [
-        "Gestión de reportes de ventas — recepción, organización y procesamiento",
-        "Configuración de portal digital de regalías para cada cliente",
-        "Preparación de estados de regalías para artistas, artistas secundarios y productores",
-        "Acceso digital directo para todos los receptores de regalías",
-        "Mantenimiento de datos y sistema de contabilidad actualizado",
-        "Impulsado por Curve — la plataforma de contabilidad de regalías líder",
+        "Portal de acceso seguro para clientes de distribución",
+        "Reportes de ventas trimestrales personalizados",
+        "Análisis estadístico detallado de todos sus lanzamientos",
+        "Gestión de datos históricos de ventas para precisión y transparencia a largo plazo",
       ] : [
-        "Sales Report Management — receive, organize, and process all distributor reports",
-        "Digital Royalty Portal Setup for each client and all royalty recipients",
-        "Royalty Statement Preparation for Artists, Side Artists, and Producers",
-        "Direct digital access for all royalty recipients via website and mobile app",
-        "Data & System Maintenance — royalty data kept accessible and up to date",
-        "Powered by Curve — the prestigious royalty accounting platform",
+        "Secure financial login portal for easy and protected account access",
+        "Quarterly personalized sales reports tailored for each distribution client",
+        "Detailed statistical sales analysis for all your releases",
+        "Historical sales data management for long-term accuracy and transparency",
       ],
     },
     {
@@ -247,7 +247,7 @@ export function LandingPage() {
     { q: lp.faq7q, a: lp.faq7a }, { q: lp.faq8q, a: lp.faq8a },
     { q: lp.faq9q, a: lp.faq9a }, { q: lp.faq10q, a: lp.faq10a },
     { q: lp.faq11q, a: lp.faq11a },
-  ];
+  ].filter(f => f.q);
 
   const benefits = [lp.aboutBen1, lp.aboutBen2, lp.aboutBen3, lp.aboutBen4, lp.aboutBen5, lp.aboutBen6];
   const ctaBenefits = [lp.ctaBen1, lp.ctaBen2, lp.ctaBen3, lp.ctaBen4, lp.ctaBen5, lp.ctaBen6];
@@ -555,10 +555,10 @@ export function LandingPage() {
               </ul>
               <div style={{ marginTop: "28px", padding: "18px", borderRadius: "10px", backgroundColor: rg(0.06), border: `1px solid ${rg(0.12)}` }}>
                 <p style={{ fontSize: "0.9rem", color: T3, lineHeight: 1.65 }}>
-                  {lang === "es" ? "Estamos para servirles y con gusto puede contactarnos para consulta." : "We are here to serve you and are happy to answer any inquiry."}
+                  {lang === "es" ? "Estamos para servirles y con gusto puede contactarnos para consulta." : "We're here to help and glad to answer any questions you might have."}
                 </p>
                 <div className="flex flex-col gap-1 mt-3">
-                  {["shirley@esongsentertainment.com", "rosemary@esongsentertainment.com"].map((email) => (
+                  {["rosemary@esongsentertainment.com"].map((email) => (
                     <a key={email} href={`mailto:${email}`} style={{ fontSize: "0.9rem", color: G1, textDecoration: "none" }}
                       onMouseEnter={(e) => { (e.target as HTMLElement).style.textDecoration = "underline"; }}
                       onMouseLeave={(e) => { (e.target as HTMLElement).style.textDecoration = "none"; }}>
@@ -582,7 +582,6 @@ export function LandingPage() {
           </div>
           <div className="space-y-2.5">
             {[
-              { icon: "✉️", label: "Email", value: "shirley@esongsentertainment.com" },
               { icon: "✉️", label: "Email", value: "rosemary@esongsentertainment.com" },
               { icon: "🌎", label: lang === "es" ? "Ubicación" : "Location", value: "United States of America" },
               { icon: "🌐", label: "Website", value: "esongsentertainment.com" },
@@ -659,7 +658,7 @@ export function LandingPage() {
                 {lang === "es" ? "Servicios" : "Services"}
               </div>
               <div className="space-y-2">
-                {[lp.svc1title, lp.svc2title, lp.svc3title, lp.svc4title].map((label) => (
+                {[lp.svc1title, lp.svc2title].map((label) => (
                   <a key={label} href="/#servicios" style={{ display: "block", fontSize: "0.9rem", color: T3, fontWeight: 300, textDecoration: "none", transition: "color 0.15s" }}
                     onMouseEnter={(e) => ((e.target as HTMLElement).style.color = G1)}
                     onMouseLeave={(e) => ((e.target as HTMLElement).style.color = T3)}>
@@ -674,7 +673,7 @@ export function LandingPage() {
             <div style={{ fontSize: "0.8rem", color: "#4a3020", letterSpacing: "0.06em" }}>
               © 2026 esongsentertainment.com · {lp.footerRights}
             </div>
-            <div style={{ fontSize: "0.8rem", color: "#4a3020" }}>shirley@esongsentertainment.com</div>
+            <div style={{ fontSize: "0.8rem", color: "#4a3020" }}>rosemary@esongsentertainment.com</div>
           </div>
         </div>
       </footer>
