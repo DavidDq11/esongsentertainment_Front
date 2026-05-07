@@ -202,12 +202,14 @@ export function LabelsPortal() {
   const resumen = dashboard?.resumen;
   const topSongs = (() => {
     const seen = new Set<string>();
-    return (dashboard?.topSongs ?? []).filter(s => {
-      const key = s.titulo.trim().toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    return (dashboard?.topSongs ?? [])
+      .filter(s => {
+        const key = s.titulo.trim().toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .sort((a, b) => b.reproducciones - a.reproducciones);
   })();
   const periodoLabel = resumen?.trimestre && resumen?.anio ? `Q${resumen.trimestre} ${resumen.anio}` : "";
 
@@ -262,7 +264,13 @@ export function LabelsPortal() {
             <div style={{ color: t1, fontSize: "1.08rem", fontWeight: 600 }}>
               {tx.top5Title}{periodoLabel ? ` — ${periodoLabel}` : ""}
             </div>
-            <div style={{ color: t3, fontSize: "0.92rem", marginTop: 2 }}>{tx.top5Sub}</div>
+            <div style={{ color: t3, fontSize: "0.92rem", marginTop: 2 }}>
+              {resumen?.nombre_archivo
+                ? resumen.nombre_archivo.replace(/\.xlsx$/i, "")
+                : resumen?.tipo === "youtube"
+                  ? (lang === "es" ? "por regalías · YouTube" : "by royalties · YouTube")
+                  : (lang === "es" ? "por reproducciones · Streaming" : "by streams · Streaming")}
+            </div>
           </div>
           {topSongs.length === 0 ? (
             <div style={{ color: t3, fontSize: "1rem", textAlign: "center", padding: "24px 0" }}>
@@ -270,7 +278,10 @@ export function LabelsPortal() {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {topSongs.map((song, i) => (
+              {topSongs.map((song, i) => {
+                const maxRep = topSongs[0]?.reproducciones || 1;
+                const pct = Math.round((song.reproducciones / maxRep) * 100);
+                return (
                 <div key={song.titulo + i}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -286,7 +297,7 @@ export function LabelsPortal() {
                   </div>
                   <div style={{ height: 5, borderRadius: 99, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
                     <div style={{
-                      height: "100%", width: `${song.pct}%`, borderRadius: 99,
+                      height: "100%", width: `${pct}%`, borderRadius: 99,
                       background: i === 0
                         ? `linear-gradient(90deg, ${accent}, ${green})`
                         : i === 1
@@ -296,7 +307,8 @@ export function LabelsPortal() {
                     }} />
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

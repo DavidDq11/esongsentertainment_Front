@@ -186,6 +186,8 @@ export interface DashboardData {
     total: number;
     trimestre: number | null;
     anio: number | null;
+    tipo: "streaming" | "youtube" | null;
+    nombre_archivo: string | null;
   };
   topSongs: Array<{
     titulo: string;
