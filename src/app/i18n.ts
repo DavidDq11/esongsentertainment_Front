@@ -83,28 +83,38 @@ export const LP = {
     faqEyebrow: "Preguntas frecuentes",
     faqH2: "¿Tienes dudas?",
     faqSub: "Respuestas a las preguntas más comunes sobre nuestros servicios.",
-    faq1q: "¿En qué consiste la distribución digital?",
-    faq1a: "Servicios diseñados para ayudar a artistas y sellos independientes a vender su contenido en descargas digitales y streaming a nivel mundial: Spotify, Apple Music, Amazon, Rhapsody, Napster, eMusic, Google Play y Pandora. Incluye códigos UPC e ISRC gratis.",
+
+    faq1q: "¿Qué es la distribución digital?",
+    faq1a: "Servicio diseñado para entregar su música y contenido de video a plataformas en línea como Spotify, Apple Music, Amazon y YouTube, para que los oyentes puedan escucharla en streaming o descargarla a nivel mundial.",
+
     faq2q: "¿Cuál es el costo de distribución?",
-    faq2a: "Sin costos iniciales de carga ni cuota anual de mantenimiento. El costo de distribución es un porcentaje de las ventas absolutamente competitivo, razonable y justo. Los detalles se proveen personalmente y los términos son confidenciales.",
-    faq3q: "¿Usando este servicio estaré cediendo mis derechos?",
-    faq3a: "No. E Songs Entertainment no es un sello discográfico y no acepta ninguna participación en los derechos de su música. Los derechos de su música y grabaciones le pertenecen siempre.",
-    faq4q: "¿Cuándo y cómo se reciben los estados de cuenta y los pagos?",
-    faq4a: "Los clientes tienen acceso directo al portal de regalías con estados de cuenta mensuales en formato Excel. Los pagos se realizan mensualmente por depósito directo o transferencia bancaria sin cargo al cliente.",
-    faq5q: "¿Es el sello disquero responsable de pedir las licencias?",
-    faq5a: "Sí. El sello discográfico sigue siendo responsable de todos los permisos, licencias y pagos correspondientes a artistas, productores, compositores y compromisos legales.",
-    faq6q: "¿esongs hace la promoción de mis productos?",
-    faq6a: "La promoción del catálogo es responsabilidad del sello discográfico.",
-    faq7q: "¿Puede mi álbum tener letra explícita?",
-    faq7a: "Sí. Se permite contenido con lenguaje explícito. Es necesario notificarnos para que podamos informar a los socios minoristas correspondientes.",
-    faq8q: "¿Qué debo hacer para subir mi catálogo con esongs?",
-    faq8a: "E-Songs se encarga del trabajo de producción personalmente. El sello provee el audio y el arte; nosotros gestionamos todos los requerimientos técnicos y estéticos.",
-    faq9q: "¿Para distribuir con esongs necesito firmar un acuerdo?",
-    faq9a: "Sí. Se establecen términos mínimos de 3 años. El costo de distribución varía según la duración del contrato — a mayor plazo, menor costo. El acuerdo cubre ventas digitales, reclamos YouTube y monetización.",
-    faq10q: "¿Puede esongs administrar mi canal de YouTube?",
-    faq10a: "Sí. Gestionamos la monetización de contenido de audio y video en YouTube y Vydia, con personal dedicado para reclamos y colocación de publicidad.",
-    faq11q: "¿Qué es SoundExchange?",
-    faq11a: "SoundExchange es la entidad autorizada por el gobierno de EE.UU. para cobrar regalías digitales de servicios como Pandora y SiriusXM. Artistas y sellos deben inscribirse para recibir sus pagos.",
+    faq2a: "El servicio de distribución no tiene costos iniciales de carga ni cargos anuales de mantenimiento. Operamos con un porcentaje competitivo y justo de las ventas. Las tarifas específicas se comparten individualmente con cada cliente y todos los términos son estrictamente confidenciales.",
+
+    faq3q: "¿Cuándo y cómo se reciben los estados de cuenta y los pagos?",
+    faq3a: "Tendrá acceso completo a su portal de regalías, incluyendo estados de cuenta mensuales descargables en Excel. Los pagos de regalías se envían por depósito directo o transferencia bancaria, sin cargo por procesamiento de pagos.",
+
+    faq4q: "¿Es el sello discográfico responsable de solicitar todas las licencias relacionadas?",
+    faq4a: "Sí. El sello discográfico es totalmente responsable de obtener todos los permisos y licencias requeridos, así como de gestionar todos los pagos relacionados con artistas, productores, compositores y cualquier otra obligación legal asociada al proyecto.",
+
+    faq5q: "¿esongs promueve mis productos?",
+    faq5a: "No. La distribución cubre la entrega de su música a las plataformas, pero no incluye marketing ni promoción.",
+
+    faq6q: "¿Puede mi álbum tener lenguaje explícito?",
+    faq6a: "Sí, se permite contenido explícito. Solo notifíquenos con anticipación para poder actualizar a nuestros socios minoristas.",
+
+    faq7q: "¿Cuáles son los pasos para enviar mi catálogo a esongs para distribución?",
+    faq7a: "esongs supervisa todo el trabajo de producción internamente. El sello es responsable de proveer el audio y el arte, mientras nosotros nos encargamos de todas las especificaciones técnicas y estándares estéticos.",
+
+    faq8q: "¿Necesito firmar un acuerdo para distribuir con esongs?",
+    faq8a: "Sí. Debe firmar un acuerdo mínimo de tres años. Los costos de distribución dependen de la duración del contrato. El acuerdo incluye ventas digitales y monetización en YouTube.",
+
+    faq9q: "Además de la distribución, ¿esongs ofrece servicios adicionales para sellos?",
+    faq9a: "Sí. Además de la distribución, esongs ofrece administración de contabilidad de regalías, inscripciones en la industria musical, registros de derechos de autor y una amplia gama de servicios complementarios, diseñados para apoyar a los sellos en sus necesidades operativas y administrativas.",
+
+    faq10q: "",
+    faq10a: "",
+    faq11q: "",
+    faq11a: "",
     // Contact
     ctaEyebrow: "Contáctenos",
     ctaH2: "¿Listo para empezar?",
